@@ -1,0 +1,19 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<div class="max-w-md mx-auto mt-8 p-6 bg-white rounded-xl shadow-md">
+    {% if latest_question_list %}
+    <ul class="divide-y divide-gray-200">
+        {% for question in latest_question_list %}
+        <li class="py-3">
+            <a href="{% url 'polls:detail' question.id %}"
+                class="text-blue-600 hover:text-red-800 font-medium hover:underline">
+                {{ question.question_text }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-gray-500 italic">No polls are available.</p>
+    {% endif %}
+</div>

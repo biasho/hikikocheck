@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi" data-theme="{% block default_theme %}light{% endblock %}">
+
+<head>
+    <!-- Script kiểm tra LocalStorage ngay lập tức để chống giật/nháy giao diện -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('user-custom-theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        })();
+    </script>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}HikikoCheck System{% endblock %}</title>
+
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- 1. Load File Themes trước -->
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
+
+    <!-- 2. Load File Static Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-btn.active {
+            border-bottom-color: var(--color-primary, #1152d4);
+            color: var(--color-primary, #1152d4);
+            font-weight: 600;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body
+    class="bg-[var(--color-background)] text-[var(--color-text-main)] font-display min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- 1. HEADER & NAVBAR -->
+    {% include 'includes/header.html' %}
+
+    <!-- 2. MAIN CONTENT -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- 3. FOOTER -->
+    {% include 'includes/footer.html' %}
+
+    <!-- TAB SWITCHING & THEME SWITCHING SCRIPT -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const targetContent = document.getElementById('content-' + tabId);
+            if (targetContent) targetContent.classList.add('active');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'border-b-2', 'border-primary', 'text-primary');
+                btn.classList.add('border-transparent');
+            });
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('border-transparent');
+            }
+        }
+
+        // Hàm đổi theme khi người dùng chọn nút
+        function changeUserTheme(themeName) {
+            if (themeName === 'reset') {
+                localStorage.removeItem('user-custom-theme');
+                location.reload();
+            } else {
+                document.documentElement.setAttribute('data-theme', themeName);
+                localStorage.setItem('user-custom-theme', themeName);
+            }
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

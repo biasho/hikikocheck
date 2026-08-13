@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- Đặt theme mặc định cho trang chủ là LIGHT -->
+{% block default_theme %}light{% endblock %}
+
+{% block title %}Trang chủ - HikikoCheck System{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
+    <a class="hover:text-[var(--color-primary)]" href="{% url 'pages:home' %}">Trang chủ</a>
+    <span class="mx-2">/</span>
+    <span class="text-[var(--color-text-main)] font-medium">Hệ thống Đánh giá & Khảo sát</span>
+</nav>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- Left Column: Main Content -->
+    <div class="lg:col-span-8 flex flex-col gap-10">
+        <!-- Hero Section -->
+        <section
+            class="relative overflow-hidden rounded-2xl bg-[var(--color-card-bg)] shadow-sm ring-1 ring-[var(--color-border)]">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10"></div>
+            <div class="h-[400px] w-full bg-cover bg-center"
+                style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop');">
+            </div>
+            <div class="absolute bottom-0 left-0 z-20 p-8 w-full max-w-2xl">
+                <span
+                    class="inline-flex items-center rounded-full bg-[var(--color-accent)] px-3 py-1 text-xs font-bold text-gray-900 mb-4">
+                    <span class="material-symbols-outlined text-[14px] mr-1">verified</span> Hệ thống hàng đầu 2026
+                </span>
+                <h1 class="text-4xl md:text-5xl font-black text-white leading-tight mb-4">
+                    Khảo sát & Đánh giá Toàn diện
+                </h1>
+                <p class="text-gray-200 text-lg font-medium leading-relaxed mb-6">
+                    Theo dõi, phân tích và tối ưu hóa hệ thống của bạn 24/7 với dữ liệu thời gian thực và báo cáo trực
+                    quan.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{% url 'polls:index' %}"
+                        class="flex items-center justify-center rounded-lg h-12 px-6 bg-[var(--color-primary)] hover:opacity-90 text-white font-bold shadow-lg transition-transform hover:scale-105">
+                        <span class="material-symbols-outlined mr-2">poll</span>
+                        Khám phá Khảo sát
+                    </a>
+                    <a href="{% url 'pages:about' %}"
+                        class="flex items-center justify-center rounded-lg h-12 px-6 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold transition-colors">
+                        <span class="material-symbols-outlined mr-2">info</span>
+                        Tìm hiểu thêm
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Information Tabs Section -->
+        <section class="bg-[var(--color-card-bg)] rounded-xl shadow-sm ring-1 ring-[var(--color-border)] p-6 md:p-8">
+            <!-- Tabs Header -->
+            <div class="border-b border-[var(--color-border)] mb-8 overflow-x-auto no-scrollbar">
+                <div class="flex space-x-8 min-w-max">
+                    <button
+                        class="tab-btn active pb-4 border-b-2 border-transparent text-[var(--color-text-sub)] hover:text-[var(--color-text-main)] font-medium text-base transition-colors"
+                        id="tab-coverage" onclick="switchTab('coverage')">
+                        Quyền lợi & Tính năng
+                    </button>
+                    <button
+                        class="tab-btn pb-4 border-b-2 border-transparent text-[var(--color-text-sub)] hover:text-[var(--color-text-main)] font-medium text-base transition-colors"
+                        id="tab-exclusions" onclick="switchTab('exclusions')">
+                        Giới hạn & Quy định
+                    </button>
+                    <button
+                        class="tab-btn pb-4 border-b-2 border-transparent text-[var(--color-text-sub)] hover:text-[var(--color-text-main)] font-medium text-base transition-colors"
+                        id="tab-claims" onclick="switchTab('claims')">
+                        Quy trình thực hiện
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 1: Coverage Benefits -->
+            <div class="tab-content active space-y-8" id="content-coverage">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div
+                        class="flex gap-4 p-4 rounded-lg bg-[var(--color-background)] hover:opacity-90 transition-opacity group border border-[var(--color-border)]">
+                        <div
+                            class="size-12 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] shrink-0 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">analytics</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-[var(--color-text-main)] mb-1">Thống kê Thời gian thực
+                            </h3>
+                            <p class="text-sm text-[var(--color-text-sub)]">Xem ngay kết quả đánh giá và biểu đồ
+                                phân tích sau mỗi câu trả lời.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex gap-4 p-4 rounded-lg bg-[var(--color-background)] hover:opacity-90 transition-opacity group border border-[var(--color-border)]">
+                        <div
+                            class="size-12 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] shrink-0 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">security</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-[var(--color-text-main)] mb-1">Bảo mật Dữ liệu</h3>
+                            <p class="text-sm text-[var(--color-text-sub)]">Cam kết bảo mật thông tin người tham gia
+                                khảo sát tuyệt đối.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex gap-4 p-4 rounded-lg bg-[var(--color-background)] hover:opacity-90 transition-opacity group border border-[var(--color-border)]">
+                        <div
+                            class="size-12 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] shrink-0 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">devices</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-[var(--color-text-main)] mb-1">Tương thích Đa thiết bị
+                            </h3>
+                            <p class="text-sm text-[var(--color-text-sub)]">Giao diện tối ưu hoàn hảo trên PC, máy
+                                tính bảng và điện thoại.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex gap-4 p-4 rounded-lg bg-[var(--color-background)] hover:opacity-90 transition-opacity group border border-[var(--color-border)]">
+                        <div
+                            class="size-12 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] shrink-0 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">support_agent</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-[var(--color-text-main)] mb-1">Hỗ trợ 24/7</h3>
+                            <p class="text-sm text-[var(--color-text-sub)]">Đội ngũ kỹ thuật sẵn sàng hỗ trợ giải
+                                đáp mọi thắc mắc.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-[var(--color-border)]">
+                    <h4 class="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-sub)] mb-4">Các
+                        tính năng mở rộng
+                    </h4>
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-[var(--color-text-main)]">
+                        <li class="flex items-center gap-2"><span
+                                class="material-symbols-outlined text-green-500 text-lg">check_circle</span> Xuất báo
+                            cáo Excel / PDF</li>
+                        <li class="flex items-center gap-2"><span
+                                class="material-symbols-outlined text-green-500 text-lg">check_circle</span> Tùy biến
+                            giao diện câu hỏi</li>
+                        <li class="flex items-center gap-2"><span
+                                class="material-symbols-outlined text-green-500 text-lg">check_circle</span> Phân quyền
+                            tài khoản quản trị</li>
+                        <li class="flex items-center gap-2"><span
+                                class="material-symbols-outlined text-green-500 text-lg">check_circle</span> Tích hợp
+                            API khảo sát</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab 2: Exclusions -->
+            <div class="tab-content space-y-6" id="content-exclusions">
+                <div class="bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 p-4 rounded-r-lg">
+                    <p class="text-red-700 dark:text-red-300 font-medium">Lưu ý các quy định không áp dụng trong tiêu
+                        chuẩn miễn phí.</p>
+                </div>
+                <ul class="space-y-4">
+                    <li class="flex gap-3 items-start">
+                        <span class="material-symbols-outlined text-red-500 mt-0.5">cancel</span>
+                        <div>
+                            <h4 class="font-bold text-[var(--color-text-main)]">Spam & Báo cáo giả mạo</h4>
+                            <p class="text-sm text-[var(--color-text-sub)]">Không chấp nhận các khảo sát chứa nội dung
+                                vi phạm pháp
+                                luật hoặc spam.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-3 items-start">
+                        <span class="material-symbols-outlined text-red-500 mt-0.5">cancel</span>
+                        <div>
+                            <h4 class="font-bold text-[var(--color-text-main)]">Tài khoản chưa xác thực</h4>
+                            <p class="text-sm text-[var(--color-text-sub)]">Một số tính năng nâng cao yêu cầu tài khoản
+                                đã được xác
+                                minh email.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Tab 3: Claims Process -->
+            <div class="tab-content" id="content-claims">
+                <div class="relative">
+                    <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-[var(--color-border)]"></div>
+                    <div class="relative pl-12 pb-8">
+                        <div
+                            class="absolute left-0 top-0 size-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold z-10">
+                            1</div>
+                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Tạo cuộc khảo sát</h4>
+                        <p class="text-[var(--color-text-sub)] text-sm">Nhập thông tin, tạo danh sách các câu hỏi và tùy
+                            chỉnh phương
+                            án trả lời.</p>
+                    </div>
+                    <div class="relative pl-12 pb-8">
+                        <div
+                            class="absolute left-0 top-0 size-8 rounded-full bg-[var(--color-card-bg)] border-2 border-[var(--color-primary)] text-[var(--color-primary)] flex items-center justify-center font-bold z-10">
+                            2</div>
+                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Chia sẻ liên kết</h4>
+                        <p class="text-[var(--color-text-sub)] text-sm">Gửi đường dẫn khảo sát đến người dùng hoặc chia
+                            sẻ trên các nền
+                            tảng mạng xã hội.</p>
+                    </div>
+                    <div class="relative pl-12">
+                        <div
+                            class="absolute left-0 top-0 size-8 rounded-full bg-[var(--color-card-bg)] border-2 border-[var(--color-primary)] text-[var(--color-primary)] flex items-center justify-center font-bold z-10">
+                            3</div>
+                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Xem kết quả & Báo cáo</h4>
+                        <p class="text-[var(--color-text-sub)] text-sm">Hệ thống tự động tổng hợp kết quả theo dạng biểu
+                            đồ trực quan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Badges -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-6 py-4">
+            <div class="flex flex-col items-center text-center gap-2">
+                <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]">support_agent</span>
+                <h4 class="font-bold text-[var(--color-text-main)]">Hỗ trợ 24/7</h4>
+                <p class="text-xs text-[var(--color-text-sub)]">Luôn sẵn sàng hỗ trợ bạn.</p>
+            </div>
+            <div class="flex flex-col items-center text-center gap-2">
+                <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]">verified_user</span>
+                <h4 class="font-bold text-[var(--color-text-main)]">99.9% Tin cậy</h4>
+                <p class="text-xs text-[var(--color-text-sub)]">Hệ thống vận hành ổn định.</p>
+            </div>
+            <div class="flex flex-col items-center text-center gap-2">
+                <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]">speed</span>
+                <h4 class="font-bold text-[var(--color-text-main)]">Tốc độ cao</h4>
+                <p class="text-xs text-[var(--color-text-sub)]">Phản hồi tính bằng ms.</p>
+            </div>
+            <div class="flex flex-col items-center text-center gap-2">
+                <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]">cloud_done</span>
+                <h4 class="font-bold text-[var(--color-text-main)]">Lưu trữ đám mây</h4>
+                <p class="text-xs text-[var(--color-text-sub)]">Dữ liệu được đồng bộ hóa.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Right Column: Sticky Widget -->
+    <div class="lg:col-span-4 relative">
+        <div class="sticky top-24 space-y-6">
+            <!-- Calculator Widget -->
+            <div class="bg-[var(--color-primary)] text-white rounded-xl shadow-xl overflow-hidden">
+                <div class="p-6 bg-black/10">
+                    <h3 class="text-xl font-bold tracking-tight mb-1">Tính toán Nhanh</h3>
+                    <p class="text-white/80 text-sm">Ước tính chi phí & quy mô trong 2 phút.</p>
+                </div>
+                <div class="p-6 space-y-5 bg-[var(--color-primary)]">
+                    <div class="flex p-1 bg-white/10 rounded-lg">
+                        <button
+                            class="flex-1 py-2 text-sm font-bold rounded bg-white text-[var(--color-primary)] shadow-sm flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">person</span> Ca nhân
+                        </button>
+                        <button
+                            class="flex-1 py-2 text-sm font-bold rounded text-white hover:bg-white/10 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">corporate_fare</span> Doanh nghiệp
+                        </button>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-white/80 mb-1">Tên hệ
+                            thống / Dự án</label>
+                        <input
+                            class="w-full h-12 px-4 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] font-medium"
+                            placeholder="VD: Khảo sát 2026" type="text" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-white/80 mb-1">Số lượng
+                            người khảo sát</label>
+                        <select
+                            class="w-full h-12 px-4 rounded-lg bg-white/10 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] font-medium">
+                            <option class="text-gray-900">Dưới 500 người</option>
+                            <option class="text-gray-900">500 - 2,000 người</option>
+                            <option class="text-gray-900">Trên 2,000 người</option>
+                        </select>
+                    </div>
+                    <button
+                        class="w-full h-12 bg-[var(--color-accent)] hover:opacity-90 text-gray-900 font-bold rounded-lg shadow-lg flex items-center justify-center gap-2 mt-2 transition-opacity">
+                        Tính ngay <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contact/Support Mini Card -->
+            <div class="bg-[var(--color-card-bg)] rounded-xl p-6 shadow-sm ring-1 ring-[var(--color-border)]">
+                <h4 class="font-bold text-[var(--color-text-main)] mb-4">Bạn có câu hỏi?</h4>
+                <div class="flex items-center gap-4 mb-4">
+                    <div
+                        class="size-10 rounded-full bg-[var(--color-background)] flex items-center justify-center text-[var(--color-primary)]">
+                        <span class="material-symbols-outlined">call</span>
+                    </div>
+                    <div>
+                        <p class="text-xs text-[var(--color-text-sub)] uppercase font-bold">Hotline 24/7</p>
+                        <p class="text-lg font-bold text-[var(--color-text-main)]">1900-HIKIKO</p>
+                    </div>
+                </div>
+                <a class="block text-center text-sm font-semibold text-[var(--color-primary)] hover:underline"
+                    href="#">Trò chuyện với
+                    tư vấn viên</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<section class="mt-16 border-t border-[var(--color-border)] pt-10">
+    <h2 class="text-2xl font-bold text-[var(--color-text-main)] mb-8">Các câu hỏi thường gặp</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+            <h5 class="font-bold text-[var(--color-text-main)] mb-2">Hệ thống có thu phí tạo khảo sát không?</h5>
+            <p class="text-[var(--color-text-sub)] text-sm leading-relaxed">HikikoCheck cung cấp gói tiêu chuẩn hoàn
+                toàn miễn phí cho
+                mọi cá nhân và doanh nghiệp nhỏ.</p>
+        </div>
+        <div>
+            <h5 class="font-bold text-[var(--color-text-main)] mb-2">Tôi có thể xuất dữ liệu ra file Excel được không?
+            </h5>
+            <p class="text-[var(--color-text-sub)] text-sm leading-relaxed">Có, bạn có thể dễ dàng tải xuống báo cáo
+                tổng hợp dưới dạng
+                file `.xlsx` hoặc `.csv` bất kỳ lúc nào.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

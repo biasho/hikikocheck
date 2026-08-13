@@ -1,0 +1,64 @@
+<!-- HEADER / NAVBAR -->
+<header
+    class="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-card-bg)]/95 backdrop-blur-sm transition-colors">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+            <!-- Logo -->
+            <a href="{% url 'pages:home' %}" class="flex items-center gap-2 text-[var(--color-primary)]">
+                <div class="size-8 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-[20px]">shield</span>
+                </div>
+                <h2 class="text-[var(--color-text-main)] text-xl font-bold tracking-tight">HikikoCheck</h2>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-[var(--color-primary)] font-semibold text-sm hover:opacity-80 transition-opacity"
+                    href="{% url 'pages:home' %}">Trang chủ</a>
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                    href="{% url 'polls:index' %}">Khảo sát Polls</a>
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                    href="{% url 'pages:about' %}">Giới thiệu</a>
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                    href="#">Hướng dẫn</a>
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                    href="#">Báo cáo</a>
+            </nav>
+
+            <!-- Actions & Theme Switcher -->
+            <div class="flex items-center gap-3">
+
+                <!-- BỘ NÚT CHUYỂN THEME -->
+                <div
+                    class="flex items-center gap-1 bg-[var(--color-background)] p-1 rounded-lg border border-[var(--color-border)]">
+                    <button onclick="changeUserTheme('light')" title="Theme Sáng"
+                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-[var(--color-text-main)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">light_mode</span>
+                    </button>
+                    <button onclick="changeUserTheme('dark')" title="Theme Tối"
+                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-[var(--color-text-main)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">dark_mode</span>
+                    </button>
+                    <button onclick="changeUserTheme('red')" title="Theme Đỏ"
+                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-red-500 transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">palette</span>
+                    </button>
+                    <button onclick="changeUserTheme('reset')" title="Mặc định theo trang"
+                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-[var(--color-text-sub)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                    </button>
+                </div>
+
+                <!-- Auth & Primary Buttons -->
+                <button
+                    class="hidden md:flex text-[var(--color-text-main)] text-sm font-semibold hover:text-[var(--color-primary)]">
+                    Đăng nhập
+                </button>
+                <a href="{% url 'polls:index' %}"
+                    class="flex items-center justify-center rounded-lg h-9 px-4 bg-[var(--color-accent)] text-gray-900 text-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+                    Tạo khảo sát
+                </a>
+            </div>
+        </div>
+    </div>
+</header>

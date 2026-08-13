@@ -20,4 +20,6 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
+    # 1. Trang chủ toàn trang và các trang tĩnh
+    path('', include('pages.urls')),
 ]

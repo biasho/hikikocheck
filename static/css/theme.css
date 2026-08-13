@@ -1,0 +1,35 @@
+/* Theme Mặc định (Light) */
+:root, [data-theme="light"] {
+  --color-primary: #1152d4;
+  --color-primary-dark: #0a3aa0;
+  --color-accent: #FFC107;
+  --color-background: #f6f6f8;
+  --color-card-bg: #ffffff;
+  --color-text-main: #0d121b;
+  --color-text-sub: #4c669a;
+  --color-border: #e5e7eb;
+}
+
+/* Theme Tối (Dark) */
+[data-theme="dark"] {
+  --color-primary: #3b82f6;
+  --color-primary-dark: #1d4ed8;
+  --color-accent: #f59e0b;
+  --color-background: #101622;
+  --color-card-bg: #1e293b;
+  --color-text-main: #f3f4f6;
+  --color-text-sub: #9ca3af;
+  --color-border: #374151;
+}
+
+/* Theme Đỏ / Báo cáo (Red) */
+[data-theme="red"] {
+  --color-primary: #e11d48;
+  --color-primary-dark: #9f1239;
+  --color-accent: #f59e0b;
+  --color-background: #fff1f2;
+  --color-card-bg: #ffffff;
+  --color-text-main: #4c0519;
+  --color-text-sub: #9f1239;
+  --color-border: #fecdd3;
+}

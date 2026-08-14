@@ -34,7 +34,9 @@ class SurveyAdmin(admin.ModelAdmin):
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'survey', 'user', 'total_score', 'submitted_at')
+    list_display = ('id', 'survey', 'user', 'email', 'session_key', 'total_score', 'submitted_at')
+    list_filter = ('survey', 'submitted_at')
+    search_fields = ('email', 'session_key', 'user__username') # Thêm tìm kiếm theo email và session_key
     readonly_fields = ('submitted_at',)
     inlines = [AnswerInline]
 

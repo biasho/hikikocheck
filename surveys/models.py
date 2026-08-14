@@ -51,6 +51,10 @@ class SurveyResultThreshold(models.Model):
 class Submission(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    # 2. Nếu khách CHƯA đăng nhập nhưng có lưu Cookie/Session
+    session_key = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    # 3. Email do khách tự điền (hoặc lấy tự động từ tài khoản nếu đã đăng nhập)
+    email = models.EmailField(blank=True, null=True, help_text="Email của người làm khảo sát")
     total_score = models.IntegerField(default=0)
     submitted_at = models.DateTimeField(auto_now_add=True)
 

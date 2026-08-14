@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'core',     # Các module cốt lõi của hệ thống, ví dụ: User, Profile, Permission, Role
     'questions', # Quản lý Ngân hàng câu hỏi, Đáp án, Danh mục
     'surveys',   # Quản lý Bộ khảo sát, Lượt nộp, Chấm điểm
     'pages.apps.PagesConfig',

@@ -1,34 +1,72 @@
+import io
 import base64
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
-# Giả sử bạn dùng WeasyPrint hoặc xhtml2pdf để render PDF từ HTML
 from xhtml2pdf import pisa 
-import io
 
-def send_pdf_email(email_to, submission, threshold=None, chart_base64=None):
-    """
-    Hàm tạo file PDF báo cáo kết quả và gửi Email đính kèm.
+# Import model Lead và Source từ app core
+from core.models import Lead, Source
+
+def save_lead_from_survey(email_to, submission):
+    """Hàm kiểm tra và lưu Lead từ báo cáo khảo sát (Chỉ tạo mới nếu email chưa tồn tại)"""
+    if not email_to:
+        return
+
+    clean_email = email_to.strip().lower()
+
+    if Lead.objects.filter(email=clean_email).exists():
+        return  # Đã có rồi thì bỏ qua
+
+    try:
+        source_obj, _ = Source.objects.get_or_create(
+            name='survey_pdf_report',
+            defaults={'description': 'Nguồn thu thập từ việc tải báo cáo PDF khảo sát'}
+        )
+
+        Lead.objects.create(
+            email=clean_email,
+            user=submission.user if hasattr(submission, 'user') and submission.user else None,
+            source=source_obj,
+            object_id=submission.survey.id
+        )
+    except Exception as e:
+        print(f"Lỗi khi lưu Lead: {str(e)}")
+
+
+def send_pdf_email(email_to, submission, threshold=None, chart_base64=None, request=None):
+    """Hàm tạo PDF, gửi email đính kèm, cập nhật Submission và lưu Lead"""
     
-    :param email_to: Địa chỉ email người nhận
-    :param submission: Instance của Submission
-    :param threshold: Instance của SurveyResultThreshold (nếu có)
-    :param chart_base64: Chuỗi Base64 của biểu đồ Chart.js gửi từ Frontend
-    """
-    
-    # 1. Chuẩn bị context để render template HTML xuất PDF
+    if email_to:
+        clean_email = email_to.strip().lower()
+        
+        # 🎯 1. Cập nhật email vào Submission nếu trước đó chưa có
+        if not submission.email:
+            submission.email = clean_email
+            
+        # 🎯 2. Lưu session_key nếu người dùng chưa đăng nhập (lấy từ request)
+        if request and not submission.user:
+            if not request.session.session_key:
+                request.session.create()
+            submission.session_key = request.session.session_key
+            
+        # Lưu lại thay đổi vào cơ sở dữ liệu
+        submission.save()
+
+        # 🎯 3. Tự động kiểm tra và lưu Lead
+        save_lead_from_survey(clean_email, submission)
+
+    # 4. Chuẩn bị context render PDF
     context = {
         'submission': submission,
         'survey': submission.survey,
         'total_score': submission.total_score,
         'threshold': threshold,
-        'chart_base64': chart_base64,  # Dùng trực tiếp trong <img> của PDF HTML template
+        'chart_base64': chart_base64,
     }
 
-    # 2. Render HTML template dành riêng cho Báo cáo PDF
     html_content = render_to_string('surveys/pdf_report_template.html', context)
 
-    # 3. Chuyển đổi HTML sang dữ liệu PDF (ví dụ sử dụng xhtml2pdf)
     pdf_buffer = io.BytesIO()
     pisa_status = pisa.CreatePDF(html_content, dest=pdf_buffer)
 
@@ -38,14 +76,13 @@ def send_pdf_email(email_to, submission, threshold=None, chart_base64=None):
     pdf_data = pdf_buffer.getvalue()
     pdf_buffer.close()
 
-    # 4. Cấu hình Email
     subject = f"Báo cáo kết quả khảo sát: {submission.survey.title}"
     body = (
         f"Xin chào,\n\n"
         f"Cảm ơn bạn đã tham gia bài khảo sát '{submission.survey.title}'.\n"
         f"Tổng điểm của bạn: {submission.total_score} điểm.\n\n"
-        f"Vui lòng xem file PDF đính kèm để biết thêm chi tiết phân tích và lời khuyên.\n\n"
-        f"Trân trọng,\nHệ thống HikikoCheck"
+        f"Vui lòng xem file PDF đính kèm để biết thêm chi tiết.\n\n"
+        f"Trân trọng,\nHệ thống [HikikoCheck](http://127.0.0.1:8000/)"
     )
 
     email = EmailMessage(
@@ -55,9 +92,6 @@ def send_pdf_email(email_to, submission, threshold=None, chart_base64=None):
         to=[email_to],
     )
 
-    # 5. Đính kèm file PDF vào Email
     file_name = f"Bao_cao_{submission.survey.slug}_{submission.id}.pdf"
     email.attach(file_name, pdf_data, 'application/pdf')
-
-    # 6. Gửi Email
     email.send(fail_silently=False)

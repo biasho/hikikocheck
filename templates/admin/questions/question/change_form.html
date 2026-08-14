@@ -1,0 +1,15 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{# Đè lại thanh submit-row để ép hiển thị nút bấm kể cả khi mở trong Pop-up #}
+{% block submit_buttons_bottom %}
+<div class="submit-row">
+    <input type="submit" value="{% translate 'Save' %}" class="default" name="_save">
+
+    {# Ép xuất hiện nút Save and add another trong Pop-up #}
+    <input type="submit" value="{% translate 'Save and add another' %}" name="_addanother">
+
+    {# Ép xuất hiện nút Save and continue editing trong Pop-up #}
+    <input type="submit" value="{% translate 'Save and continue editing' %}" name="_continue">
+</div>
+{% endblock %}

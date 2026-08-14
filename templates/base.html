@@ -3,7 +3,7 @@
 <html lang="vi" data-theme="{% block default_theme %}light{% endblock %}">
 
 <head>
-    <!-- Script kiểm tra LocalStorage ngay lập tức để chống giật/nháy giao diện -->
+    <!-- Anti-Flicker script -->
     <script>
         (function () {
             const savedTheme = localStorage.getItem('user-custom-theme');
@@ -23,10 +23,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-    <!-- 1. Load File Themes trước -->
+    <!-- Static CSS -->
     <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
-
-    <!-- 2. Load File Static Tailwind CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
     <style>
@@ -65,6 +63,11 @@
             color: var(--color-primary, #1152d4);
             font-weight: 600;
         }
+
+        .theme-btn-active {
+            background-color: var(--color-background, #f3f4f6) !important;
+            font-weight: 700;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -84,7 +87,7 @@
     <!-- 3. FOOTER -->
     {% include 'includes/footer.html' %}
 
-    <!-- TAB SWITCHING & THEME SWITCHING SCRIPT -->
+    <!-- GLOBAL TAB SWITCHING SCRIPT -->
     <script>
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(content => {
@@ -101,17 +104,6 @@
             if (activeBtn) {
                 activeBtn.classList.add('active');
                 activeBtn.classList.remove('border-transparent');
-            }
-        }
-
-        // Hàm đổi theme khi người dùng chọn nút
-        function changeUserTheme(themeName) {
-            if (themeName === 'reset') {
-                localStorage.removeItem('user-custom-theme');
-                location.reload();
-            } else {
-                document.documentElement.setAttribute('data-theme', themeName);
-                localStorage.setItem('user-custom-theme', themeName);
             }
         }
     </script>

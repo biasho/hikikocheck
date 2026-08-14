@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'questions', # Quản lý Ngân hàng câu hỏi, Đáp án, Danh mục
+    'surveys',   # Quản lý Bộ khảo sát, Lượt nộp, Chấm điểm
     'pages.apps.PagesConfig',
     'polls.apps.PollsConfig',
     'django.contrib.admin',

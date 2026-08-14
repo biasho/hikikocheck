@@ -2,9 +2,9 @@
 <header
     class="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-card-bg)]/95 backdrop-blur-sm transition-colors">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between">
+        <div class="flex h-16 items-center justify-between gap-2">
             <!-- Logo -->
-            <a href="{% url 'pages:home' %}" class="flex items-center gap-2 text-[var(--color-primary)]">
+            <a href="{% url 'pages:home' %}" class="flex items-center gap-2 text-[var(--color-primary)] shrink-0">
                 <div class="size-8 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white">
                     <span class="material-symbols-outlined text-[20px]">shield</span>
                 </div>
@@ -12,53 +12,203 @@
             </a>
 
             <!-- Desktop Navigation -->
-            <nav class="hidden md:flex items-center gap-8">
-                <a class="text-[var(--color-primary)] font-semibold text-sm hover:opacity-80 transition-opacity"
+            <nav class="hidden md:flex items-center gap-4 lg:gap-6">
+                <a class="text-[var(--color-primary)] font-semibold text-sm hover:opacity-80 transition-opacity whitespace-nowrap"
                     href="{% url 'pages:home' %}">Trang chủ</a>
-                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
                     href="{% url 'polls:index' %}">Khảo sát Polls</a>
-                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
                     href="{% url 'pages:about' %}">Giới thiệu</a>
-                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
                     href="#">Hướng dẫn</a>
-                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors"
+                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
                     href="#">Báo cáo</a>
             </nav>
 
             <!-- Actions & Theme Switcher -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 shrink-0">
 
-                <!-- BỘ NÚT CHUYỂN THEME -->
-                <div
-                    class="flex items-center gap-1 bg-[var(--color-background)] p-1 rounded-lg border border-[var(--color-border)]">
-                    <button onclick="changeUserTheme('light')" title="Theme Sáng"
-                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-[var(--color-text-main)] transition-colors">
-                        <span class="material-symbols-outlined text-[16px]">light_mode</span>
+                <!-- DROPDOWN CHUYỂN THEME (HOVER MỞ MENU + MŨI TÊN XOAY) -->
+                <div class="relative inline-block text-left group">
+                    <!-- Nút kích hoạt: Giảm chiều cao xuống h-8 (hoặc h-[34px]) -->
+                    <button id="theme-dropdown-btn" type="button" aria-label="Đổi giao diện"
+                        class="flex items-center gap-1 h-8 px-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text-main)] group-hover:border-[var(--color-primary)] transition-colors text-xs font-semibold">
+                        <span class="material-symbols-outlined text-[18px] text-[var(--color-primary)]">palette</span>
+                        <!-- Mũi tên mỏng mảnh, tự xoay lên khi hover -->
+                        <span
+                            class="material-symbols-outlined text-[18px] text-[var(--color-text-sub)] transition-transform duration-200 group-hover:rotate-180">
+                            keyboard_arrow_down
+                        </span>
                     </button>
-                    <button onclick="changeUserTheme('dark')" title="Theme Tối"
-                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-[var(--color-text-main)] transition-colors">
-                        <span class="material-symbols-outlined text-[16px]">dark_mode</span>
-                    </button>
-                    <button onclick="changeUserTheme('red')" title="Theme Đỏ"
-                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-red-500 transition-colors">
-                        <span class="material-symbols-outlined text-[16px]">palette</span>
-                    </button>
-                    <button onclick="changeUserTheme('reset')" title="Mặc định theo trang"
-                        class="size-7 flex items-center justify-center rounded text-xs font-medium hover:bg-[var(--color-card-bg)] text-[var(--color-text-sub)] transition-colors">
-                        <span class="material-symbols-outlined text-[16px]">restart_alt</span>
-                    </button>
+
+                    <!-- Menu xổ xuống -->
+                    <div id="theme-dropdown-menu"
+                        class="hidden group-hover:block absolute left-1/2 -translate-x-1/2 pt-1 w-48 z-50">
+
+                        <!-- Nội dung menu bên trong -->
+                        <div
+                            class="rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] p-1.5 shadow-sm">
+                            <!-- Tiêu đề -->
+                            <div
+                                class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-sub)] px-3 py-1.5 mb-1 bg-[var(--color-background)] rounded-lg">
+                                Chọn giao diện
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <!-- Option Sáng -->
+                                <button onclick="changeUserTheme('light')"
+                                    class="theme-option-btn flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium text-[var(--color-text-main)] hover:bg-[var(--color-background)] hover:text-amber-600 transition-colors group/item">
+                                    <div class="flex items-center gap-2.5">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-amber-500">light_mode</span>
+                                        <span>Sáng</span>
+                                    </div>
+                                    <span
+                                        class="material-symbols-outlined text-[16px] opacity-0 group-hover/item:opacity-100 transition-opacity text-amber-500">check</span>
+                                </button>
+
+                                <!-- Option Tối -->
+                                <button onclick="changeUserTheme('dark')"
+                                    class="theme-option-btn flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium text-[var(--color-text-main)] hover:bg-[var(--color-background)] hover:text-indigo-400 transition-colors group/item">
+                                    <div class="flex items-center gap-2.5">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-indigo-400">dark_mode</span>
+                                        <span>Tối</span>
+                                    </div>
+                                    <span
+                                        class="material-symbols-outlined text-[16px] opacity-0 group-hover/item:opacity-100 transition-opacity text-indigo-400">check</span>
+                                </button>
+
+                                <!-- Option Theme Đỏ -->
+                                <button onclick="changeUserTheme('red')"
+                                    class="theme-option-btn flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium text-[var(--color-text-main)] hover:bg-[var(--color-background)] hover:text-red-500 transition-colors group/item">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="material-symbols-outlined text-[18px] text-red-500">palette</span>
+                                        <span>Theme Đỏ</span>
+                                    </div>
+                                    <span
+                                        class="material-symbols-outlined text-[16px] opacity-0 group-hover/item:opacity-100 transition-opacity text-red-500">check</span>
+                                </button>
+
+                                <div class="border-t border-[var(--color-border)] my-0.5"></div>
+
+                                <!-- Option Mặc định -->
+                                <button onclick="changeUserTheme('reset')"
+                                    class="theme-option-btn flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium text-[var(--color-text-sub)] hover:bg-[var(--color-background)] hover:text-[var(--color-text-main)] transition-colors group/item">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                                        <span>Mặc định</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Auth & Primary Buttons -->
+                <!-- Auth Buttons -->
                 <button
-                    class="hidden md:flex text-[var(--color-text-main)] text-sm font-semibold hover:text-[var(--color-primary)]">
+                    class="hidden md:flex text-[var(--color-text-main)] text-sm font-semibold hover:text-[var(--color-primary)] px-2 whitespace-nowrap">
                     Đăng nhập
                 </button>
                 <a href="{% url 'polls:index' %}"
-                    class="flex items-center justify-center rounded-lg h-9 px-4 bg-[var(--color-accent)] text-gray-900 text-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+                    class="hidden sm:flex items-center justify-center rounded-lg h-9 px-3 bg-[var(--color-accent)] text-gray-900 text-sm font-bold shadow-sm hover:opacity-90 transition-opacity whitespace-nowrap">
                     Tạo khảo sát
                 </a>
+
+                <!-- NÚT HAMBURGER (BẮT BUỘC ẨN TRÊN MD TRỞ LÊN) -->
+                <button id="mobile-menu-btn" type="button" aria-label="Toggle Menu"
+                    class="flex md:!hidden size-9 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] hover:bg-[var(--color-card-bg)] transition-colors">
+                    <span id="menu-icon" class="material-symbols-outlined text-[22px]">menu</span>
+                </button>
             </div>
         </div>
     </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu"
+        class="hidden md:!hidden border-t border-[var(--color-border)] bg-[var(--color-card-bg)] px-4 pt-3 pb-6 transition-all">
+        <nav class="flex flex-col gap-3">
+            <a class="text-[var(--color-primary)] font-semibold text-base py-1 hover:opacity-80 transition-opacity"
+                href="{% url 'pages:home' %}">Trang chủ</a>
+            <a class="text-[var(--color-text-main)] text-base font-medium py-1 hover:text-[var(--color-primary)] transition-colors"
+                href="{% url 'polls:index' %}">Khảo sát Polls</a>
+            <a class="text-[var(--color-text-main)] text-base font-medium py-1 hover:text-[var(--color-primary)] transition-colors"
+                href="{% url 'pages:about' %}">Giới thiệu</a>
+            <a class="text-[var(--color-text-main)] text-base font-medium py-1 hover:text-[var(--color-primary)] transition-colors"
+                href="#">Hướng dẫn</a>
+            <a class="text-[var(--color-text-main)] text-base font-medium py-1 hover:text-[var(--color-primary)] transition-colors"
+                href="#">Báo cáo</a>
+
+            <div class="border-t border-[var(--color-border)] my-2 pt-3 flex flex-col gap-2">
+                <button
+                    class="w-full text-left text-[var(--color-text-main)] text-base font-semibold py-2 hover:text-[var(--color-primary)]">
+                    Đăng nhập
+                </button>
+                <a href="{% url 'polls:index' %}"
+                    class="flex items-center justify-center rounded-lg h-10 w-full bg-[var(--color-accent)] text-gray-900 text-base font-bold shadow-sm hover:opacity-90 transition-opacity">
+                    Tạo khảo sát
+                </a>
+            </div>
+        </nav>
+    </div>
 </header>
+
+<!-- LOGIC XỬ LÝ THEME & MOBILE MENU -->
+<script>
+    // Cập nhật giao diện active cho nút Theme Metro
+    function updateThemeButtonsUI(activeTheme) {
+        const themeButtons = document.querySelectorAll('[onclick^="changeUserTheme"]');
+        themeButtons.forEach(btn => {
+            btn.classList.remove('theme-btn-active', 'border-l-4', 'border-blue-500', 'bg-[var(--color-background)]');
+            if (btn.getAttribute('onclick').includes(`'${activeTheme}'`)) {
+                btn.classList.add('theme-btn-active', 'border-l-4', 'border-blue-500', 'bg-[var(--color-background)]');
+            }
+        });
+    }
+
+    // Đổi Theme & Lưu LocalStorage
+    function changeUserTheme(themeName) {
+        if (themeName === 'reset') {
+            localStorage.removeItem('user-custom-theme');
+            location.reload();
+        } else {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('user-custom-theme', themeName);
+            updateThemeButtonsUI(themeName);
+        }
+
+        const themeMenu = document.getElementById('theme-dropdown-menu');
+        if (themeMenu) themeMenu.classList.add('hidden');
+    }
+
+    // Tự động khởi tạo khi load xong Header
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        updateThemeButtonsUI(currentTheme);
+
+        document.addEventListener('click', function (e) {
+            // 1. Toggle Dropdown Theme Metro
+            const themeBtn = e.target.closest('#theme-dropdown-btn');
+            const themeMenu = document.getElementById('theme-dropdown-menu');
+            if (themeBtn && themeMenu) {
+                themeMenu.classList.toggle('hidden');
+            } else if (themeMenu && !e.target.closest('#theme-dropdown-menu')) {
+                themeMenu.classList.add('hidden');
+            }
+
+            // 2. Toggle Mobile Menu
+            const mobileBtn = e.target.closest('#mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileBtn && mobileMenu) {
+                mobileMenu.classList.toggle('hidden');
+                const icon = mobileBtn.querySelector('.material-symbols-outlined') || mobileBtn.querySelector('#menu-icon');
+                if (icon) {
+                    icon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
+                }
+            } else if (mobileMenu && !mobileMenu.classList.contains('hidden') && !e.target.closest('#mobile-menu')) {
+                mobileMenu.classList.add('hidden');
+                const icon = document.querySelector('#mobile-menu-btn .material-symbols-outlined') || document.querySelector('#menu-icon');
+                if (icon) icon.textContent = 'menu';
+            }
+        });
+    });
+</script>

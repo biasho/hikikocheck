@@ -22,4 +22,5 @@ urlpatterns = [
     path('polls/', include('polls.urls')),
     # 1. Trang chủ toàn trang và các trang tĩnh
     path('', include('pages.urls')),
+    path('surveys/', include('surveys.urls')), # Khai báo đường dẫn survey
 ]

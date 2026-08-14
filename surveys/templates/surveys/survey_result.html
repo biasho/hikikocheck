@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block default_theme %}light{% endblock %}
+{% block title %}Kết quả - {{ survey.title }} - HikikoCheck System{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
+    <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
+    <span class="mx-2">/</span>
+    <span class="text-[var(--color-text-main)] font-medium truncate max-w-xs">{{ survey.title }}</span>
+    <span class="mx-2">/</span>
+    <span class="text-[var(--color-text-sub)]">Kết quả</span>
+</nav>
+
+<div class="max-w-2xl mx-auto">
+    <!-- Card Kết Quả -->
+    <div
+        class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 md:p-10 mb-6 text-center">
+
+        <!-- Icon Thành công -->
+        <div class="size-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="material-symbols-outlined text-5xl">task_alt</span>
+        </div>
+
+        <h1 class="text-2xl md:text-3xl font-black text-[var(--color-text-main)] mb-2">
+            Cảm ơn bạn đã hoàn thành!
+        </h1>
+        <p class="text-[var(--color-text-sub)] text-sm mb-6">
+            Bài khảo sát: <strong class="text-[var(--color-text-main)]">{{ survey.title }}</strong>
+        </p>
+
+        <!-- Thống kê Tổng Điểm -->
+        <div class="p-6 rounded-2xl bg-[var(--color-background)] border border-[var(--color-border)] mb-6">
+            <span class="block text-xs font-bold text-[var(--color-text-sub)] uppercase tracking-wider mb-1">
+                Tổng điểm đạt được
+            </span>
+            <span class="text-4xl font-black text-[var(--color-primary)]">
+                {{ total_score }} <span class="text-lg font-bold text-[var(--color-text-sub)]">điểm</span>
+            </span>
+        </div>
+
+        <!-- Khối Kết Luận & Lời Khuyên theo Ngưỡng Điểm -->
+        {% if threshold %}
+        <div class="text-left p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20 mb-6 space-y-4">
+            <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-base">
+                <span class="material-symbols-outlined">analytics</span>
+                <span>Mức độ: {{ threshold.title }}</span>
+            </div>
+
+            {% if threshold.description %}
+            <div>
+                <h4 class="text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Nhận xét chi tiết:</h4>
+                <p class="text-sm text-[var(--color-text-main)] leading-relaxed">{{ threshold.description }}</p>
+            </div>
+            {% endif %}
+
+            {% if threshold.recommendation %}
+            <div class="pt-3 border-t border-amber-500/10">
+                <h4 class="text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Lời khuyên dành cho bạn:</h4>
+                <p class="text-sm text-[var(--color-text-main)] leading-relaxed">{{ threshold.recommendation }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Nút Điều Hướng -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="{% url 'pages:home' %}"
+                class="w-full sm:w-auto inline-flex items-center justify-center h-12 px-8 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 transition-all">
+                <span class="material-symbols-outlined mr-2">home</span>
+                Trở về trang chủ
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Include Modal Popup -->
+{% include 'surveys/email_modal.html' with threshold=threshold %}
+
+{% endblock %}

@@ -3,19 +3,20 @@
 <html lang="vi" data-theme="{% block default_theme %}light{% endblock %}">
 
 <head>
-    <!-- Anti-Flicker script -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}HikikoCheck System{% endblock %}</title>
+
+    <!-- 💥 ANTI-FLICKER SCRIPT (ĐẶT NGAY TRÊN CÙNG ĐỂ CHẠY TRƯỚC TẤT CẢ) -->
     <script>
         (function () {
             const savedTheme = localStorage.getItem('user-custom-theme');
             if (savedTheme) {
+                // Ép data-theme theo Theme người dùng đã chọn ngay lập tức
                 document.documentElement.setAttribute('data-theme', savedTheme);
             }
         })();
     </script>
-
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}HikikoCheck System{% endblock %}</title>
 
     <!-- Google Fonts & Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
@@ -28,6 +29,12 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
     <style>
+        /* CSS hỗ trợ Anti-Flicker cho màu nền HTML gốc */
+        html {
+            background-color: var(--color-background, #ffffff);
+            color: var(--color-text-main, #0d121b);
+        }
+
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -70,6 +77,11 @@
         }
     </style>
     {% block extra_css %}{% endblock %}
+    <!-- Chart.js Core -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Plugin Annotation (Nếu muốn vẽ đường gạch đứt mốc điểm người dùng) -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"></script>
 </head>
 
 <body

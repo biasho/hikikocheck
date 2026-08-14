@@ -5,8 +5,14 @@ from . import views
 app_name = 'surveys'
 
 urlpatterns = [
-    # Đường dẫn ví dụ: /surveys/1/
-    path('', views.survey_list, name='survey_list'),  # URL: /surveys/
-    path('<int:survey_id>/', views.survey_detail, name='survey_detail'),
-    path('<int:survey_id>/submit/', views.submit_survey, name='submit_survey'),
+    # Danh sách khảo sát: /surveys/
+    path('', views.survey_list, name='survey_list'),
+    
+    # Trang chi tiết khảo sát: /surveys/danh-gia-suc-khoe-102/
+    path('<slug:slug>/', views.survey_detail, name='survey_detail'),
+    
+    # Nộp bài khảo sát: /surveys/danh-gia-suc-khoe-102/submit/
+    path('<slug:slug>/submit/', views.submit_survey, name='submit_survey'),
+    # URL AJAX gửi Email
+    path('send-email-result/', views.send_email_result, name='send_email_result'),
 ]

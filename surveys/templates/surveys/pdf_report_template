@@ -1,0 +1,7 @@
+{% if chart_base64 %}
+<div style="text-align: center; margin-top: 20px;">
+    <h3>Biểu đồ phân tích kết quả</h3>
+    <!-- Thẻ img nhận trực tiếp data URI -->
+    <img src="{{ chart_base64 }}" style="max-width: 100%; height: auto;" />
+</div>
+{% endif %}

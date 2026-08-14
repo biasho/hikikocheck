@@ -41,6 +41,20 @@
             </span>
         </div>
 
+        <!-- 📊 KHUNG HIỂN THỊ BIỂU ĐỒ CHART.JS (NẾT CĂNG - TƯƠNG TÁC - ĐỒNG BỘ THEME) -->
+        {% if chart_data_json %}
+        <div class="p-6 rounded-2xl bg-[var(--color-card-bg)] border border-[var(--color-border)] mb-6 shadow-sm">
+            <div class="flex items-center justify-center gap-2 text-[var(--color-primary)] font-bold text-base mb-4">
+                <span class="material-symbols-outlined">bar_chart</span>
+                <span>Biểu đồ phân tích kết quả</span>
+            </div>
+
+            <div class="relative w-full max-w-lg mx-auto h-72">
+                <canvas id="resultChart"></canvas>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Khối Kết Luận & Lời Khuyên theo Ngưỡng Điểm -->
         {% if threshold %}
         <div class="text-left p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20 mb-6 space-y-4">
@@ -52,32 +66,158 @@
             {% if threshold.description %}
             <div>
                 <h4 class="text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Nhận xét chi tiết:</h4>
-                <p class="text-sm text-[var(--color-text-main)] leading-relaxed">{{ threshold.description }}</p>
+                <p class="text-sm text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">
+                    {{ threshold.description }}</p>
             </div>
             {% endif %}
 
             {% if threshold.recommendation %}
             <div class="pt-3 border-t border-amber-500/10">
                 <h4 class="text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Lời khuyên dành cho bạn:</h4>
-                <p class="text-sm text-[var(--color-text-main)] leading-relaxed">{{ threshold.recommendation }}</p>
+                <p class="text-sm text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">{{
+                    threshold.recommendation }}</p>
             </div>
             {% endif %}
         </div>
         {% endif %}
 
-        <!-- Nút Điều Hướng -->
+        <!-- Nút Điều Hướng & Gửi Mail -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="{% url 'pages:home' %}"
-                class="w-full sm:w-auto inline-flex items-center justify-center h-12 px-8 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 transition-all">
+                class="w-full sm:w-auto flex-1 inline-flex items-center justify-center h-12 px-6 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] font-bold text-sm hover:bg-[var(--color-background)] transition-all">
                 <span class="material-symbols-outlined mr-2">home</span>
                 Trở về trang chủ
             </a>
+
+            <!-- Nút Mở Modal Nhận Email -->
+            <button type="button" onclick="openEmailModal()"
+                class="w-full sm:w-auto flex-1 inline-flex items-center justify-center h-12 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
+                <span class="material-symbols-outlined mr-2">picture_as_pdf</span>
+                Nhận Báo Cáo PDF
+            </button>
         </div>
 
     </div>
 </div>
 
-<!-- Include Modal Popup -->
-{% include 'surveys/email_modal.html' with threshold=threshold %}
+<!-- Include Modal Email -->
+{% include 'surveys/email_modal.html' %}
+
+<!-- SCRIPT KHỞI TẠO CHART.JS & ĐỒNG BỘ THEME -->
+{% if chart_data_json %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Đăng ký plugin Annotation nếu khả dụng
+        if (window['chartjs-plugin-annotation']) {
+            Chart.register(window['chartjs-plugin-annotation']);
+        }
+
+        const canvas = document.getElementById('resultChart');
+        if (!canvas) return;
+
+        const rawData = JSON.parse('{{ chart_data_json|escapejs }}');
+        const ctx = canvas.getContext('2d');
+
+        // 2. Lấy biến màu CSS từ Theme
+        function getThemeColor(varName, fallback) {
+            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+        }
+
+        function buildChartConfig() {
+            const colorPrimary = getThemeColor('--color-primary', '#1152D4');
+            const colorTextMain = getThemeColor('--color-text-main', '#0D121B');
+            const colorTextSub = getThemeColor('--color-text-sub', '#4C669A');
+            const colorBorder = getThemeColor('--color-border', '#E5E7EB');
+            const colorUserLine = getThemeColor('--color-user-line', '#F43F5E');
+
+            // Màu cột phụ hài hòa theo Theme
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            let otherBarColor = '#CBD5E1';
+            if (currentTheme === 'red') otherBarColor = '#FECDD3';
+            if (currentTheme === 'dark') otherBarColor = '#374151';
+
+            const bgColors = rawData.scores.map((_, idx) =>
+                idx === rawData.matched_index ? colorPrimary : otherBarColor
+            );
+
+            return {
+                type: 'bar',
+                data: {
+                    labels: rawData.labels,
+                    datasets: [{
+                        data: rawData.scores,
+                        backgroundColor: bgColors,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barThickness: 24, // Cột gọn gàng, thanh mảnh
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 500 },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `Thang điểm: ${context.raw}đ`
+                            }
+                        },
+                        // Vẽ đường gạch đứt mốc điểm người dùng
+                        annotation: {
+                            annotations: {
+                                userScoreLine: {
+                                    type: 'line',
+                                    yMin: rawData.total_score,
+                                    yMax: rawData.total_score,
+                                    borderColor: colorUserLine,
+                                    borderWidth: 2,
+                                    borderDash: [6, 4],
+                                    label: {
+                                        display: true,
+                                        content: `Điểm của bạn: ${rawData.total_score}đ`,
+                                        position: 'start',
+                                        backgroundColor: colorUserLine,
+                                        color: '#ffffff',
+                                        font: { size: 10, weight: 'bold' },
+                                        padding: 4
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: colorTextMain, font: { weight: 'bold', size: 12 } }
+                        },
+                        y: {
+                            grid: { color: colorBorder, strokeDash: [2, 2] },
+                            ticks: { color: colorTextSub, font: { size: 11 } },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+        }
+
+        // 3. Khởi tạo Biểu đồ
+        window.resultChartInstance = new Chart(ctx, buildChartConfig());
+
+        // 4. Lắng nghe sự thay đổi Theme để đổi màu tức thì
+        const observer = new MutationObserver(() => {
+            if (window.resultChartInstance) {
+                window.resultChartInstance.destroy();
+            }
+            window.resultChartInstance = new Chart(ctx, buildChartConfig());
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme', 'class']
+        });
+    });
+</script>
+{% endif %}
 
 {% endblock %}

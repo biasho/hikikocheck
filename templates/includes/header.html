@@ -28,13 +28,11 @@
             <!-- Actions & Theme Switcher -->
             <div class="flex items-center gap-2 shrink-0">
 
-                <!-- DROPDOWN CHUYỂN THEME (HOVER MỞ MENU + MŨI TÊN XOAY) -->
+                <!-- DROPDOWN CHUYỂN THEME -->
                 <div class="relative inline-block text-left group">
-                    <!-- Nút kích hoạt: Giảm chiều cao xuống h-8 (hoặc h-[34px]) -->
                     <button id="theme-dropdown-btn" type="button" aria-label="Đổi giao diện"
                         class="flex items-center gap-1 h-8 px-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text-main)] group-hover:border-[var(--color-primary)] transition-colors text-xs font-semibold">
                         <span class="material-symbols-outlined text-[18px] text-[var(--color-primary)]">palette</span>
-                        <!-- Mũi tên mỏng mảnh, tự xoay lên khi hover -->
                         <span
                             class="material-symbols-outlined text-[18px] text-[var(--color-text-sub)] transition-transform duration-200 group-hover:rotate-180">
                             keyboard_arrow_down
@@ -45,10 +43,8 @@
                     <div id="theme-dropdown-menu"
                         class="hidden group-hover:block absolute left-1/2 -translate-x-1/2 pt-1 w-48 z-50">
 
-                        <!-- Nội dung menu bên trong -->
                         <div
                             class="rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] p-1.5 shadow-sm">
-                            <!-- Tiêu đề -->
                             <div
                                 class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-sub)] px-3 py-1.5 mb-1 bg-[var(--color-background)] rounded-lg">
                                 Chọn giao diện
@@ -104,6 +100,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Auth Buttons -->
                 <button
                     class="hidden md:flex text-[var(--color-text-main)] text-sm font-semibold hover:text-[var(--color-primary)] px-2 whitespace-nowrap">
@@ -114,7 +111,7 @@
                     Tạo khảo sát
                 </a>
 
-                <!-- NÚT HAMBURGER (BẮT BUỘC ẨN TRÊN MD TRỞ LÊN) -->
+                <!-- NÚT HAMBURGER MOBILE -->
                 <button id="mobile-menu-btn" type="button" aria-label="Toggle Menu"
                     class="flex md:!hidden size-9 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] hover:bg-[var(--color-card-bg)] transition-colors">
                     <span id="menu-icon" class="material-symbols-outlined text-[22px]">menu</span>
@@ -152,9 +149,36 @@
     </div>
 </header>
 
-<!-- LOGIC XỬ LÝ THEME & MOBILE MENU -->
+<!-- LOGIC XỬ LÝ THEME DÙNG CHUNG CHO CẢ WEB & DỰNG BIỂU ĐỒ -->
 <script>
-    // Cập nhật giao diện active cho nút Theme Metro
+    // 1. Hàm hỗ trợ làm việc với Cookie
+    function setCookie(name, value, days = 365) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+    }
+
+    function deleteCookie(name) {
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax`;
+    }
+
+    // 2. Tự động bốc Palette màu CSS hiện tại và lưu vào Cookie 'chart_colors' cho Backend
+    function updateChartColorsCookie() {
+        setTimeout(() => {
+            const computedStyle = getComputedStyle(document.documentElement);
+            const themeColors = {
+                primary: computedStyle.getPropertyValue('--color-primary').trim() || '#1152D4',
+                text_main: computedStyle.getPropertyValue('--color-text-main').trim() || '#0D121B',
+                text_sub: computedStyle.getPropertyValue('--color-text-sub').trim() || '#4C669A',
+                border: computedStyle.getPropertyValue('--color-border').trim() || '#E5E7EB',
+                other_bar: computedStyle.getPropertyValue('--color-other-bar').trim() || '#CBD5E1',
+                user_line: computedStyle.getPropertyValue('--color-user-line').trim() || '#F43F5E'
+            };
+            setCookie('chart_colors', encodeURIComponent(JSON.stringify(themeColors)));
+        }, 50);
+    }
+
+    // 3. Đổi nút Active trên UI Menu
     function updateThemeButtonsUI(activeTheme) {
         const themeButtons = document.querySelectorAll('[onclick^="changeUserTheme"]');
         themeButtons.forEach(btn => {
@@ -165,28 +189,41 @@
         });
     }
 
-    // Đổi Theme & Lưu LocalStorage
+    // 4. Hàm đổi Theme người dùng click
     function changeUserTheme(themeName) {
         if (themeName === 'reset') {
             localStorage.removeItem('user-custom-theme');
+            deleteCookie('theme');
+            deleteCookie('chart_colors');
+            document.documentElement.removeAttribute('data-theme');
             location.reload();
         } else {
             document.documentElement.setAttribute('data-theme', themeName);
             localStorage.setItem('user-custom-theme', themeName);
+            setCookie('theme', themeName);
+
             updateThemeButtonsUI(themeName);
+            updateChartColorsCookie(); // Cập nhật ngay palette màu cho Cookie
         }
 
         const themeMenu = document.getElementById('theme-dropdown-menu');
         if (themeMenu) themeMenu.classList.add('hidden');
     }
 
-    // Tự động khởi tạo khi load xong Header
+    // 5. Tự động chạy khi load xong bất kỳ trang nào
     document.addEventListener('DOMContentLoaded', function () {
+        const storedTheme = localStorage.getItem('user-custom-theme');
+        if (storedTheme) {
+            document.documentElement.setAttribute('data-theme', storedTheme);
+            setCookie('theme', storedTheme);
+        }
+
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         updateThemeButtonsUI(currentTheme);
+        updateChartColorsCookie(); // Cập nhật Cookie mã màu để sẵn sàng nộp khảo sát vẽ biểu đồ
 
+        // Event listener click dropdown & mobile menu
         document.addEventListener('click', function (e) {
-            // 1. Toggle Dropdown Theme Metro
             const themeBtn = e.target.closest('#theme-dropdown-btn');
             const themeMenu = document.getElementById('theme-dropdown-menu');
             if (themeBtn && themeMenu) {
@@ -195,15 +232,12 @@
                 themeMenu.classList.add('hidden');
             }
 
-            // 2. Toggle Mobile Menu
             const mobileBtn = e.target.closest('#mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             if (mobileBtn && mobileMenu) {
                 mobileMenu.classList.toggle('hidden');
                 const icon = mobileBtn.querySelector('.material-symbols-outlined') || mobileBtn.querySelector('#menu-icon');
-                if (icon) {
-                    icon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
-                }
+                if (icon) icon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
             } else if (mobileMenu && !mobileMenu.classList.contains('hidden') && !e.target.closest('#mobile-menu')) {
                 mobileMenu.classList.add('hidden');
                 const icon = document.querySelector('#mobile-menu-btn .material-symbols-outlined') || document.querySelector('#menu-icon');

@@ -55,8 +55,8 @@
             nộp bài!</p>
     </div>
 
-    <!-- Form Khảo Sát (Đã cập nhật action và onsubmit) -->
-    <form id="survey-form" method="POST" action="{% url 'surveys:submit_survey' survey.id %}"
+    <!-- Form Khảo Sát (Đã cập nhật sang survey.slug) -->
+    <form id="survey-form" method="POST" action="{% url 'surveys:submit_survey' survey.slug %}"
         onsubmit="return handleFormSubmit(event)">
         {% csrf_token %}
 
@@ -259,7 +259,6 @@
         }
     }
 
-    // Bổ sung xử lý validate trước khi nộp bài
     function handleFormSubmit(event) {
         if (!validateCurrentStep()) {
             event.preventDefault();

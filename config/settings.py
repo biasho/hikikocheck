@@ -141,3 +141,4 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+DEFAULT_FROM_EMAIL = 'HikikoCheck System <noreply@hikikocheck.com>'

@@ -1,16 +1,33 @@
 # surveys/models.py
 from django.db import models
 from django.contrib.auth.models import User
+from slugify import slugify  # Sử dụng python-slugify hỗ trợ Tiếng Việt
 from questions.models import Question, Option, Category  # Import từ app questions
 
 # 1. Bộ khảo sát
 class Survey(models.Model):
     title = models.CharField(max_length=255)
+    # Bỏ unique=True vì ID ở đuôi đã đảm bảo tính duy nhất
+    slug = models.SlugField(max_length=255, blank=True, null=True) 
     description = models.TextField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     questions = models.ManyToManyField(Question, related_name='surveys')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        # 1. Lưu trước để có self.pk (ID) nếu là đối tượng mới
+        super().save(*args, **kwargs)
+
+        # 2. Tạo hoặc cập nhật slug dạng: ten-khao-sat-ID
+        base_slug = slugify(self.title) if self.title else 'survey'
+        expected_slug = f"{base_slug}-{self.pk}"
+
+        if is_new or self.slug != expected_slug:
+            self.slug = expected_slug
+            # Chỉ cập nhật riêng trường slug để tối ưu
+            super().save(update_fields=['slug'])
 
     def __str__(self):
         return self.title

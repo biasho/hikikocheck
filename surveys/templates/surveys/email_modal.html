@@ -1,6 +1,6 @@
 {% load static %}
 
-<!-- ================= POPUP THU THẬP EMAIL ================= -->
+<!-- ================= POPUP THU THẬP EMAIL BÁO CÁO ================= -->
 <div id="emailModal"
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none">
 
@@ -23,34 +23,36 @@
             Nhận phân tích chuyên sâu
         </h3>
 
-        <!-- Thông điệp -->
+        <!-- Thông điệp kết quả -->
         <p class="text-sm text-[var(--color-text-sub)] mb-6 leading-relaxed">
             Kết quả của bạn thuộc nhóm
             <strong class="text-[var(--color-primary)]">
-                [{% if threshold %}{{threshold.title}}{% else %} Trung bình{% endif %}]
+                [{% if threshold %}{{ threshold.title }}{% else %}Trung bình{% endif %}]
             </strong>.
-            Nhập email của bạn để nhận báo cáo chi tiết và lời khuyên từ chuyên gia, giúp bạn cải thiện kết quả trong
-            tương lai.
-            {% if threshold and threshold.title == "Xuất sắc" %}
-            <strong class="text-emerald-500">
-                [Xuất sắc]
-            </strong>.
-            {% endif %}
+            Nhập email của bạn để nhận báo cáo PDF chi tiết đính kèm biểu đồ và lời khuyên từ chuyên gia.
         </p>
 
-        <!-- Form đăng ký -->
-        <form method="POST" action="" class="space-y-4">
+        <!-- Form gửi email bằng AJAX -->
+        <form id="send-email-form" onsubmit="sendResultEmail(event)" class="space-y-4">
             {% csrf_token %}
+            <input type="hidden" name="submission_id" value="{{ submission.id }}">
+
+            <!-- INPUT ẨN CHỨA DỮ LIỆU BẢNG VẼ/BIỂU ĐỒ CHART.JS BASE64 -->
+            <input type="hidden" id="chart_base64_input" name="chart_base64" value="">
+
             <div>
                 <input type="email" name="email" required placeholder="Nhập địa chỉ email của bạn..."
                     class="w-full h-12 px-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all">
             </div>
 
-            <!-- CTA chính -->
-            <button type="submit"
+            <!-- Khối hiển thị thông báo trạng thái -->
+            <div id="email-status-msg" class="hidden text-sm font-semibold text-center py-1"></div>
+
+            <!-- Nút gửi chính -->
+            <button type="submit" id="btn-send-email"
                 class="w-full h-12 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
                 <span class="material-symbols-outlined text-lg">send</span>
-                <span>Nhận báo cáo miễn phí</span>
+                <span>Nhận báo cáo PDF miễn phí</span>
             </button>
         </form>
 
@@ -64,9 +66,8 @@
     </div>
 </div>
 
-<!-- JavaScript Điều Khiển Popup -->
 <script>
-    function showEmailModal() {
+    function openEmailModal() {
         const modal = document.getElementById('emailModal');
         const content = document.getElementById('modalContent');
         if (!modal || !content) return;
@@ -90,8 +91,9 @@
         content.classList.add('scale-95');
     }
 
-    function initEmailModal() {
-        setTimeout(showEmailModal, 500);
+    // TỰ ĐỘNG BẬT POPUP KHI TRANG KHẢO SÁT/KẾT QUẢ VỪA TẢI XONG
+    function initAutoShowModal() {
+        setTimeout(openEmailModal, 500);
 
         const emailModal = document.getElementById('emailModal');
         if (emailModal) {
@@ -104,8 +106,67 @@
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initEmailModal);
+        document.addEventListener('DOMContentLoaded', initAutoShowModal);
     } else {
-        initEmailModal();
+        initAutoShowModal();
+    }
+
+    // Hàm gửi AJAX kèm dữ liệu Chart.js Base64
+    async function sendResultEmail(event) {
+        event.preventDefault();
+        const form = event.target;
+        const btn = document.getElementById('btn-send-email');
+        const statusMsg = document.getElementById('email-status-msg');
+
+        // 1. TỰ ĐỘNG TRÍCH XUẤT ẢNH CHART.JS SANG BASE64 KHI SUBMIT
+        const chartInput = document.getElementById('chart_base64_input');
+
+        if (window.resultChartInstance) {
+            // Trường hợp 1: Xuất từ instance Chart.js
+            chartInput.value = window.resultChartInstance.toBase64Image('image/png', 1.0);
+        } else {
+            // Trường hợp 2: Lấy trực tiếp từ canvas element
+            const chartCanvas = document.getElementById('resultChart');
+            if (chartCanvas) {
+                chartInput.value = chartCanvas.toDataURL('image/png');
+            }
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span><span>Đang gửi báo cáo...</span>';
+        statusMsg.classList.add('hidden');
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch("{% url 'surveys:send_email_result' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            statusMsg.classList.remove('hidden');
+            if (data.success) {
+                statusMsg.className = 'text-center text-sm font-semibold text-emerald-600 dark:text-emerald-400 py-1';
+                statusMsg.innerText = data.message || 'Đã gửi báo cáo thành công!';
+                setTimeout(() => {
+                    closeEmailModal();
+                }, 2000);
+            } else {
+                statusMsg.className = 'text-center text-sm font-semibold text-rose-600 dark:text-rose-400 py-1';
+                statusMsg.innerText = data.message || 'Có lỗi xảy ra, vui lòng thử lại!';
+            }
+        } catch (error) {
+            statusMsg.classList.remove('hidden');
+            statusMsg.className = 'text-center text-sm font-semibold text-rose-600 dark:text-rose-400 py-1';
+            statusMsg.innerText = 'Không thể kết nối tới máy chủ!';
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg">send</span><span>Nhận báo cáo PDF miễn phí</span>';
+        }
     }
 </script>

@@ -32,19 +32,30 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'core',     # Các module cốt lõi của hệ thống, ví dụ: User, Profile, Permission, Role
-    'questions', # Quản lý Ngân hàng câu hỏi, Đáp án, Danh mục
-    'surveys',   # Quản lý Bộ khảo sát, Lượt nộp, Chấm điểm
-    'pages.apps.PagesConfig',
-    'polls.apps.PollsConfig',
+   
+   
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', # Bắt buộc cho allauth
+    # 1. Khai báo các app của Allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    
+    # 2. Khai báo nhà cung cấp Social Auth (Ví dụ Google, Facebook)
+    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.facebook',
+    'users', # Khai báo app users
+    'core',     # Các module cốt lõi của hệ thống, ví dụ: User, Profile, Permission, Role
+    'questions', # Quản lý Ngân hàng câu hỏi, Đáp án, Danh mục
+    'surveys',   # Quản lý Bộ khảo sát, Lượt nộp, Chấm điểm
+    'pages.apps.PagesConfig',
+    'polls.apps.PollsConfig',
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Thêm dòng Middleware của Allauth bên dưới
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -133,7 +146,32 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+# Đường dẫn URL để truy cập các tệp media từ trình duyệt (ví dụ: http://127.0.0.1:8000/media/avatars/abc.jpg)
+MEDIA_URL = '/media/'
 
+# Thư mục thực tế trên ổ đĩa lưu trữ các tệp tải lên
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTHENTICATION_BACKENDS = [
+    # Mặc định của Django
+    'django.contrib.auth.backends.ModelBackend',
+    
+    # Sửa 'auth_backend' thành 'auth_backends' (có chữ 's')
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+# Cấu hình URL điều hướng
+LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'pages:home'
+LOGOUT_REDIRECT_URL = 'users:login'
+
+# Cấu hình bổ sung riêng cho django-allauth
+SITE_ID = 1
+
+# Phương thức đăng nhập (cho phép dùng tên đăng nhập hoặc email)
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+
+# Các trường bắt buộc khi đăng ký tài khoản
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 

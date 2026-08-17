@@ -1,0 +1,416 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block default_theme %}light{% endblock %}
+{% block title %}Giới thiệu & Cẩm nang - Reconnect 360°{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-5xl mx-auto px-4 py-6">
+
+    <!-- Breadcrumb -->
+    <nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
+        <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
+        <span class="mx-2">/</span>
+        <span class="text-[var(--color-text-main)] font-medium">Giới thiệu & Cẩm nang khuyến nghị</span>
+    </nav>
+
+    <div class="w-full space-y-12 mb-12">
+
+        <!-- Hero Section: Lời Giới Thiệu -->
+        <section
+            class="w-full bg-[var(--color-card-bg)] rounded-2xl p-6 md:p-10 shadow-sm ring-1 ring-[var(--color-border)] relative overflow-hidden">
+            <div class="max-w-3xl">
+                <span
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-[var(--color-primary)]/10 text-[var(--color-primary)] mb-4">
+                    <span class="material-symbols-outlined text-sm">info</span>
+                    Về hệ thống Reconnect 360°
+                </span>
+                <h1 class="text-3xl md:text-4xl font-black text-[var(--color-text-main)] mb-4 leading-tight">
+                    Kết nối bản thân • Kết nối mọi người • Kết nối tương lai
+                </h1>
+                <p class="text-[var(--color-text-sub)] leading-relaxed text-base mb-6">
+                    <strong>Reconnect 360°</strong> là nền tảng hỗ trợ học sinh THCS tự đánh giá và nhìn nhận mức độ kết
+                    nối xã hội thông qua các câu hỏi khảo sát về giao tiếp, hoạt động tập thể và nguyện vọng cá nhân.
+                </p>
+                <div
+                    class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-xl shrink-0 mt-0.5">warning</span>
+                    <div>
+                        <strong>Lưu ý quan trọng:</strong> Kết quả khảo sát không phải là chẩn đoán y khoa hoặc tâm lý.
+                        Hệ thống chỉ cung cấp thông tin tham khảo giúp học sinh hiểu bản thân hơn và định hướng các bước
+                        kết nối phù hợp.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thang Điểm Đánh Giá (Thêm mt-8 mb-10 để tách rời 2 phần trên dưới) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-8 mb-10">
+            <!-- Chỉ số 1 -->
+            <div
+                class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] shadow-sm hover:shadow-md transition-all">
+                <div class="size-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl font-bold">bar_chart</span>
+                </div>
+                <h3 class="text-lg font-bold text-[var(--color-text-main)] mb-1">Chỉ số 1: Mức độ khó khăn</h3>
+                <span
+                    class="inline-block text-xs font-extrabold px-2.5 py-1 rounded-md bg-sky-50 text-sky-600 border border-sky-200/60 mb-3">
+                    Thang điểm: 0 – 72 điểm
+                </span>
+                <p class="text-sm text-[var(--color-text-sub)] leading-relaxed">
+                    Điểm càng cao cho thấy học sinh đang gặp nhiều khó khăn hơn trong việc duy trì kết nối với gia đình,
+                    bạn bè và môi trường xung quanh.
+                </p>
+            </div>
+
+            <!-- Chỉ số 2 -->
+            <div
+                class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] shadow-sm hover:shadow-md transition-all">
+                <div
+                    class="size-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl font-bold">favorite</span>
+                </div>
+                <h3 class="text-lg font-bold text-[var(--color-text-main)] mb-1">Chỉ số 2: Mức độ sẵn sàng tái kết nối
+                </h3>
+                <span
+                    class="inline-block text-xs font-extrabold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-600 border border-emerald-200/60 mb-3">
+                    Thang điểm: 0 – 24 điểm
+                </span>
+                <p class="text-sm text-[var(--color-text-sub)] leading-relaxed">
+                    Điểm càng cao cho thấy học sinh càng mong muốn chủ động cải thiện hoặc mở rộng các mối quan hệ xã
+                    hội của mình.
+                </p>
+            </div>
+        </section>
+
+        <!-- PHẦN I: Khuyến nghị theo Chỉ số Khó khăn (Đã thêm mt-12 để đẩy xa khỏi khối điểm bên trên) -->
+        <section class="mt-12 space-y-6 w-full">
+            <div class="border-b border-[var(--color-border)] pb-4">
+                <h2 class="text-2xl font-black text-[var(--color-text-main)] flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[var(--color-primary)]">tune</span>
+                    Khuyến nghị theo Mức độ Khó khăn trong Kết nối
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <!-- Mức 1 -->
+                <div class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-full">Mức 1
+                            (0 – 18 điểm)</span>
+                        <span class="material-symbols-outlined text-emerald-500">sentiment_very_satisfied</span>
+                    </div>
+                    <h3 class="font-bold text-[var(--color-text-main)]">Kết nối xã hội tương đối tốt</h3>
+                    <p class="text-xs text-[var(--color-text-sub)] italic">"Em đang duy trì được nhiều mối quan hệ và
+                        hoạt động xã hội tích cực."</p>
+
+                    <div class="text-xs space-y-2 text-[var(--color-text-main)]">
+                        <strong class="block text-[var(--color-text-sub)] uppercase">Gợi ý hành động:</strong>
+                        <ul class="space-y-1 list-disc list-inside text-[var(--color-text-sub)]">
+                            <li>Tiếp tục tham gia các hoạt động lớp và nhà trường.</li>
+                            <li>Trò chuyện với gia đình mỗi ngày.</li>
+                            <li>Chủ động quan tâm tới những bạn còn ít tương tác.</li>
+                            <li>Giữ cân bằng học tập và giao tiếp trực tiếp.</li>
+                        </ul>
+                    </div>
+
+                    <div class="pt-2 border-t border-[var(--color-border)]">
+                        <strong class="block text-xs text-[var(--color-text-sub)] uppercase mb-1">Hoạt động phù
+                            hợp:</strong>
+                        <p class="text-xs text-[var(--color-primary)] font-medium">Nhóm trưởng học tập, CLB sở thích,
+                            Văn nghệ/Thể thao, Chương trình "Bạn đồng hành".</p>
+                    </div>
+                </div>
+
+                <!-- Mức 2 -->
+                <div class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-blue-600 bg-blue-500/10 px-3 py-1 rounded-full">Mức 2 (19 –
+                            36 điểm)</span>
+                        <span class="material-symbols-outlined text-blue-500">sentiment_satisfied</span>
+                    </div>
+                    <h3 class="font-bold text-[var(--color-text-main)]">Có một số khía cạnh cần chú ý</h3>
+                    <p class="text-xs text-[var(--color-text-sub)] italic">"Em vẫn duy trì kết nối nhưng đôi khi chưa
+                        thật sự thoải mái trong giao tiếp tập thể."</p>
+
+                    <div class="text-xs space-y-2 text-[var(--color-text-main)]">
+                        <strong class="block text-[var(--color-text-sub)] uppercase">Gợi ý hành động:</strong>
+                        <ul class="space-y-1 list-disc list-inside text-[var(--color-text-sub)]">
+                            <li>Bắt chuyện với ít nhất 1 người bạn mỗi ngày.</li>
+                            <li>Tham gia nhóm hoạt động yêu thích.</li>
+                            <li>Hạn chế ở một mình quá lâu.</li>
+                            <li>Ghi lại trải nghiệm giao tiếp tích cực trong tuần.</li>
+                        </ul>
+                    </div>
+
+                    <div class="pt-2 border-t border-[var(--color-border)]">
+                        <strong class="block text-xs text-[var(--color-text-sub)] uppercase mb-1">Hoạt động phù
+                            hợp:</strong>
+                        <p class="text-xs text-[var(--color-primary)] font-medium">Tìm điểm chung, Phỏng vấn bạn mới, Vẽ
+                            tranh tiếp sức, Hộp câu hỏi kết nối.</p>
+                    </div>
+                </div>
+
+                <!-- Mức 3 -->
+                <div class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-amber-600 bg-amber-500/10 px-3 py-1 rounded-full">Mức 3 (37
+                            – 54 điểm)</span>
+                        <span class="material-symbols-outlined text-amber-500">sentiment_neutral</span>
+                    </div>
+                    <h3 class="font-bold text-[var(--color-text-main)]">Đang xu hướng thu hẹp kết nối</h3>
+                    <p class="text-xs text-[var(--color-text-sub)] italic">"Em đang dành khá nhiều thời gian một mình
+                        hoặc khó duy trì mối quan hệ."</p>
+
+                    <div class="text-xs space-y-2 text-[var(--color-text-main)]">
+                        <strong class="block text-[var(--color-text-sub)] uppercase">Gợi ý hành động:</strong>
+                        <ul class="space-y-1 list-disc list-inside text-[var(--color-text-sub)]">
+                            <li>Tham gia ít nhất 1 hoạt động tập thể/tuần.</li>
+                            <li>Dành 10-15 phút/ngày trò chuyện với người tin tưởng.</li>
+                            <li>Kết nối lại với một người bạn cũ.</li>
+                            <li>Tham gia thử thách "7 ngày kết nối".</li>
+                        </ul>
+                    </div>
+
+                    <div class="pt-2 border-t border-[var(--color-border)]">
+                        <strong class="block text-xs text-[var(--color-text-sub)] uppercase mb-1">Hoạt động phù
+                            hợp:</strong>
+                        <p class="text-xs text-[var(--color-primary)] font-medium">CLB sở thích, Nhóm học tập nhỏ, Trò
+                            chơi hợp tác, Dự án nhóm ngắn hạn.</p>
+                    </div>
+                </div>
+
+                <!-- Mức 4 -->
+                <div class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-red-600 bg-red-500/10 px-3 py-1 rounded-full">Mức 4 (55 – 72
+                            điểm)</span>
+                        <span class="material-symbols-outlined text-red-500">sentiment_dissatisfied</span>
+                    </div>
+                    <h3 class="font-bold text-[var(--color-text-main)]">Nên cân nhắc tìm sự hỗ trợ</h3>
+                    <p class="text-xs text-[var(--color-text-sub)] italic">"Em đang gặp khá nhiều khó khăn trong việc
+                        kết nối với những người xung quanh."</p>
+
+                    <div class="text-xs space-y-2 text-[var(--color-text-main)]">
+                        <strong class="block text-[var(--color-text-sub)] uppercase">Gợi ý hành động:</strong>
+                        <ul class="space-y-1 list-disc list-inside text-[var(--color-text-sub)]">
+                            <li>Không đối mặt với mọi khó khăn một mình.</li>
+                            <li>Chia sẻ cảm xúc với người tin tưởng.</li>
+                            <li>Tìm kiếm hỗ trợ từ giáo viên hoặc tư vấn học đường.</li>
+                            <li>Bắt đầu bằng nhóm quy mô rất nhỏ.</li>
+                        </ul>
+                    </div>
+
+                    <div class="pt-2 border-t border-[var(--color-border)]">
+                        <strong class="block text-xs text-[var(--color-text-sub)] uppercase mb-1">Hoạt động phù
+                            hợp:</strong>
+                        <p class="text-xs text-[var(--color-primary)] font-medium">Hộp thư động viên, Vòng tròn lời cảm
+                            ơn, Nhóm nhỏ bạn đồng hành.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHẦN II: Mức độ sẵn sàng tái kết nối -->
+        <section class="mt-12 space-y-6 w-full">
+            <div class="border-b border-[var(--color-border)] pb-4">
+                <h2 class="text-2xl font-black text-[var(--color-text-main)] flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[var(--color-primary)]">published_with_changes</span>
+                    Khuyến nghị theo Chỉ số Sẵn sàng Tái kết nối
+                </h2>
+            </div>
+
+            <!-- Khung chứa 4 thẻ thiết kế bo góc, thụt lề chuẩn UI -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <!-- Mức A -->
+                <div
+                    class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-amber-600 bg-amber-500/10 px-3 py-1 rounded-full">
+                                MỨC A (0-6 ĐIỂM)
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-2">Mức sẵn sàng Thấp</h3>
+                        <p class="text-xs text-[var(--color-text-sub)] leading-relaxed mb-4">
+                            Chưa thoải mái mở rộng mối quan hệ. Bắt đầu từng bước rất nhỏ.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-[var(--color-border)] text-xs text-[var(--color-text-sub)]">
+                        <strong class="text-[var(--color-text-main)]">Gợi ý:</strong> Nhật ký tích cực, hộp thư động
+                        viên, trò chuyện ngắn.
+                    </div>
+                </div>
+
+                <!-- Mức B -->
+                <div
+                    class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-blue-600 bg-blue-500/10 px-3 py-1 rounded-full">
+                                MỨC B (7-12 ĐIỂM)
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-2">Mức sẵn sàng Trung bình</h3>
+                        <p class="text-xs text-[var(--color-text-sub)] leading-relaxed mb-4">
+                            Đã có suy nghĩ tích cực nhưng còn e ngại. Làm quen bạn mới hàng tuần.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-[var(--color-border)] text-xs text-[var(--color-text-sub)]">
+                        <strong class="text-[var(--color-text-main)]">Gợi ý:</strong> Tìm điểm chung, phỏng vấn bạn mới,
+                        vẽ tranh tiếp sức.
+                    </div>
+                </div>
+
+                <!-- Mức C -->
+                <div
+                    class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-full">
+                                MỨC C (13-18 ĐIỂM)
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-2">Mức sẵn sàng Khá cao</h3>
+                        <p class="text-xs text-[var(--color-text-sub)] leading-relaxed mb-4">
+                            Mong muốn mở rộng giao tiếp và tham gia CLB, hoạt động nhóm.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-[var(--color-border)] text-xs text-[var(--color-text-sub)]">
+                        <strong class="text-[var(--color-text-main)]">Gợi ý:</strong> Tham gia CLB học thuật/thể thao,
+                        hỗ trợ bạn ngại giao tiếp.
+                    </div>
+                </div>
+
+                <!-- Mức D -->
+                <div
+                    class="bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-purple-600 bg-purple-500/10 px-3 py-1 rounded-full">
+                                MỨC D (19-24 ĐIỂM)
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-2">Mức sẵn sàng Rất cao</h3>
+                        <p class="text-xs text-[var(--color-text-sub)] leading-relaxed mb-4">
+                            Rất tích cực chủ động xây dựng mối quan hệ và làm tình nguyện.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-[var(--color-border)] text-xs text-[var(--color-text-sub)]">
+                        <strong class="text-[var(--color-text-main)]">Gợi ý:</strong> Dự án cộng đồng, lập nhóm sở
+                        thích, lan tỏa tinh thần.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHẦN III & IV: Hoạt động nhóm & Thử thách 7 ngày -->
+        <section class="mt-12 space-y-6 flex flex-col lg:flex-row gap-6 w-full items-stretch">
+            <!-- Hoạt động nhóm -->
+            <div
+                class="w-full lg:w-7/12 bg-[var(--color-card-bg)] p-6 rounded-2xl ring-1 ring-[var(--color-border)] flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-[var(--color-text-main)] mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[var(--color-primary)] shrink-0">groups</span>
+                        <span>Gợi ý Hoạt động Nhóm Phù hợp</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+                            <h4 class="font-bold text-sm text-[var(--color-primary)] mb-1">1. Tìm điểm chung</h4>
+                            <p class="text-xs text-[var(--color-text-sub)] leading-relaxed">Tìm càng nhiều điểm chung
+                                trong 5 phút để tăng sự thấu hiểu.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+                            <h4 class="font-bold text-sm text-[var(--color-primary)] mb-1">2. Phỏng vấn bạn mới</h4>
+                            <p class="text-xs text-[var(--color-text-sub)] leading-relaxed">Ghép cặp với bạn ít trò
+                                chuyện và giới thiệu nhau trước lớp.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+                            <h4 class="font-bold text-sm text-[var(--color-primary)] mb-1">3. Chiếc hộp câu hỏi</h4>
+                            <p class="text-xs text-[var(--color-text-sub)] leading-relaxed">Mỗi bạn viết câu hỏi vui và
+                                cùng trả lời trong môi trường an toàn.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+                            <h4 class="font-bold text-sm text-[var(--color-primary)] mb-1">4. Xây tháp giấy</h4>
+                            <p class="text-xs text-[var(--color-text-sub)] leading-relaxed">Sử dụng giấy xây công trình
+                                cao nhất để rèn luyện hợp tác.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+                            <h4 class="font-bold text-sm text-[var(--color-primary)] mb-1">5. Giải mật thư</h4>
+                            <p class="text-xs text-[var(--color-text-sub)] leading-relaxed">Cùng giải các câu đố tìm đáp
+                                án để tăng tương tác nhóm.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+                            <h4 class="font-bold text-sm text-[var(--color-primary)] mb-1">6. Vẽ tranh tiếp sức</h4>
+                            <p class="text-xs text-[var(--color-text-sub)] leading-relaxed">Mỗi bạn hoàn thiện một phần
+                                bức tranh nhằm tăng tinh thần đồng đội.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thử thách 7 ngày kết nối -->
+            <div
+                class="w-full lg:w-5/12 bg-[var(--color-primary)] text-white p-6 rounded-2xl shadow-xl flex flex-col justify-between shrink-0">
+                <div>
+                    <span class="text-xs uppercase tracking-widest font-bold text-white/70 block mb-1">Hành trình 1
+                        tuần</span>
+                    <h3 class="text-xl md:text-2xl font-black mb-6">Thử thách 7 Ngày Kết nối</h3>
+
+                    <div class="space-y-2.5 text-xs font-medium">
+                        <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+                            <span
+                                class="size-6 rounded-full bg-white text-[var(--color-primary)] flex items-center justify-center font-black shrink-0">1</span>
+                            <span class="leading-tight">Chào hỏi một người bạn ít trò chuyện</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+                            <span
+                                class="size-6 rounded-full bg-white text-[var(--color-primary)] flex items-center justify-center font-black shrink-0">2</span>
+                            <span class="leading-tight">Trò chuyện với người thân ít nhất 10 phút</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+                            <span
+                                class="size-6 rounded-full bg-white text-[var(--color-primary)] flex items-center justify-center font-black shrink-0">3</span>
+                            <span class="leading-tight">Tham gia một hoạt động nhóm</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+                            <span
+                                class="size-6 rounded-full bg-white text-[var(--color-primary)] flex items-center justify-center font-black shrink-0">4</span>
+                            <span class="leading-tight">Viết lời cảm ơn cho một người</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+                            <span
+                                class="size-6 rounded-full bg-white text-[var(--color-primary)] flex items-center justify-center font-black shrink-0">5</span>
+                            <span class="leading-tight">Cùng học tập hoặc chơi trò chơi với bạn</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+                            <span
+                                class="size-6 rounded-full bg-white text-[var(--color-primary)] flex items-center justify-center font-black shrink-0">6</span>
+                            <span class="leading-tight">Chia sẻ một điều tích cực về bản thân</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+                            <span
+                                class="size-6 rounded-full bg-white text-[var(--color-primary)] flex items-center justify-center font-black shrink-0">7</span>
+                            <span class="leading-tight">Tham gia hoạt động của lớp hoặc nhà trường</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-white/20 text-center text-xs text-white/80 italic">
+                    "Không có kết nối nào là quá nhỏ để bắt đầu."
+                </div>
+            </div>
+        </section>
+
+        <div class="text-center mt-16 mb-8 w-full flex justify-center items-center">
+            <a href="{% url 'polls:index' %}"
+                class="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 transition-all gap-2">
+                <span class="material-symbols-outlined">assignment</span>
+                <span>Bắt đầu Khảo sát Ngay</span>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

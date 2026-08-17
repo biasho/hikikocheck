@@ -1,0 +1,36 @@
+<!-- Widget Video YouTube & Nút Khảo sát -->
+<div class="bg-[var(--color-card-bg)] rounded-xl shadow-xl overflow-hidden ring-1 ring-[var(--color-border)]">
+    <!-- Tiêu đề Widget -->
+    <div class="p-4 bg-[var(--color-primary)] text-white">
+        <h3 class="text-lg font-bold tracking-tight">Video Giới thiệu & Hướng dẫn</h3>
+        <p class="text-white/80 text-xs">Xem video để hiểu rõ hơn về quy trình khảo sát</p>
+    </div>
+
+    <div class="p-4 space-y-4">
+        <!-- Khung nhúng Video YouTube (Tỷ lệ 16:9 chuẩn) -->
+        <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-black shadow-inner group">
+            <!-- Ảnh Thumbnail lấy trực tiếp từ YouTube -->
+            <img src="https://img.youtube.com/vi/oxbEyy3Rs7g/hqdefault.jpg"
+                alt="Hé lộ thiết kế gây nghiện của mạng xã hội"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+
+            <!-- Lớp phủ & Nút Play -->
+            <a href="https://www.youtube.com/watch?v=oxbEyy3Rs7g" target="_blank" rel="noopener noreferrer"
+                class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white gap-2 group-hover:bg-black/20 transition-colors">
+                <div
+                    class="size-12 rounded-full bg-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-3xl">play_arrow</span>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-black/60 backdrop-blur-sm">Xem trên
+                    YouTube</span>
+            </a>
+        </div>
+
+        <!-- Nút bấm hành động (CTA) -->
+        <a href="{% url 'polls:index' %}"
+            class="w-full h-12 bg-[var(--color-accent)] hover:opacity-90 text-gray-900 font-bold rounded-lg shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-[1.02] active:scale-95">
+            <span class="material-symbols-outlined text-[20px]">assignment</span>
+            <span>Khảo sát ngay</span>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block default_theme %}light{% endblock %}
+{% block title %}{{ survey.title }} - HikikoCheck System{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
+    <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
+    <span class="mx-2">/</span>
+    <span class="text-[var(--color-text-main)] font-medium truncate max-w-xs">{{ survey.title }}</span>
+</nav>
+
+<div class="max-w-3xl mx-auto">
+
+    <!-- Thông báo kết quả / Thành công -->
+    {% if messages %}
+    {% for message in messages %}
+    <div
+        class="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-700 dark:text-green-400 flex items-center gap-3">
+        <span class="material-symbols-outlined text-green-500">check_circle</span>
+        <p class="font-semibold text-sm">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Header Bài Khảo Sát -->
+    <section class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 md:p-8 mb-6">
+        <h1 class="text-2xl md:text-3xl font-black text-[var(--color-text-main)] mb-2 leading-tight">
+            {{ survey.title }}
+        </h1>
+        {% if survey.description %}
+        <p class="text-[var(--color-text-sub)] text-sm leading-relaxed">{{ survey.description }}</p>
+        {% endif %}
+
+        <!-- Thanh Tiến Trình (Progress Bar) -->
+        <div class="mt-6 pt-6 border-t border-[var(--color-border)]">
+            <div class="flex justify-between items-center text-xs font-bold text-[var(--color-text-sub)] mb-2">
+                <span id="progress-text">Trang 1</span>
+                <span id="progress-percent" class="text-[var(--color-primary)]">0% Hoàn thành</span>
+            </div>
+            <div class="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-[var(--color-primary)] transition-all duration-300 rounded-full"
+                    style="width: 0%;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cảnh báo nếu chưa trả lời đủ -->
+    <div id="validation-warning"
+        class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 flex items-center gap-3">
+        <span class="material-symbols-outlined text-amber-500">warning</span>
+        <p class="font-semibold text-sm">Vui lòng hoàn thành tất cả các câu hỏi trên trang này trước khi chuyển tiếp /
+            nộp bài!</p>
+    </div>
+
+    <!-- Form Khảo Sát (Đã cập nhật sang survey.slug) -->
+    <form id="survey-form" method="POST" action="{% url 'surveys:submit_survey' survey.slug %}"
+        onsubmit="return handleFormSubmit(event)">
+        {% csrf_token %}
+
+        {% for question in questions %}
+        <!-- Card từng câu hỏi -->
+        <div
+            class="question-item hidden bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 md:p-8 mb-4 transition-all">
+
+            <div class="flex items-start gap-3 mb-6">
+                <span
+                    class="size-8 rounded-xl bg-[var(--color-primary)] text-white font-bold text-sm flex items-center justify-center shrink-0">
+                    {{ forloop.counter }}
+                </span>
+                <h3 class="text-lg md:text-xl font-bold text-[var(--color-text-main)] leading-snug">
+                    {{ question.text }}
+                </h3>
+            </div>
+
+            <!-- 1. Single Choice (Chọn 1) -->
+            {% if question.question_type == 'single_choice' %}
+            <div class="space-y-3">
+                {% for option in question.options.all %}
+                <label
+                    class="flex items-center gap-3 p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}" required
+                        onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-gray-300">
+                    <span
+                        class="text-sm font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)]">
+                        {{ option.text }}
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <!-- 2. Rating (Thang đo) -->
+            {% elif question.question_type == 'rating' %}
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                {% for option in question.options.all %}
+                <label
+                    class="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors text-center group">
+                    <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}" required
+                        onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-gray-300 mb-2">
+                    <span
+                        class="text-xs font-semibold text-[var(--color-text-main)] group-hover:text-[var(--color-primary)]">
+                        {{ option.text }}
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <!-- 3. Text (Tự luận) -->
+            {% elif question.question_type == 'text' %}
+            <textarea name="question_{{ question.id }}" rows="4" required oninput="checkAnswered()"
+                placeholder="Nhập câu trả lời của bạn..."
+                class="w-full p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-main)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none text-sm"></textarea>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+        <!-- Thanh Nút Điều Hướng -->
+        <div class="flex items-center justify-between gap-4 mt-6">
+            <button type="button" id="btn-prev" onclick="changeStep(-1)"
+                class="flex items-center justify-center h-12 px-6 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] hover:bg-[var(--color-card-bg)] font-bold text-sm transition-colors">
+                <span class="material-symbols-outlined mr-1">arrow_back</span>
+                Trang trước
+            </button>
+
+            <button type="button" id="btn-next" onclick="changeStep(1)"
+                class="flex-1 sm:flex-none flex items-center justify-center h-12 px-8 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 transition-all">
+                Trang tiếp theo
+                <span class="material-symbols-outlined ml-1">arrow_forward</span>
+            </button>
+
+            <button type="submit" id="btn-submit"
+                class="hidden flex-1 sm:flex-none items-center justify-center h-12 px-8 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-sm shadow-lg transition-all">
+                <span class="material-symbols-outlined mr-2">send</span>
+                Nộp bài khảo sát
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentStep = 0;
+    let questionGroups = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const allQuestions = Array.from(document.querySelectorAll('.question-item'));
+        const totalQuestions = allQuestions.length;
+
+        if (totalQuestions === 0) return;
+
+        let questionsPerPage = 1;
+        if (totalQuestions >= 10 && totalQuestions <= 30) {
+            questionsPerPage = 3;
+        } else if (totalQuestions > 30) {
+            questionsPerPage = 5;
+        }
+
+        for (let i = 0; i < totalQuestions; i += questionsPerPage) {
+            questionGroups.push(allQuestions.slice(i, i + questionsPerPage));
+        }
+
+        if (questionGroups.length > 0) {
+            showStep(0);
+        }
+    });
+
+    function showStep(index) {
+        document.querySelectorAll('.question-item').forEach(q => q.classList.add('hidden'));
+        questionGroups[index].forEach(q => q.classList.remove('hidden'));
+
+        document.getElementById('btn-prev').style.visibility = (index === 0) ? 'hidden' : 'visible';
+
+        if (index === questionGroups.length - 1) {
+            document.getElementById('btn-next').classList.add('hidden');
+            document.getElementById('btn-submit').classList.remove('hidden');
+            document.getElementById('btn-submit').classList.add('flex');
+        } else {
+            document.getElementById('btn-next').classList.remove('hidden');
+            document.getElementById('btn-submit').classList.add('hidden');
+            document.getElementById('btn-submit').classList.remove('flex');
+        }
+
+        updateProgress();
+        hideWarning();
+    }
+
+    function changeStep(delta) {
+        if (delta === 1 && !validateCurrentStep()) {
+            showWarning();
+            return;
+        }
+
+        currentStep += delta;
+        if (currentStep >= 0 && currentStep < questionGroups.length) {
+            showStep(currentStep);
+        }
+    }
+
+    function validateCurrentStep() {
+        const currentQuestions = questionGroups[currentStep];
+        let allValid = true;
+
+        currentQuestions.forEach(qCard => {
+            const inputs = qCard.querySelectorAll('input[required], textarea[required]');
+            if (inputs.length > 0) {
+                let qValid = false;
+                inputs.forEach(input => {
+                    if (input.type === 'radio' && input.checked) qValid = true;
+                    if (input.tagName === 'TEXTAREA' && input.value.trim() !== '') qValid = true;
+                });
+                if (!qValid) allValid = false;
+            }
+        });
+
+        return allValid;
+    }
+
+    function updateProgress() {
+        const totalPages = questionGroups.length;
+        const allQuestions = document.querySelectorAll('.question-item');
+        const totalQuestions = allQuestions.length;
+
+        let answeredCount = 0;
+
+        allQuestions.forEach(qCard => {
+            const radios = qCard.querySelectorAll('input[type="radio"]:checked');
+            const textarea = qCard.querySelector('textarea');
+
+            if (radios.length > 0) {
+                answeredCount++;
+            } else if (textarea && textarea.value.trim() !== '') {
+                answeredCount++;
+            }
+        });
+
+        const percent = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+
+        document.getElementById('progress-text').innerText = `Trang ${currentStep + 1} / ${totalPages}`;
+        document.getElementById('progress-percent').innerText = `${percent}% Hoàn thành`;
+        document.getElementById('progress-bar').style.width = `${percent}%`;
+    }
+
+    function showWarning() {
+        document.getElementById('validation-warning').classList.remove('hidden');
+    }
+
+    function hideWarning() {
+        document.getElementById('validation-warning').classList.add('hidden');
+    }
+
+    function checkAnswered() {
+        updateProgress();
+        if (validateCurrentStep()) {
+            hideWarning();
+        }
+    }
+
+    function handleFormSubmit(event) {
+        if (!validateCurrentStep()) {
+            event.preventDefault();
+            showWarning();
+            return false;
+        }
+        return true;
+    }
+</script>
+{% endblock %}

@@ -1,5 +1,5 @@
-# questions/models.py
 from django.db import models
+from core.models import Group  # 🎯 Import model Group từ app core
 
 # 1. Danh mục / Chủ đề
 class Category(models.Model):
@@ -19,12 +19,25 @@ class Question(models.Model):
     ]
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='questions')
+    
+    # 🎯 Thêm trường group liên kết sang bảng Group ở app core
+    group = models.ForeignKey(
+        Group, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='questions',
+        verbose_name="Nhóm khảo sát"
+    )
+    
     text = models.TextField()
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, default='single_choice')
     explanation = models.TextField(blank=True, null=True) # Lời giải (cho đề thi sau này)
+    
     def __str__(self):
+        group_code = self.group.code if self.group else "Không nhóm"
         cat_name = self.category.name if self.category else "Chưa phân loại"
-        return f"[{cat_name}] {self.text[:40]}"
+        return f"[{group_code} | {cat_name}] {self.text[:40]}"
 
 # 3. Các lựa chọn / Đáp án
 class Option(models.Model):

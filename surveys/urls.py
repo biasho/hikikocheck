@@ -10,6 +10,7 @@ urlpatterns = [
     
     # 🎯 ĐƯA URL TĨNH LÊN TRÊN ĐỂ KHÔNG BỊ NHẦM LẪN VỚI SLUG
     path('send-email-result/', views.send_email_result, name='send_email_result'),
+    path('report/', views.reconnect_report_view, name='reconnect_report'),
     
     # Trang chi tiết khảo sát: /surveys/danh-gia-suc-khoe-102/
     path('<slug:slug>/', views.survey_detail, name='survey_detail'),

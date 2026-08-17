@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block default_theme %}light{% endblock %}
+{% block title %}Về chúng tôi - Reconnect 360°{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-5xl mx-auto px-4 py-6">
+
+    <!-- Breadcrumb -->
+    <nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
+        <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
+        <span class="mx-2">/</span>
+        <span class="text-[var(--color-text-main)] font-medium">Về chúng tôi</span>
+    </nav>
+
+    <div class="w-full space-y-12 mb-12">
+
+        <!-- Hero Section: Lời Giới Thiệu -->
+        <section
+            class="w-full bg-[var(--color-card-bg)] rounded-2xl p-6 md:p-10 shadow-sm ring-1 ring-[var(--color-border)] relative overflow-hidden">
+            <div class="max-w-3xl">
+                <span
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-[var(--color-primary)]/10 text-[var(--color-primary)] mb-4">
+                    <span class="material-symbols-outlined text-sm">info</span>
+                    Về hệ thống Reconnect 360°
+                </span>
+                <h1 class="text-3xl md:text-4xl font-black text-[var(--color-text-main)] mb-4 leading-tight">
+                    Kết nối bản thân • Kết nối mọi người • Kết nối tương lai
+                </h1>
+                <p class="text-[var(--color-text-sub)] leading-relaxed text-base mb-6">
+                    <strong>Reconnect 360°</strong> là nền tảng hỗ trợ học sinh THCS tự đánh giá và nhìn nhận mức độ kết
+                    nối xã hội thông qua các câu hỏi khảo sát về giao tiếp, hoạt động tập thể và nguyện vọng cá nhân.
+                </p>
+                <div
+                    class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-xl shrink-0 mt-0.5">warning</span>
+                    <div>
+                        <strong>Lưu ý quan trọng:</strong> Kết quả khảo sát không phải là chẩn đoán y khoa hoặc tâm lý.
+                        Hệ thống chỉ cung cấp thông tin tham khảo giúp học sinh hiểu bản thân hơn và định hướng các bước
+                        kết nối phù hợp.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+    </div>
+</div>
+{% endblock %}

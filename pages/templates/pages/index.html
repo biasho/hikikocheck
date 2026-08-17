@@ -244,46 +244,9 @@
     <!-- Right Column: Sticky Widget -->
     <div class="lg:col-span-4 relative">
         <div class="sticky top-24 space-y-6">
-            <!-- Calculator Widget -->
-            <div class="bg-[var(--color-primary)] text-white rounded-xl shadow-xl overflow-hidden">
-                <div class="p-6 bg-black/10">
-                    <h3 class="text-xl font-bold tracking-tight mb-1">Tính toán Nhanh</h3>
-                    <p class="text-white/80 text-sm">Ước tính chi phí & quy mô trong 2 phút.</p>
-                </div>
-                <div class="p-6 space-y-5 bg-[var(--color-primary)]">
-                    <div class="flex p-1 bg-white/10 rounded-lg">
-                        <button
-                            class="flex-1 py-2 text-sm font-bold rounded bg-white text-[var(--color-primary)] shadow-sm flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">person</span> Ca nhân
-                        </button>
-                        <button
-                            class="flex-1 py-2 text-sm font-bold rounded text-white hover:bg-white/10 flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">corporate_fare</span> Doanh nghiệp
-                        </button>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-white/80 mb-1">Tên hệ
-                            thống / Dự án</label>
-                        <input
-                            class="w-full h-12 px-4 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] font-medium"
-                            placeholder="VD: Khảo sát 2026" type="text" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-white/80 mb-1">Số lượng
-                            người khảo sát</label>
-                        <select
-                            class="w-full h-12 px-4 rounded-lg bg-white/10 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] font-medium">
-                            <option class="text-gray-900">Dưới 500 người</option>
-                            <option class="text-gray-900">500 - 2,000 người</option>
-                            <option class="text-gray-900">Trên 2,000 người</option>
-                        </select>
-                    </div>
-                    <button
-                        class="w-full h-12 bg-[var(--color-accent)] hover:opacity-90 text-gray-900 font-bold rounded-lg shadow-lg flex items-center justify-center gap-2 mt-2 transition-opacity">
-                        Tính ngay <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                    </button>
-                </div>
-            </div>
+
+            <!-- Nhúng Widget Video Youtube & Khảo sát vào đây -->
+            {% include 'components/youtube_widget.html' %}
 
             <!-- Contact/Support Mini Card -->
             <div class="bg-[var(--color-card-bg)] rounded-xl p-6 shadow-sm ring-1 ring-[var(--color-border)]">
@@ -317,11 +280,11 @@
                 mọi cá nhân và doanh nghiệp nhỏ.</p>
         </div>
         <div>
-            <h5 class="font-bold text-[var(--color-text-main)] mb-2">Tôi có thể xuất dữ liệu ra file Excel được không?
+            <h5 class="font-bold text-[var(--color-text-main)] mb-2">Tôi có thể xuất dữ liệu ra file Pdf được không?
             </h5>
             <p class="text-[var(--color-text-sub)] text-sm leading-relaxed">Có, bạn có thể dễ dàng tải xuống báo cáo
                 tổng hợp dưới dạng
-                file `.xlsx` hoặc `.csv` bất kỳ lúc nào.</p>
+                file `.pdf` bất kỳ lúc nào.</p>
         </div>
     </div>
 </section>

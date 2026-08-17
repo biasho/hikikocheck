@@ -31,3 +31,17 @@ class Lead(models.Model):
         display_name = f" ({name})" if name else ""
         source_name = self.source.name if self.source else "Unknown"
         return f"{self.email}{display_name} [{source_name}]"
+
+class Group(models.Model):
+    code = models.CharField(max_length=10, unique=True, verbose_name="Mã nhóm (VD: A, B, C, D)")
+    name = models.CharField(max_length=255, verbose_name="Tên nhóm")
+    description = models.TextField(blank=True, null=True, verbose_name="Mô tả nhóm")
+    order = models.PositiveIntegerField(default=0, verbose_name="Thứ tự hiển thị")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Nhóm khảo sát"
+        verbose_name_plural = "Các nhóm khảo sát"
+
+    def __str__(self):
+        return f"[{self.code}] {self.name}"

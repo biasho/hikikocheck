@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block default_theme %}light{% endblock %}
+{% block title %}Báo cáo thống kê - HikikoCheck System{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="flex items-center text-xs text-[var(--color-text-sub)] mb-5">
+    <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
+    <span class="mx-2">/</span>
+    <span class="text-[var(--color-text-main)] font-medium truncate">Báo cáo khảo sát xu hướng thu mình</span>
+</nav>
+
+<div class="max-w-6xl mx-auto px-4 pb-16">
+
+    <!-- Tiêu đề trang & Bộ lọc thời gian -->
+    <div
+        class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-xl md:text-2xl font-bold text-[var(--color-text-main)] mb-1">
+                Báo cáo Thống kê Khảo sát
+            </h1>
+            <p class="text-[var(--color-text-sub)] text-xs">
+                {{ survey.title|default:"Khảo sát xu hướng thu mình và mức độ kết nối xã hội ở học sinh THCS" }}
+            </p>
+        </div>
+
+        <!-- Bộ lọc thời gian -->
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <select id="time-filter" onchange="handleTimeFilterChange()"
+                class="bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none">
+                <option value="current_year">Năm hiện tại (2026)</option>
+                <option value="3_months">3 tháng gần đây</option>
+                <option value="6_months">6 tháng gần đây</option>
+                <option value="1_year">1 năm qua</option>
+                <option value="last_year">1 năm trước</option>
+                <option value="custom">Tùy chọn khoảng năm</option>
+            </select>
+
+            <!-- Khoảng năm tùy chọn (Ẩn mặc định) -->
+            <div id="custom-year-range" class="hidden flex items-center gap-2">
+                <input type="number" id="year-from" placeholder="Từ năm" min="2020" max="2030" value="2025"
+                    class="w-20 bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl px-2.5 py-2">
+                <span class="text-[var(--color-text-sub)]">-</span>
+                <input type="number" id="year-to" placeholder="Đến năm" min="2020" max="2030" value="2026"
+                    class="w-20 bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl px-2.5 py-2">
+                <button onclick="applyCustomFilter()"
+                    class="bg-[var(--color-primary)] text-white px-3 py-2 rounded-xl text-xs font-bold hover:opacity-90">Lọc</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thẻ Tổng quan (Cập nhật qua AJAX) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div
+            class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-5 flex items-center gap-4">
+            <div
+                class="size-12 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-2xl">group</span>
+            </div>
+            <div>
+                <p class="text-xs text-[var(--color-text-sub)] font-medium">Tổng số người tham gia</p>
+                <h3 id="total-participants" class="text-xl font-bold text-[var(--color-text-main)]">{{
+                    total_participants|default:0 }}</h3>
+            </div>
+        </div>
+
+        <div
+            class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-5 flex items-center gap-4">
+            <div class="size-12 rounded-2xl bg-green-500/10 text-green-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-2xl">verified</span>
+            </div>
+            <div>
+                <p class="text-xs text-[var(--color-text-sub)] font-medium">Đã hoàn thành 100%</p>
+                <h3 id="total-completed" class="text-xl font-bold text-[var(--color-text-main)]">{{
+                    total_completed|default:0 }}</h3>
+            </div>
+        </div>
+
+        <div
+            class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-5 flex items-center gap-4">
+            <div class="size-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-2xl">trending_up</span>
+            </div>
+            <div>
+                <p class="text-xs text-[var(--color-text-sub)] font-medium">Tỷ lệ hoàn thành</p>
+                <h3 id="completion-rate" class="text-xl font-bold text-[var(--color-text-main)]">{{
+                    completion_rate|default:0 }}%</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khu vực chính: Biểu đồ & Bảng chi tiết ngưỡng kết quả -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Cột Biểu đồ Tròn (Doughnut Chart) -->
+        <div
+            class="lg:col-span-5 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col justify-between">
+            <h2 class="text-sm font-bold text-[var(--color-text-main)] mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">pie_chart</span>
+                Biểu đồ tỷ lệ theo Ngưỡng kết quả
+            </h2>
+            <div class="relative w-full max-w-[280px] mx-auto my-auto aspect-square">
+                <canvas id="resultChart"></canvas>
+            </div>
+            <p class="text-[11px] text-center text-[var(--color-text-sub)] mt-4">
+                Phân bổ học sinh theo các mức độ khó khăn trong kết nối xã hội.
+            </p>
+        </div>
+
+        <!-- Cột Bảng Chi Tiết Số Lượng & Phần Trăm -->
+        <div
+            class="lg:col-span-7 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col">
+            <h2 class="text-sm font-bold text-[var(--color-text-main)] mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">table_chart</span>
+                Chi tiết số lượng và phần trăm theo Ngưỡng kết quả (Thresholds)
+            </h2>
+
+            <div class="overflow-x-auto my-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="border-b border-[var(--color-border)] text-[11px] text-[var(--color-text-sub)] uppercase">
+                            <th class="py-3 px-3">Ngưỡng kết quả (Mức độ)</th>
+                            <th class="py-3 px-3 text-center">Thang điểm</th>
+                            <th class="py-3 px-3 text-center">Số lượng</th>
+                            <th class="py-3 px-3 text-right">Tỷ lệ (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="threshold-table-body"
+                        class="text-xs text-[var(--color-text-main)] divide-y divide-[var(--color-border)]">
+                        <!-- Render động qua Fetch AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Import Chart.js từ CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let myDoughnutChart = null;
+
+    const chartColors = [
+        '#10b981', // Xanh lá
+        '#3b82f6', // Xanh dương
+        '#f59e0b', // Vàng cam
+        '#ef4444', // Đỏ
+        '#8b5cf6'  // Tím
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tải dữ liệu ban đầu theo mặc định "current_year"
+        fetchReportData({ time_filter: 'current_year' });
+    });
+
+    function handleTimeFilterChange() {
+        const filterVal = document.getElementById('time-filter').value;
+        const customDiv = document.getElementById('custom-year-range');
+
+        if (filterVal === 'custom') {
+            customDiv.classList.remove('hidden');
+            customDiv.classList.add('flex');
+        } else {
+            customDiv.classList.remove('flex');
+            customDiv.classList.add('hidden');
+            fetchReportData({ time_filter: filterVal });
+        }
+    }
+
+    function applyCustomFilter() {
+        const yearFrom = document.getElementById('year-from').value;
+        const yearTo = document.getElementById('year-to').value;
+
+        if (!yearFrom || !yearTo) {
+            alert('Vui lòng nhập đầy đủ khoảng năm!');
+            return;
+        }
+
+        fetchReportData({
+            time_filter: 'custom',
+            year_from: yearFrom,
+            year_to: yearTo
+        });
+    }
+
+    // Hàm gọi AJAX Fetch lấy dữ liệu từ Backend API
+    function fetchReportData(params) {
+        const queryParams = new URLSearchParams(params).toString();
+
+        // Đường dẫn API nhận dữ liệu lọc (bạn có thể điều chỉnh endpoint URL tùy thuộc cấu hình urls.py của dự án)
+        const apiUrl = `${window.location.pathname}?${queryParams}`;
+
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi tải dữ liệu từ server');
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateUI(data);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+    }
+
+    // Cập nhật DOM và vẽ lại Biểu đồ
+    function updateUI(data) {
+        // 1. Cập nhật các thẻ số liệu tổng quan
+        document.getElementById('total-participants').innerText = Number(data.total_participants || 0).toLocaleString();
+        document.getElementById('total-completed').innerText = Number(data.total_completed || 0).toLocaleString();
+        document.getElementById('completion-rate').innerText = (data.completion_rate || 0) + '%';
+
+        const tbody = document.getElementById('threshold-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        const thresholdStats = data.threshold_stats || [];
+
+        if (thresholdStats.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-[var(--color-text-sub)]">Không tìm thấy dữ liệu trong khoảng thời gian này.</td></tr>`;
+            if (myDoughnutChart) myDoughnutChart.destroy();
+            return;
+        }
+
+        // 2. Render Bảng chi tiết
+        const sumCount = thresholdStats.reduce((acc, item) => acc + (item.count || 0), 0) || 1;
+        const chartLabels = [];
+        const chartCounts = [];
+
+        thresholdStats.forEach((item, index) => {
+            const count = item.count || 0;
+            const percentage = ((count / sumCount) * 100).toFixed(1) + '%';
+            const color = chartColors[index % chartColors.length];
+            const minScore = item.min_score !== undefined ? item.min_score : '';
+            const maxScore = item.max_score !== undefined ? item.max_score : '';
+            const rangeText = `${minScore} – ${maxScore} điểm`;
+
+            chartLabels.push(item.title);
+            chartCounts.push(count);
+
+            const row = `
+                <tr class="hover:bg-[var(--color-background)] transition-colors">
+                    <td class="py-3 px-3 font-medium flex items-center gap-2">
+                        <span class="size-3 rounded-full shrink-0" style="background-color: ${color}"></span>
+                        ${item.title}
+                    </td>
+                    <td class="py-3 px-3 text-center text-[var(--color-text-sub)]">${rangeText}</td>
+                    <td class="py-3 px-3 text-center font-bold">${Number(count).toLocaleString()}</td>
+                    <td class="py-3 px-3 text-right font-semibold text-[var(--color-primary)]">${percentage}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+
+        // 3. Cập nhật / Render Biểu đồ tròn (Chart.js)
+        const canvasElement = document.getElementById('resultChart');
+        if (!canvasElement) return;
+        const ctx = canvasElement.getContext('2d');
+
+        if (myDoughnutChart) {
+            myDoughnutChart.destroy();
+        }
+
+        myDoughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    data: chartCounts,
+                    backgroundColor: chartColors.slice(0, chartCounts.length),
+                    borderWidth: 2,
+                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-card-bg') || '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                cutout: '65%'
+            }
+        });
+    }
+</script>
+{% endblock %}

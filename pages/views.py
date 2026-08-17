@@ -7,3 +7,5 @@ def home(request):
 def about(request):
     """View cho trang Giới thiệu"""
     return render(request, 'pages/about.html')
+def about_us(request):
+    return render(request, 'pages/about_us.html')

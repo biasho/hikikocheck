@@ -1,14 +1,17 @@
 import json
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.db import transaction
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
 from .models import Survey, Submission, Answer, SurveyResultThreshold
 from questions.models import Question, Option
 from .services.pdf import send_pdf_email
-
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from .models import Survey, Submission, SurveyResultThreshold
 
 def _get_survey_by_slug(slug):
     """Hàm phụ trợ lấy Survey bằng ID tách từ đuôi Slug"""
@@ -168,3 +171,89 @@ def send_email_result(request):
         return JsonResponse({'success': False, 'message': 'Không tìm thấy lượt nộp bài này!'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'Lỗi hệ thống: {str(e)}'}, status=500)
+
+
+def reconnect_report_view(request, slug="khao-sat-xu-huong-thu-minh-va-muc-do-ket-noi-xa-hoi-o-hoc-sinh-thcs-2"):
+    """View hiển thị báo cáo thống kê khảo sát Reconnect 360° hỗ trợ AJAX Fetch lọc theo thời gian"""
+    survey = _get_survey_by_slug(slug)
+    
+    # Lấy tham số lọc từ Request (Mặc định: current_year)
+    time_filter = request.GET.get('time_filter', 'current_year')
+    year_from = request.GET.get('year_from')
+    year_to = request.GET.get('year_to')
+    
+    # Khởi tạo Queryset bài nộp của Survey
+    submissions = Submission.objects.filter(survey=survey)
+    
+    # 🕒 BỘ LỌC THỜI GIAN THEO DATABASE (Sử dụng trường submitted_at)
+    now = timezone.now()
+    
+    if time_filter == 'current_year':
+        submissions = submissions.filter(submitted_at__year=now.year)
+    elif time_filter == '3_months':
+        three_months_ago = now - timedelta(days=90)
+        submissions = submissions.filter(submitted_at__gte=three_months_ago)
+    elif time_filter == '6_months':
+        six_months_ago = now - timedelta(days=180)
+        submissions = submissions.filter(submitted_at__gte=six_months_ago)
+    elif time_filter == '1_year':
+        one_year_ago = now - timedelta(days=365)
+        submissions = submissions.filter(submitted_at__gte=one_year_ago)
+    elif time_filter == 'last_year':
+        submissions = submissions.filter(submitted_at__year=now.year - 1)
+    elif time_filter == 'custom' and year_from and year_to:
+        try:
+            start_year = int(year_from)
+            end_year = int(year_to)
+            submissions = submissions.filter(
+                submitted_at__year__gte=start_year,
+                submitted_at__year__lte=end_year
+            )
+        except ValueError:
+            pass
+
+    # Tính toán tổng số lượng
+    total_participants = submissions.count()
+    total_completed = total_participants  # Mỗi bản ghi Submission tạo ra mặc định là bài đã nộp thành công
+    
+    completion_rate = round((total_completed / total_participants * 100), 1) if total_participants > 0 else 0
+    
+    # Lấy danh sách các ngưỡng kết quả (thresholds)
+    thresholds = SurveyResultThreshold.objects.filter(survey=survey).order_by('min_score')
+    
+    threshold_stats = [
+        {
+            'title': t.title,
+            'min_score': t.min_score,
+            'max_score': t.max_score,
+            'count': 0
+        }
+        for t in thresholds
+    ]
+    
+    # Phân loại điểm bài nộp vào từng ngưỡng
+    for sub in submissions:
+        score = sub.total_score
+        for stat in threshold_stats:
+            if stat['min_score'] <= score <= stat['max_score']:
+                stat['count'] += 1
+                break
+
+    # Đóng gói dữ liệu trả về
+    data = {
+        'total_participants': total_participants,
+        'total_completed': total_completed,
+        'completion_rate': completion_rate,
+        'threshold_stats': threshold_stats,
+    }
+
+    # 🚀 Nếu Yêu cầu đến từ Fetch AJAX thì trả về JsonResponse
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse(data)
+
+    # Nếu truy cập trang trực tiếp từ trình duyệt thì render template HTML
+    context = {
+        'survey': survey,
+        **data
+    }
+    return render(request, 'surveys/reconnect_report.html', context)

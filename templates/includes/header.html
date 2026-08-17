@@ -8,21 +8,23 @@
                 <div class="size-8 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white">
                     <span class="material-symbols-outlined text-[20px]">shield</span>
                 </div>
-                <h2 class="text-[var(--color-text-main)] text-xl font-bold tracking-tight">HikikoCheck</h2>
+                <h2 class="text-[var(--color-text-main)] text-xl font-bold tracking-tight">Reconnect 360°</h2>
             </a>
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center gap-4 lg:gap-6">
                 <a class="text-[var(--color-primary)] font-semibold text-sm hover:opacity-80 transition-opacity whitespace-nowrap"
                     href="{% url 'pages:home' %}">Trang chủ</a>
-                <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
-                    href="{% url 'polls:index' %}">Khảo sát Polls</a>
+                <!-- <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
+                    href="{% url 'polls:index' %}">Khảo sát Polls</a> -->
                 <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
                     href="{% url 'pages:about' %}">Giới thiệu</a>
                 <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
                     href="#">Hướng dẫn</a>
+                <a class="text-[var(--color-text-main)] text-base font-medium py-1 hover:text-[var(--color-primary)] transition-colors"
+                    href="{% url 'surveys:reconnect_report' %}">Báo cáo</a>
                 <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
-                    href="#">Báo cáo</a>
+                    href="{% url 'pages:about_us' %}">Về chúng tôi</a>
             </nav>
 
             <!-- Actions & Theme Switcher -->
@@ -106,9 +108,9 @@
                     class="hidden md:flex text-[var(--color-text-main)] text-sm font-semibold hover:text-[var(--color-primary)] px-2 whitespace-nowrap">
                     Đăng nhập
                 </button>
-                <a href="{% url 'polls:index' %}"
+                <a href="{% url 'surveys:submit_survey' 'khao-sat-xu-huong-thu-minh-va-muc-do-ket-noi-xa-hoi-o-hoc-sinh-thcs-2' %}"
                     class="hidden sm:flex items-center justify-center rounded-lg h-9 px-3 bg-[var(--color-accent)] text-gray-900 text-sm font-bold shadow-sm hover:opacity-90 transition-opacity whitespace-nowrap">
-                    Tạo khảo sát
+                    Tham gia khảo sát
                 </a>
 
                 <!-- NÚT HAMBURGER MOBILE -->
@@ -133,14 +135,16 @@
             <a class="text-[var(--color-text-main)] text-base font-medium py-1 hover:text-[var(--color-primary)] transition-colors"
                 href="#">Hướng dẫn</a>
             <a class="text-[var(--color-text-main)] text-base font-medium py-1 hover:text-[var(--color-primary)] transition-colors"
-                href="#">Báo cáo</a>
+                href="{% url 'surveys:reconnect_report' %}">Báo cáo</a>
+            <a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap"
+                href="{% url 'pages:about_us' %}">Về chúng tôi</a>
 
             <div class="border-t border-[var(--color-border)] my-2 pt-3 flex flex-col gap-2">
                 <button
                     class="w-full text-left text-[var(--color-text-main)] text-base font-semibold py-2 hover:text-[var(--color-primary)]">
                     Đăng nhập
                 </button>
-                <a href="{% url 'polls:index' %}"
+                <a href="{% url 'surveys:submit_survey' 'khao-sat-xu-huong-thu-minh-va-muc-do-ket-noi-xa-hoi-o-hoc-sinh-thcs-2' %}"
                     class="flex items-center justify-center rounded-lg h-10 w-full bg-[var(--color-accent)] text-gray-900 text-base font-bold shadow-sm hover:opacity-90 transition-opacity">
                     Tạo khảo sát
                 </a>

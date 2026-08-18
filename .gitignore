@@ -14,3 +14,13 @@ db.sqlite3
 # Static / Media
 /staticfiles/
 /media/
+# IDE & Code Editor (VS Code)
+.vscode/
+.idea/
+
+# File hệ thống
+.DS_Store
+Thumbs.db
+
+# Log hệ thống
+*.log

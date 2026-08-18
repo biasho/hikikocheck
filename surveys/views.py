@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Survey, Submission, SurveyResultThreshold
 
 def _get_survey_by_slug(slug):
@@ -257,3 +257,12 @@ def reconnect_report_view(request, slug="khao-sat-xu-huong-thu-minh-va-muc-do-ke
         **data
     }
     return render(request, 'surveys/reconnect_report.html', context)
+def reconnect360_detail(request, slug="khao-sat-xu-huong-thu-minh-va-muc-do-ket-noi-xa-hoi-o-hoc-sinh-thcs-1"):
+    survey = _get_survey_by_slug(slug)
+    questions = survey.questions.prefetch_related('options', 'group').all()
+
+    context = {
+        'survey': survey,
+        'questions': questions,
+    }
+    return render(request, 'surveys/reconnect360/detail.html', context)

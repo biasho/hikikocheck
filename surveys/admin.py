@@ -1,21 +1,39 @@
 from django.contrib import admin
-from .models import Survey, SurveyResultThreshold, Submission, Answer
+from .models import (
+    Survey, 
+    CompositeSurvey, 
+    CompositeSurveyItem, 
+    SurveyResultThreshold, 
+    Submission, 
+    Answer
+)
 
-# 1. Inline hiển thị Thang điểm trong trang Survey
+
+# ==================== 1. INLINES ====================
+
+class CompositeSurveyItemInline(admin.TabularInline):
+    model = CompositeSurveyItem
+    extra = 1
+    fields = ('order', 'survey')
+    ordering = ('order',)
+    verbose_name = "Cấu trúc phần khảo sát"
+    verbose_name_plural = "Cấu trúc các phần khảo sát"
+
+
 class ThresholdInline(admin.TabularInline):
     model = SurveyResultThreshold
     extra = 1
 
-# 2. Inline hiển thị Danh sách Submission trong trang Survey
+
 class SubmissionInline(admin.TabularInline):
     model = Submission
-    extra = 0 # Không hiện dòng trống
-    fields = ('user', 'total_score', 'submitted_at')
-    readonly_fields = ('user', 'total_score', 'submitted_at') # Đặt chế độ chỉ xem
+    extra = 0
+    fields = ('user', 'lead', 'total_score', 'submitted_at')
+    readonly_fields = ('user', 'lead', 'total_score', 'submitted_at')
     can_delete = False
-    show_change_link = True # Bật nút bấm để nhảy nhanh sang xem chi tiết Submission đó
+    show_change_link = True
 
-# 3. Inline hiển thị Danh sách Answer trong trang Submission
+
 class AnswerInline(admin.TabularInline):
     model = Answer
     extra = 0
@@ -23,23 +41,66 @@ class AnswerInline(admin.TabularInline):
     readonly_fields = ('question', 'selected_option', 'text_answer')
     can_delete = False
 
+
+# ==================== 2. ADMIN CLASSES ====================
+
+@admin.register(CompositeSurvey)
+class CompositeSurveyAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_active', 'created_at')
+    list_filter = ('is_active', 'created_at')
+    search_fields = ('title', 'description')
+    inlines = [CompositeSurveyItemInline]
+
+
 @admin.register(Survey)
 class SurveyAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'is_active', 'created_at')
     list_filter = ('is_active', 'category')
     search_fields = ('title', 'description')
     filter_horizontal = ('questions',) 
-    # Nhúng cả Thang điểm và Danh sách các lượt nộp bài vào trang Survey
     inlines = [ThresholdInline, SubmissionInline] 
+
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'survey', 'user', 'email', 'session_key', 'total_score', 'submitted_at')
-    list_filter = ('survey', 'submitted_at')
-    search_fields = ('email', 'session_key', 'user__username') # Thêm tìm kiếm theo email và session_key
+    list_display = (
+        'id', 
+        'composite_survey', 
+        'survey', 
+        'user', 
+        'lead', 
+        'email', 
+        'total_score', 
+        'score_a', 
+        'score_b', 
+        'score_c', 
+        'score_d', 
+        'submitted_at'
+    )
+    list_filter = ('composite_survey', 'survey', 'submitted_at')
+    search_fields = ('email', 'session_key', 'user__username', 'lead__full_name', 'lead__school_class')
     readonly_fields = ('submitted_at',)
     inlines = [AnswerInline]
 
-# Đăng ký riêng các model độc lập
-admin.site.register(SurveyResultThreshold)
-admin.site.register(Answer)
+
+@admin.register(CompositeSurveyItem)
+class CompositeSurveyItemAdmin(admin.ModelAdmin):
+    list_display = ('composite_survey', 'survey', 'order')
+    list_filter = ('composite_survey',)
+    ordering = ('composite_survey', 'order')
+
+
+@admin.register(SurveyResultThreshold)
+class SurveyResultThresholdAdmin(admin.ModelAdmin):
+    list_display = ('title', 'survey', 'group', 'min_score', 'max_score')
+    list_filter = ('survey', 'group')
+    search_fields = ('title', 'description')
+
+
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'submission', 'question', 'selected_option', 'text_answer')
+    # Sửa list_filter tại đây (bỏ question__survey)
+    list_filter = ('question__group', 'submission__composite_survey')
+    search_fields = ('text_answer', 'submission__id', 'question__text')
+    readonly_fields = ('submission', 'question', 'selected_option', 'text_answer')

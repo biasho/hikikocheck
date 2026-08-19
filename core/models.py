@@ -13,12 +13,17 @@ class Source(models.Model):
 
 class Lead(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='leads')
-    email = models.EmailField(unique=True, db_index=True)
+    
+    # 🔓 Bỏ ràng buộc bắt buộc và unique tuyệt đối cứng để hỗ trợ người dùng không nhập email
+    email = models.EmailField(db_index=True, blank=True, null=True)
     
     first_name = models.CharField(max_length=50, blank=True, null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
-    full_name = models.CharField(max_length=100, blank=True, null=True)
+    full_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Họ và tên")
     phone = models.CharField(max_length=20, blank=True, null=True)
+    
+    # 🏫 Bổ sung thêm trường lưu Lớp / Đơn vị cho học sinh
+    school_class = models.CharField(max_length=100, blank=True, null=True, verbose_name="Lớp / Đơn vị")
     
     # 🎯 Chuyển source thành ForeignKey liên kết sang bảng Source (Hiển thị dạng Dropdown ở Admin)
     source = models.ForeignKey(Source, on_delete=models.SET_NULL, null=True, blank=True, related_name='leads')
@@ -27,10 +32,12 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        name = f"{self.first_name or ''} {self.last_name or ''}".strip() or self.full_name or ""
-        display_name = f" ({name})" if name else ""
+        name = f"{self.first_name or ''} {self.last_name or ''}".strip() or self.full_name or "Ẩn danh"
+        class_info = f" - Lớp: {self.school_class}" if self.school_class else ""
+        contact = f" ({self.email or self.phone})" if (self.email or self.phone) else ""
         source_name = self.source.name if self.source else "Unknown"
-        return f"{self.email}{display_name} [{source_name}]"
+        return f"{name}{class_info}{contact} [{source_name}]"
+
 
 class Group(models.Model):
     code = models.CharField(max_length=10, unique=True, verbose_name="Mã nhóm (VD: A, B, C, D)")

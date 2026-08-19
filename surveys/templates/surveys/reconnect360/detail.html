@@ -115,7 +115,7 @@
                     <label
                         class="flex items-center gap-3 p-3.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
                         <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}"
-                            onchange="checkAnswered()"
+                            onchange="checkAnswered(this)"
                             class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-gray-300 cursor-pointer">
                         <span
                             class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">
@@ -133,7 +133,7 @@
                         class="p-3.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] transition-colors">
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <input type="checkbox" name="question_{{ question.id }}" value="{{ option.id }}"
-                                onchange="toggleCustomInput(this); checkAnswered();"
+                                onchange="toggleCustomInput(this); checkAnswered(this);"
                                 class="size-4 rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-gray-300 cursor-pointer">
                             <span
                                 class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">
@@ -142,11 +142,10 @@
                         </label>
 
                         <!-- Ô nhập liệu bổ sung: Kiểm tra flag Model hoặc kiểm tra chuỗi chữ Khác / Other -->
-
                         {% if option.is_custom_input or option.has_text_field or "khác" in option.text|lower or "other" in option.text|lower %}
                         <div class="mt-2.5 pl-7 hidden custom-text-wrapper">
                             <input type="text" name="question_{{ question.id }}_text_{{ option.id }}"
-                                oninput="checkAnswered()" placeholder="Nhập chi tiết ý kiến khác..."
+                                oninput="checkAnswered(this)" placeholder="Nhập chi tiết ý kiến khác..."
                                 class="w-full p-2.5 rounded-lg bg-[var(--color-card-bg)] border border-[var(--color-border)] text-[var(--color-text-main)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none text-xs">
                         </div>
                         {% endif %}
@@ -162,7 +161,7 @@
                     <label
                         class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors text-center group">
                         <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}"
-                            onchange="checkAnswered()"
+                            onchange="checkAnswered(this)"
                             class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-gray-300 mb-2 cursor-pointer">
                         <span
                             class="text-[11px] font-semibold text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">
@@ -174,7 +173,7 @@
 
                 <!-- 4. Text -->
                 {% elif question.question_type == 'text' %}
-                <textarea name="question_{{ question.id }}" rows="3" oninput="checkAnswered()"
+                <textarea name="question_{{ question.id }}" rows="3" oninput="checkAnswered(this)"
                     placeholder="Nhập câu trả lời của bạn..."
                     class="w-full p-3.5 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-main)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none text-xs"></textarea>
                 {% endif %}
@@ -277,6 +276,7 @@
     }
 
     function changeStep(delta) {
+        // Chỉ khi bấm nút TIẾP THEO (delta === 1) mới validate và tô đỏ câu chưa làm
         if (delta === 1 && !validateCurrentStep()) {
             showWarning();
             return;
@@ -289,42 +289,84 @@
         }
     }
 
+    // Hàm tô/xóa màu cảnh báo cho từng thẻ câu hỏi
+    function highlightQuestion(qCard, isError) {
+        if (isError) {
+            qCard.classList.add('ring-2', 'ring-red-500/80', 'bg-red-500/5');
+            qCard.classList.remove('ring-[var(--color-border)]');
+        } else {
+            qCard.classList.remove('ring-2', 'ring-red-500/80', 'bg-red-500/5');
+            qCard.classList.add('ring-[var(--color-border)]');
+        }
+    }
+
+    // Chỉ gọi hàm này KHI BẤM NÚT "Tiếp theo" hoặc "Nộp bài"
     function validateCurrentStep() {
         if (!stepCards[currentStep]) return true;
 
         const currentQuestions = stepCards[currentStep].querySelectorAll('.question-item');
         let allValid = true;
+        let firstInvalidCard = null;
 
         currentQuestions.forEach(qCard => {
-            const radios = qCard.querySelectorAll('input[type="radio"]');
-            const checkboxes = qCard.querySelectorAll('input[type="checkbox"]');
-            const textarea = qCard.querySelector('textarea');
+            const isValid = checkQuestionValidity(qCard);
 
-            if (radios.length > 0) {
-                const isChecked = Array.from(radios).some(r => r.checked);
-                if (!isChecked) allValid = false;
-            } else if (checkboxes.length > 0) {
-                const checkedBoxes = Array.from(checkboxes).filter(c => c.checked);
-                if (checkedBoxes.length === 0) {
-                    allValid = false;
-                } else {
-                    // Nếu chọn option Khác/Other thì ô text không được bỏ trống
-                    checkedBoxes.forEach(cb => {
-                        const wrapper = cb.closest('.p-3\\.5')?.querySelector('.custom-text-wrapper');
-                        if (wrapper && !wrapper.classList.contains('hidden')) {
-                            const customInput = wrapper.querySelector('input[type="text"]');
-                            if (customInput && customInput.value.trim() === '') {
-                                allValid = false;
-                            }
-                        }
-                    });
-                }
-            } else if (textarea) {
-                if (textarea.value.trim() === '') allValid = false;
+            if (!isValid) {
+                allValid = false;
+                highlightQuestion(qCard, true); // Bấm nút mới tô đỏ
+                if (!firstInvalidCard) firstInvalidCard = qCard;
+            } else {
+                highlightQuestion(qCard, false);
             }
         });
 
+        // Tự động cuộn đến câu bị thiếu
+        if (firstInvalidCard) {
+            firstInvalidCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
         return allValid;
+    }
+
+    // Hàm kiểm tra tính hợp lệ của 1 câu hỏi đơn lẻ
+    function checkQuestionValidity(qCard) {
+        const radios = qCard.querySelectorAll('input[type="radio"]');
+        const checkboxes = qCard.querySelectorAll('input[type="checkbox"]');
+        const textarea = qCard.querySelector('textarea');
+
+        if (radios.length > 0) {
+            return Array.from(radios).some(r => r.checked);
+        } else if (checkboxes.length > 0) {
+            const checkedBoxes = Array.from(checkboxes).filter(c => c.checked);
+            if (checkedBoxes.length === 0) return false;
+
+            for (let cb of checkedBoxes) {
+                const wrapper = cb.closest('.p-3\\.5')?.querySelector('.custom-text-wrapper');
+                if (wrapper && !wrapper.classList.contains('hidden')) {
+                    const customInput = wrapper.querySelector('input[type="text"]');
+                    if (customInput && customInput.value.trim() === '') {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else if (textarea) {
+            return textarea.value.trim() !== '';
+        }
+        return true;
+    }
+
+    // Hàm gọi khi người dùng đang CHỌN/NHẬP CÂU TRẢ LỜI
+    function checkAnswered(inputElement) {
+        updateProgress();
+
+        // Nếu người dùng vừa trả lời câu đang bị tô đỏ, lập tức gỡ màu đỏ câu đó ra
+        if (inputElement) {
+            const qCard = inputElement.closest('.question-item');
+            if (qCard && checkQuestionValidity(qCard)) {
+                highlightQuestion(qCard, false);
+            }
+        }
     }
 
     function updateProgress() {
@@ -335,15 +377,7 @@
         let answeredCount = 0;
 
         allQuestions.forEach(qCard => {
-            const radios = qCard.querySelectorAll('input[type="radio"]:checked');
-            const checkboxes = qCard.querySelectorAll('input[type="checkbox"]:checked');
-            const textarea = qCard.querySelector('textarea');
-
-            if (radios.length > 0) {
-                answeredCount++;
-            } else if (checkboxes.length > 0) {
-                answeredCount++;
-            } else if (textarea && textarea.value.trim() !== '') {
+            if (checkQuestionValidity(qCard)) {
                 answeredCount++;
             }
         });
@@ -384,13 +418,6 @@
             toast.classList.remove('flex');
             toast.classList.add('hidden');
         }, 300);
-    }
-
-    function checkAnswered() {
-        updateProgress();
-        if (validateCurrentStep()) {
-            hideWarning();
-        }
     }
 
     function handleFormSubmit(event) {

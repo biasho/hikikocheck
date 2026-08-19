@@ -15,8 +15,7 @@
 <div class="max-w-6xl mx-auto px-4 pb-16 space-y-6">
 
     <!-- Tiêu đề trang & Bộ lọc thời gian -->
-    <div
-        class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
             <h1 class="text-xl md:text-2xl font-bold text-[var(--color-text-main)] mb-1">
                 Báo cáo Thống kê Khảo sát
@@ -45,7 +44,6 @@
                 <div id="dropdown-menu"
                     class="hidden opacity-0 scale-95 transition-all duration-200 ease-out absolute right-0 mt-2 w-full sm:w-[260px] bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-2xl shadow-xl p-2 z-50 ring-1 ring-black/5 space-y-1 max-h-80 overflow-y-auto">
                     
-                    <!-- 🎯 BỔ SUNG: Hôm nay -->
                     <div data-value="today" onclick="selectOption('today', 'Hôm nay', 'today')"
                         class="dropdown-item flex items-center justify-between gap-3 px-3.5 py-2.5 text-xs text-[var(--color-text-main)] rounded-xl cursor-pointer hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition-all">
                         <div class="flex items-center gap-2.5 min-w-0">
@@ -55,7 +53,6 @@
                         <span class="material-symbols-outlined text-sm check-icon text-[var(--color-primary)] shrink-0 hidden">check</span>
                     </div>
 
-                    <!-- 🎯 BỔ SUNG: Tuần này -->
                     <div data-value="this_week" onclick="selectOption('this_week', 'Tuần này', 'date_range')"
                         class="dropdown-item flex items-center justify-between gap-3 px-3.5 py-2.5 text-xs text-[var(--color-text-main)] rounded-xl cursor-pointer hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition-all">
                         <div class="flex items-center gap-2.5 min-w-0">
@@ -65,7 +62,6 @@
                         <span class="material-symbols-outlined text-sm check-icon text-[var(--color-primary)] shrink-0 hidden">check</span>
                     </div>
 
-                    <!-- 🎯 BỔ SUNG: 1 tháng qua -->
                     <div data-value="1_month" onclick="selectOption('1_month', '1 tháng qua', 'calendar_month')"
                         class="dropdown-item flex items-center justify-between gap-3 px-3.5 py-2.5 text-xs text-[var(--color-text-main)] rounded-xl cursor-pointer hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition-all">
                         <div class="flex items-center gap-2.5 min-w-0">
@@ -92,6 +88,7 @@
                         </div>
                         <span class="material-symbols-outlined text-sm check-icon text-[var(--color-primary)] shrink-0 hidden">check</span>
                     </div>
+
                     <div data-value="current_year" onclick="selectOption('current_year', 'Năm hiện tại (2026)', 'calendar_today')"
                         class="dropdown-item flex items-center justify-between gap-3 px-3.5 py-2.5 text-xs text-[var(--color-text-main)] rounded-xl cursor-pointer hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition-all bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold">
                         <div class="flex items-center gap-2.5 min-w-0">
@@ -138,25 +135,27 @@
 
     <!-- Thẻ Tổng quan -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-5 flex items-center gap-4">
-            <div class="size-12 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+         <div class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-5 flex items-center gap-4">
+            <div class="size-12 rounded-2xl bg-green-500/10 text-green-600 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-2xl">group</span>
             </div>
             <div>
-                <p class="text-xs text-[var(--color-text-sub)] font-medium">Tổng số người tham gia</p>
+                <p class="text-xs text-[var(--color-text-sub)] font-medium">Số người tham gia</p>
                 <h3 id="total-participants" class="text-xl font-bold text-[var(--color-text-main)]">0</h3>
             </div>
         </div>
-
+        
         <div class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-5 flex items-center gap-4">
-            <div class="size-12 rounded-2xl bg-green-500/10 text-green-600 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-2xl">verified</span>
+            <div class="size-12 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-2xl">assignment</span>
             </div>
             <div>
-                <p class="text-xs text-[var(--color-text-sub)] font-medium">Đã hoàn thành 100%</p>
-                <h3 id="total-completed" class="text-xl font-bold text-[var(--color-text-main)]">0</h3>
+                <p class="text-xs text-[var(--color-text-sub)] font-medium">Tổng số lượt khảo sát</p>
+                <h3 id="total-surveys" class="text-xl font-bold text-[var(--color-text-main)]">0</h3>
             </div>
         </div>
+
+       
 
         <div class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-5 flex items-center gap-4">
             <div class="size-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
@@ -170,41 +169,41 @@
     </div>
 
     <!-- ==================== PHẦN 1: BÁO CÁO XU HƯỚNG THU MÌNH (GROUP ALL_ABC) ==================== -->
-    <div class="space-y-3">
-        <div class="flex items-center gap-2 font-bold text-base text-[var(--color-text-main)]">
-            <span class="material-symbols-outlined text-[var(--color-primary)]">psychology</span>
+    <div class="space-y-2">
+        <div class="flex items-center gap-2 font-bold text-sm text-[var(--color-text-main)]">
+            <span class="material-symbols-outlined text-[var(--color-primary)] text-base">psychology</span>
             <span>1. Báo cáo Xu hướng Thu mình (Nhóm A + B + C)</span>
         </div>
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
             <!-- Biểu đồ ABC -->
-            <div class="lg:col-span-5 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col justify-between">
-                <h2 class="text-sm font-bold text-[var(--color-text-main)] mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">pie_chart</span>
+            <div class="lg:col-span-4 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-4 flex flex-col items-center justify-between">
+                <h2 class="text-xs font-bold text-[var(--color-text-main)] w-full mb-2 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-base">pie_chart</span>
                     Biểu đồ tỷ lệ - Xu hướng Thu mình
                 </h2>
-                <div class="relative w-full max-w-[260px] mx-auto my-auto aspect-square">
+                <div class="relative w-full max-w-[170px] my-auto aspect-square flex items-center justify-center">
                     <canvas id="chartABC"></canvas>
                 </div>
-                <p class="text-[11px] text-center text-[var(--color-text-sub)] mt-4">
+                <p class="text-[10px] text-center text-[var(--color-text-sub)] mt-2">
                     Phân bổ học sinh theo các ngưỡng điểm xu hướng thu mình.
                 </p>
             </div>
 
             <!-- Bảng ABC -->
-            <div class="lg:col-span-7 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col">
-                <h2 class="text-sm font-bold text-[var(--color-text-main)] mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">table_chart</span>
+            <div class="lg:col-span-8 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-4 flex flex-col justify-between">
+                <h2 class="text-xs font-bold text-[var(--color-text-main)] mb-2 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-base">table_chart</span>
                     Chi tiết theo Ngưỡng kết quả (ALL_ABC)
                 </h2>
                 <div class="overflow-x-auto my-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-[var(--color-border)] text-[11px] text-[var(--color-text-sub)] uppercase">
-                                <th class="py-3 px-3">Ngưỡng kết quả</th>
-                                <th class="py-3 px-3 text-center">Thang điểm</th>
-                                <th class="py-3 px-3 text-center">Số lượng</th>
-                                <th class="py-3 px-3 text-right">Tỷ lệ (%)</th>
+                            <tr class="border-b border-[var(--color-border)] text-[10px] text-[var(--color-text-sub)] uppercase">
+                                <th class="py-1.5 px-2.5">Ngưỡng kết quả</th>
+                                <th class="py-1.5 px-2.5 text-center">Thang điểm</th>
+                                <th class="py-1.5 px-2.5 text-center">Số lượng</th>
+                                <th class="py-1.5 px-2.5 text-right">Tỷ lệ (%)</th>
                             </tr>
                         </thead>
                         <tbody id="table-abc-body" class="text-xs text-[var(--color-text-main)] divide-y divide-[var(--color-border)]">
@@ -217,41 +216,41 @@
     </div>
 
     <!-- ==================== PHẦN 2: BÁO CÁO MỨC ĐỘ KẾT NỐI XÃ HỘI (GROUP D) ==================== -->
-    <div class="space-y-3 pt-4">
-        <div class="flex items-center gap-2 font-bold text-base text-[var(--color-text-main)]">
-            <span class="material-symbols-outlined text-[var(--color-primary)]">hub</span>
+    <div class="space-y-2 pt-2">
+        <div class="flex items-center gap-2 font-bold text-sm text-[var(--color-text-main)]">
+            <span class="material-symbols-outlined text-[var(--color-primary)] text-base">hub</span>
             <span>2. Báo cáo Mức độ Kết nối Xã hội (Nhóm D)</span>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
             <!-- Biểu đồ D -->
-            <div class="lg:col-span-5 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col justify-between">
-                <h2 class="text-sm font-bold text-[var(--color-text-main)] mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">pie_chart</span>
+            <div class="lg:col-span-4 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-4 flex flex-col items-center justify-between">
+                <h2 class="text-xs font-bold text-[var(--color-text-main)] w-full mb-2 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-base">pie_chart</span>
                     Biểu đồ tỷ lệ - Kết nối Xã hội
                 </h2>
-                <div class="relative w-full max-w-[260px] mx-auto my-auto aspect-square">
+                <div class="relative w-full max-w-[170px] my-auto aspect-square flex items-center justify-center">
                     <canvas id="chartD"></canvas>
                 </div>
-                <p class="text-[11px] text-center text-[var(--color-text-sub)] mt-4">
+                <p class="text-[10px] text-center text-[var(--color-text-sub)] mt-2">
                     Phân bổ học sinh theo các ngưỡng mức độ kết nối xã hội.
                 </p>
             </div>
 
             <!-- Bảng D -->
-            <div class="lg:col-span-7 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 flex flex-col">
-                <h2 class="text-sm font-bold text-[var(--color-text-main)] mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">table_chart</span>
+            <div class="lg:col-span-8 bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-4 flex flex-col justify-between">
+                <h2 class="text-xs font-bold text-[var(--color-text-main)] mb-2 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-base">table_chart</span>
                     Chi tiết theo Ngưỡng kết quả (D)
                 </h2>
                 <div class="overflow-x-auto my-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-[var(--color-border)] text-[11px] text-[var(--color-text-sub)] uppercase">
-                                <th class="py-3 px-3">Ngưỡng kết quả</th>
-                                <th class="py-3 px-3 text-center">Thang điểm</th>
-                                <th class="py-3 px-3 text-center">Số lượng</th>
-                                <th class="py-3 px-3 text-right">Tỷ lệ (%)</th>
+                            <tr class="border-b border-[var(--color-border)] text-[10px] text-[var(--color-text-sub)] uppercase">
+                                <th class="py-1.5 px-2.5">Ngưỡng kết quả</th>
+                                <th class="py-1.5 px-2.5 text-center">Thang điểm</th>
+                                <th class="py-1.5 px-2.5 text-center">Số lượng</th>
+                                <th class="py-1.5 px-2.5 text-right">Tỷ lệ (%)</th>
                             </tr>
                         </thead>
                         <tbody id="table-d-body" class="text-xs text-[var(--color-text-main)] divide-y divide-[var(--color-border)]">
@@ -400,16 +399,14 @@
     }
 
     function renderReportUI(data) {
-        // Cập nhật số liệu tổng quan (Khắc phục lỗi Falsy với giá trị 0)
+        const totalSurveys = data.total_surveys ?? 0;
         const totalParticipants = data.total_participants ?? 0;
-        const totalCompleted = data.total_completed ?? totalParticipants;
         const completionRate = data.completion_rate ?? 100;
 
+        document.getElementById('total-surveys').innerText = Number(totalSurveys).toLocaleString();
         document.getElementById('total-participants').innerText = Number(totalParticipants).toLocaleString();
-        document.getElementById('total-completed').innerText = Number(totalCompleted).toLocaleString();
         document.getElementById('completion-rate').innerText = completionRate + '%';
 
-        // Render Nhóm ALL_ABC
         if (data.group_abc) {
             chartABCInstance = renderGroupSection(
                 'table-abc-body',
@@ -419,7 +416,6 @@
             );
         }
 
-        // Render Nhóm D
         if (data.group_d) {
             chartDInstance = renderGroupSection(
                 'table-d-body',
@@ -446,24 +442,22 @@
         const labels = groupData.chart_data?.labels || [];
         const series = groupData.chart_data?.series || [];
 
-        // Render Bảng
         tableData.forEach((item, index) => {
             const color = chartColors[index % chartColors.length];
             const row = `
                 <tr class="hover:bg-[var(--color-background)] transition-colors">
-                    <td class="py-3 px-3 font-medium flex items-center gap-2">
-                        <span class="size-3 rounded-full shrink-0" style="background-color: ${color}"></span>
+                    <td class="py-1.5 px-2.5 font-medium flex items-center gap-2">
+                        <span class="size-2.5 rounded-full shrink-0" style="background-color: ${color}"></span>
                         ${item.title || item.name}
                     </td>
-                    <td class="py-3 px-3 text-center text-[var(--color-text-sub)]">${item.score_range}</td>
-                    <td class="py-3 px-3 text-center font-bold">${Number(item.count || 0).toLocaleString()}</td>
-                    <td class="py-3 px-3 text-right font-semibold text-[var(--color-primary)]">${item.percentage}</td>
+                    <td class="py-1.5 px-2.5 text-center text-[var(--color-text-sub)]">${item.score_range}</td>
+                    <td class="py-1.5 px-2.5 text-center font-bold">${Number(item.count || 0).toLocaleString()}</td>
+                    <td class="py-1.5 px-2.5 text-right font-semibold text-[var(--color-primary)]">${item.percentage}</td>
                 </tr>
             `;
             tbody.innerHTML += row;
         });
 
-        // Render Biểu đồ Doughnut
         const canvasElement = document.getElementById(canvasId);
         if (!canvasElement) return chartInstance;
 

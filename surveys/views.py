@@ -411,15 +411,25 @@ def send_email_result(request):
             submission.lead.email = email
             submission.lead.save(update_fields=['email'])
 
-        threshold = None
+        # 1. Xác định Survey Object an toàn (Thử lấy Survey đơn lẻ hoặc Survey đầu tiên trong CompositeSurvey)
         survey_obj = getattr(submission, 'survey', None)
+        if not survey_obj and submission.composite_survey:
+            first_item = submission.composite_survey.items.select_related('survey').first()
+            if first_item:
+                survey_obj = first_item.survey
+
+        # 2. Tìm Threshold an toàn dựa trên survey_obj hoặc nhóm điểm tổng hợp (score_abc)
+        threshold = None
         if survey_obj:
+            # Ưu tiên lấy theo điểm A+B+C nếu có, hoặc dùng total_score
+            score_to_check = getattr(submission, 'score_difficulties', submission.total_score)
             threshold = SurveyResultThreshold.objects.filter(
                 survey=survey_obj,
-                min_score__lte=submission.total_score,
-                max_score__gte=submission.total_score,
+                min_score__lte=score_to_check,
+                max_score__gte=score_to_check,
             ).first()
 
+        # 3. Gửi email tạo PDF
         send_pdf_email(email, submission, threshold, chart_base64=chart_base64)
 
         return JsonResponse({
@@ -436,7 +446,6 @@ def send_email_result(request):
         return JsonResponse(
             {'success': False, 'message': f'Lỗi hệ thống: {str(e)}'}, status=500
         )
-
 
 def reconnect_report_view(
     request,
@@ -564,6 +573,7 @@ def _get_reconnect360_report_data(survey, request):
             "status": "error",
             "message": "Không tìm thấy khảo sát!",
             "total_participants": 0,
+            "total_surveys": 0,
             "total_completed": 0,
             "completion_rate": 0,
             "group_abc": {"chart_data": {"labels": [], "series": []}, "table_data": []},
@@ -604,8 +614,12 @@ def _get_reconnect360_report_data(survey, request):
                 f"{date_field}__year__lte": int(year_to),
             })
 
-    # Tổng số người tham gia dựa chính xác theo mốc thời gian đã lọc
-    total_participants = survey_submissions.count()
+    # Tổng số bài khảo sát (Tổng số lượt nộp)
+    total_surveys = survey_submissions.count()
+
+    # Tổng số người tham gia (Đếm người dùng duy nhất không trùng lặp)
+    # Lưu ý: Thay 'submission__user' bằng 'submission__email' nếu khảo sát không bắt buộc đăng nhập
+    total_participants = survey_submissions.values("submission__user").distinct().count()
 
     # 3. XỬ LÝ NHÓM ALL_ABC (Score A + B + C)
     thresholds_abc = SurveyResultThreshold.objects.filter(
@@ -623,7 +637,8 @@ def _get_reconnect360_report_data(survey, request):
             score_abc__lte=t.max_score
         ).count()
 
-        pct = f"{round((count / total_participants) * 100, 1)}%" if total_participants > 0 else "0.0%"
+        # Tính % dựa trên tổng số bài khảo sát (total_surveys)
+        pct = f"{round((count / total_surveys) * 100, 1)}%" if total_surveys > 0 else "0.0%"
         
         labels_abc.append(t.title)
         series_abc.append(count)
@@ -650,7 +665,8 @@ def _get_reconnect360_report_data(survey, request):
             submission__score_d__lte=t.max_score
         ).count()
 
-        pct = f"{round((count / total_participants) * 100, 1)}%" if total_participants > 0 else "0.0%"
+        # Tính % dựa trên tổng số bài khảo sát (total_surveys)
+        pct = f"{round((count / total_surveys) * 100, 1)}%" if total_surveys > 0 else "0.0%"
 
         labels_d.append(t.title)
         series_d.append(count)
@@ -665,9 +681,10 @@ def _get_reconnect360_report_data(survey, request):
 
     return {
         "status": "success",
-        "total_participants": total_participants,
-        "total_completed": total_participants,
-        "completion_rate": 100 if total_participants > 0 else 0,
+        "total_participants": total_participants,  # Số người tham gia duy nhất
+        "total_surveys": total_surveys,            # Tổng số bài khảo sát
+        "total_completed": total_surveys,
+        "completion_rate": 100 if total_surveys > 0 else 0,
         "group_abc": {
             "chart_data": {"labels": labels_abc, "series": series_abc},
             "table_data": table_abc,
@@ -677,3 +694,5 @@ def _get_reconnect360_report_data(survey, request):
             "table_data": table_d,
         },
     }
+
+#

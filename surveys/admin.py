@@ -5,6 +5,7 @@ from .models import (
     CompositeSurveyItem, 
     SurveyResultThreshold, 
     Submission, 
+    SurveySubmission,
     Answer
 )
 
@@ -14,7 +15,7 @@ from .models import (
 class CompositeSurveyItemInline(admin.TabularInline):
     model = CompositeSurveyItem
     extra = 1
-    fields = ('order', 'survey')
+    fields = ('order', 'survey', 'name')
     ordering = ('order',)
     verbose_name = "Cấu trúc phần khảo sát"
     verbose_name_plural = "Cấu trúc các phần khảo sát"
@@ -42,6 +43,21 @@ class AnswerInline(admin.TabularInline):
     can_delete = False
 
 
+class SurveySubmissionInline(admin.TabularInline):
+    model = SurveySubmission
+    extra = 0
+    fields = ('submission', 'score', 'get_submitted_at')
+    readonly_fields = ('submission', 'score', 'get_submitted_at')
+    can_delete = False
+    show_change_link = True
+    verbose_name = "Kết quả khảo sát con"
+    verbose_name_plural = "Danh sách Kết quả khảo sát con"
+
+    @admin.display(description="Thời gian nộp")
+    def get_submitted_at(self, obj):
+        return obj.submission.submitted_at if obj.submission else "-"
+
+
 # ==================== 2. ADMIN CLASSES ====================
 
 @admin.register(CompositeSurvey)
@@ -58,7 +74,7 @@ class SurveyAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'category')
     search_fields = ('title', 'description')
     filter_horizontal = ('questions',) 
-    inlines = [ThresholdInline, SubmissionInline] 
+    inlines = [ThresholdInline, SubmissionInline, SurveySubmissionInline] 
 
 
 @admin.register(Submission)
@@ -85,7 +101,7 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(CompositeSurveyItem)
 class CompositeSurveyItemAdmin(admin.ModelAdmin):
-    list_display = ('composite_survey', 'survey', 'order')
+    list_display = ('composite_survey', 'survey', 'name', 'order')
     list_filter = ('composite_survey',)
     ordering = ('composite_survey', 'order')
 
@@ -100,7 +116,18 @@ class SurveyResultThresholdAdmin(admin.ModelAdmin):
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
     list_display = ('id', 'submission', 'question', 'selected_option', 'text_answer')
-    # Sửa list_filter tại đây (bỏ question__survey)
     list_filter = ('question__group', 'submission__composite_survey')
     search_fields = ('text_answer', 'submission__id', 'question__text')
     readonly_fields = ('submission', 'question', 'selected_option', 'text_answer')
+
+
+@admin.register(SurveySubmission)
+class SurveySubmissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'submission', 'survey', 'score', 'get_submitted_at')
+    list_filter = ('survey', 'submission__submitted_at')
+    search_fields = ('submission__id', 'submission__email', 'submission__lead__full_name', 'survey__title')
+    readonly_fields = ('submission', 'survey', 'score', 'get_submitted_at')
+
+    @admin.display(description="Thời gian nộp")
+    def get_submitted_at(self, obj):
+        return obj.submission.submitted_at if obj.submission else "-"

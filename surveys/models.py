@@ -169,3 +169,26 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     selected_option = models.ForeignKey(Option, on_delete=models.SET_NULL, null=True, blank=True)
     text_answer = models.TextField(blank=True, null=True)
+
+class SurveySubmission(models.Model):
+    """Lưu vết điểm số chi tiết cho từng Survey con trong một lượt làm bài CompositeSurvey."""
+    submission = models.ForeignKey(
+        Submission, 
+        on_delete=models.CASCADE, 
+        related_name='survey_results',
+        verbose_name="Lượt làm bài"
+    )
+    survey = models.ForeignKey(
+        Survey, 
+        on_delete=models.CASCADE, 
+        verbose_name="Khảo sát con"
+    )
+    score = models.IntegerField(default=0, verbose_name="Điểm đạt được")
+
+    class Meta:
+        unique_together = ('submission', 'survey')
+        verbose_name = "Kết quả khảo sát con"
+        verbose_name_plural = "Kết quả các khảo sát con"
+
+    def __str__(self):
+        return f"Submission #{self.submission_id} - {self.survey.title}: {self.score}đ"

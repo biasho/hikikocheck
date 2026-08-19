@@ -10,7 +10,8 @@ urlpatterns = [
     
     # 🎯 1. CÁC PATH CỐ ĐỊNH PHẢI ĐẶT LÊN ĐẦU
     path('send-email-result/', views.send_email_result, name='send_email_result'),
-    path('report/', views.reconnect_report_view, name='reconnect_report'),
+   # path('report/', views.reconnect_report_view, name='reconnect_report'),
+    path('report/', views.reconnect360_report_view, name='reconnect_report'),
 
     # 🎯 2. BÀI KHẢO SÁT TỔNG HỢP CỐ ĐỊNH (RECONNECT 360)
     path(

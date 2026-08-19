@@ -1,0 +1,282 @@
+<!-- PHẦN I - THÔNG TIN CHUNG VỀ ĐỐI TƯỢNG THAM GIA KHẢO SÁT -->
+<div class="question-item bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 mb-5"
+    data-group="demographics" data-group-name="Thông tin chung">
+
+    <!-- Title Phần I -->
+    <div class="mb-6 pb-3 border-b border-[var(--color-border)]">
+        <h2 class="text-sm md:text-base font-bold text-[var(--color-primary)] uppercase tracking-wide">
+            I. PHẦN I - THÔNG TIN CHUNG VỀ ĐỐI TƯỢNG THAM GIA KHẢO SÁT
+        </h2>
+    </div>
+
+    <div class="space-y-6">
+
+        <!-- Câu 1: Lớp -->
+        <div class="space-y-3">
+            <label class="block text-xs md:text-sm font-bold text-[var(--color-text-main)]">
+                1. Hiện tại, em đang học lớp:
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="grade" value="lop_6" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Lớp
+                        6</span>
+                </label>
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="grade" value="lop_7" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Lớp
+                        7</span>
+                </label>
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="grade" value="lop_8" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Lớp
+                        8</span>
+                </label>
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="grade" value="lop_9" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Lớp
+                        9</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Câu 2: Giới tính -->
+        <div class="space-y-3">
+            <label class="block text-xs md:text-sm font-bold text-[var(--color-text-main)]">
+                2. Giới tính của em:
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="gender" value="nam" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Nam</span>
+                </label>
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="gender" value="nu" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Nữ</span>
+                </label>
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="gender" value="khac" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Khác</span>
+                </label>
+                <label
+                    class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="gender" value="no_answer" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Không
+                        muốn trả lời</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Câu 3: Sống cùng ai -->
+        <div class="space-y-3">
+            <label class="block text-xs md:text-sm font-bold text-[var(--color-text-main)]">
+                3. Hiện tại, em thường sống cùng:
+            </label>
+            <div class="space-y-2">
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="living_with" value="parents"
+                        onchange="toggleOtherInput('living_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Bố
+                        và/hoặc mẹ</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="living_with" value="grandparents"
+                        onchange="toggleOtherInput('living_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Ông
+                        và/hoặc bà</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="living_with" value="relatives"
+                        onchange="toggleOtherInput('living_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Người
+                        thân khác</span>
+                </label>
+
+                <!-- Khác -->
+                <div
+                    class="p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] transition-colors">
+                    <label class="flex items-center gap-3 cursor-pointer group mb-2">
+                        <input type="radio" name="living_with" value="other"
+                            onchange="toggleOtherInput('living_other', true)"
+                            class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                        <span
+                            class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Khác:</span>
+                    </label>
+                    <input type="text" id="living_other" name="living_with_other" placeholder="Ghi rõ..." disabled
+                        class="hidden w-full p-2.5 rounded-lg bg-white dark:bg-zinc-800 border border-[var(--color-border)] text-xs text-[var(--color-text-main)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none">
+                </div>
+
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="living_with" value="no_answer"
+                        onchange="toggleOtherInput('living_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Không
+                        muốn trả lời</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Câu 4: Thời gian sử dụng MXH -->
+        <div class="space-y-3">
+            <label class="block text-xs md:text-sm font-bold text-[var(--color-text-main)]">
+                4. Thời gian trung bình em thường sử dụng mạng xã hội mỗi ngày:
+            </label>
+            <div class="space-y-2">
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_media_time" value="under_1h" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Dưới
+                        1h</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_media_time" value="1_2h" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Từ
+                        1-2h</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_media_time" value="2_4h" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Từ
+                        2-4h</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_media_time" value="4_6h" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Từ
+                        4-6h</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_media_time" value="over_6h" onchange="checkAnswered()"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Trên
+                        6h</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Câu 5: Mục đích sử dụng MXH -->
+        <div class="space-y-3">
+            <label class="block text-xs md:text-sm font-bold text-[var(--color-text-main)]">
+                5. Mục đích sử dụng mạng xã hội chủ yếu của em là gì:
+            </label>
+            <div class="space-y-2">
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_purpose" value="entertainment"
+                        onchange="toggleOtherInput('purpose_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Giải
+                        trí</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_purpose" value="connecting"
+                        onchange="toggleOtherInput('purpose_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Trò
+                        chuyện / kết nối bạn bè</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_purpose" value="study"
+                        onchange="toggleOtherInput('purpose_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Học
+                        tập</span>
+                </label>
+                <label
+                    class="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors group">
+                    <input type="radio" name="social_purpose" value="following"
+                        onchange="toggleOtherInput('purpose_other', false)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                    <span
+                        class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Theo
+                        dõi nội dung / sở thích</span>
+                </label>
+
+                <!-- Khác -->
+                <div
+                    class="p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] transition-colors">
+                    <label class="flex items-center gap-3 cursor-pointer group mb-2">
+                        <input type="radio" name="social_purpose" value="other"
+                            onchange="toggleOtherInput('purpose_other', true)"
+                            class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer">
+                        <span
+                            class="text-xs font-medium text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] cursor-pointer">Khác:</span>
+                    </label>
+                    <input type="text" id="purpose_other" name="social_purpose_other" placeholder="Ghi rõ mục đích..."
+                        disabled
+                        class="hidden w-full p-2.5 rounded-lg bg-white dark:bg-zinc-800 border border-[var(--color-border)] text-xs text-[var(--color-text-main)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Hàm Script bổ sung hỗ trợ bật/tắt ô "Khác" -->
+<script>
+    function toggleOtherInput(inputId, show) {
+        const inputElem = document.getElementById(inputId);
+        if (!inputElem) return;
+
+        if (show) {
+            inputElem.classList.remove('hidden');
+            inputElem.removeAttribute('disabled');
+            inputElem.focus();
+        } else {
+            inputElem.classList.add('hidden');
+            inputElem.setAttribute('disabled', 'true');
+            inputElem.value = '';
+        }
+        if (typeof checkAnswered === 'function') checkAnswered();
+    }
+</script>

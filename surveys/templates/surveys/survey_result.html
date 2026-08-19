@@ -2,222 +2,247 @@
 {% load static %}
 
 {% block default_theme %}light{% endblock %}
-{% block title %}Kết quả - {{ survey.title }} - HikikoCheck System{% endblock %}
+{% block title %}Kết quả - {{ composite.title }} - HikikoCheck System{% endblock %}
 
 {% block content %}
 <!-- Breadcrumb -->
 <nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
     <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
     <span class="mx-2">/</span>
-    <span class="text-[var(--color-text-main)] font-medium truncate max-w-xs">{{ survey.title }}</span>
+    <span class="text-[var(--color-text-main)] font-medium truncate max-w-xs">{{ composite.title }}</span>
     <span class="mx-2">/</span>
     <span class="text-[var(--color-text-sub)]">Kết quả</span>
 </nav>
 
-<div class="max-w-2xl mx-auto">
-    <!-- Card Kết Quả -->
+<div class="max-w-2xl mx-auto pb-12 space-y-6">
+    <!-- Card Tổng quan -->
     <div
-        class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 md:p-10 mb-6 text-center">
+        class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 md:p-8 text-center">
+        <div class="size-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+            <span class="material-symbols-outlined text-4xl">task_alt</span>
+        </div>
+        <h1 class="text-2xl font-black text-[var(--color-text-main)] mb-1">Cảm ơn bạn đã hoàn thành!</h1>
+        <p class="text-[var(--color-text-sub)] text-sm mb-4">Bộ khảo sát: <strong
+                class="text-[var(--color-text-main)]">{{ composite.title }}</strong></p>
+        <div class="inline-block px-5 py-3 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+            <span class="block text-xs font-bold text-[var(--color-text-sub)] uppercase tracking-wider mb-0.5">Tổng điểm
+                toàn bài</span>
+            <span class="text-3xl font-black text-[var(--color-primary)]">{{ total_score }} <span
+                    class="text-base text-[var(--color-text-sub)] font-bold">điểm</span></span>
+        </div>
+    </div>
 
-        <!-- Icon Thành công -->
-        <div class="size-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span class="material-symbols-outlined text-5xl">task_alt</span>
+    <!-- ================= NHÓM 1: ALL_ABC (THU MÌNH) ================= -->
+    <div class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 space-y-6">
+        <div class="text-center">
+            <h3 class="text-base font-black text-[var(--color-text-main)]">Phân mức: Nhóm A + B + C (Xu hướng thu mình)
+            </h3>
+            <span class="text-xs text-[var(--color-text-sub)]">Điểm của bạn: <strong
+                    class="text-[var(--color-primary)] font-bold text-sm">{{ score_abc }} điểm</strong></span>
         </div>
 
-        <h1 class="text-2xl md:text-3xl font-black text-[var(--color-text-main)] mb-2">
-            Cảm ơn bạn đã hoàn thành!
-        </h1>
-        <p class="text-[var(--color-text-sub)] text-sm mb-6">
-            Bài khảo sát: <strong class="text-[var(--color-text-main)]">{{ survey.title }}</strong>
-        </p>
-
-        <!-- Thống kê Tổng Điểm -->
-        <div class="p-6 rounded-2xl bg-[var(--color-background)] border border-[var(--color-border)] mb-6">
-            <span class="block text-xs font-bold text-[var(--color-text-sub)] uppercase tracking-wider mb-1">
-                Tổng điểm đạt được
-            </span>
-            <span class="text-4xl font-black text-[var(--color-primary)]">
-                {{ total_score }} <span class="text-lg font-bold text-[var(--color-text-sub)]">điểm</span>
-            </span>
+        <!-- Biểu đồ Chart.js cho Nhóm ABC -->
+        <div class="relative w-full max-w-lg mx-auto h-64">
+            <canvas id="chartAbc"></canvas>
         </div>
 
-        <!-- 📊 KHUNG HIỂN THỊ BIỂU ĐỒ CHART.JS (NẾT CĂNG - TƯƠNG TÁC - ĐỒNG BỘ THEME) -->
-        {% if chart_data_json %}
-        <div class="p-6 rounded-2xl bg-[var(--color-card-bg)] border border-[var(--color-border)] mb-6 shadow-sm">
-            <div class="flex items-center justify-center gap-2 text-[var(--color-primary)] font-bold text-base mb-4">
-                <span class="material-symbols-outlined">bar_chart</span>
-                <span>Biểu đồ phân tích kết quả</span>
+        <!-- Nhận xét & Kết luận Nhóm ABC -->
+        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] space-y-2">
+            {% if threshold_abc %}
+            <div class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold text-xs">
+                <span class="material-symbols-outlined text-base">verified</span>
+                <span>Mức độ: {{ threshold_abc.title }}</span>
             </div>
-
-            <div class="relative w-full max-w-lg mx-auto h-72">
-                <canvas id="resultChart"></canvas>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Khối Kết Luận & Lời Khuyên theo Ngưỡng Điểm -->
-        {% if threshold %}
-        <div class="text-left p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20 mb-6 space-y-4">
-            <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-base">
-                <span class="material-symbols-outlined">analytics</span>
-                <span>Mức độ: {{ threshold.title }}</span>
-            </div>
-
-            {% if threshold.description %}
+            {% if threshold_abc.description %}
             <div>
-                <h4 class="text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Nhận xét chi tiết:</h4>
-                <p class="text-sm text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">
-                    {{ threshold.description }}</p>
+                <h5 class="text-[11px] font-bold uppercase text-[var(--color-text-sub)] mb-0.5">Nhận xét chi tiết:</h5>
+                <p class="text-xs text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">
+                    {{ threshold_abc.description }}</p>
             </div>
             {% endif %}
-
-            {% if threshold.recommendation %}
-            <div class="pt-3 border-t border-amber-500/10">
-                <h4 class="text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Lời khuyên dành cho bạn:</h4>
-                <p class="text-sm text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">{{
-                    threshold.recommendation }}</p>
+            {% if threshold_abc.recommendation %}
+            <div class="pt-2 border-t border-[var(--color-border)]">
+                <h5 class="text-[11px] font-bold uppercase text-[var(--color-text-sub)] mb-0.5">Lời khuyên:</h5>
+                <p class="text-xs text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">
+                    {{ threshold_abc.recommendation }}</p>
             </div>
             {% endif %}
+            {% else %}
+            <p class="text-xs text-[var(--color-text-sub)] italic">Chưa có thông tin đánh giá ngưỡng cho nhóm này.</p>
+            {% endif %}
         </div>
-        {% endif %}
+    </div>
 
-        <!-- Nút Điều Hướng & Gửi Mail -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="{% url 'pages:home' %}"
-                class="w-full sm:w-auto flex-1 inline-flex items-center justify-center h-12 px-6 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] font-bold text-sm hover:bg-[var(--color-background)] transition-all">
-                <span class="material-symbols-outlined mr-2">home</span>
-                Trở về trang chủ
-            </a>
-
-            <!-- Nút Mở Modal Nhận Email -->
-            <button type="button" onclick="openEmailModal()"
-                class="w-full sm:w-auto flex-1 inline-flex items-center justify-center h-12 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
-                <span class="material-symbols-outlined mr-2">picture_as_pdf</span>
-                Nhận Báo Cáo PDF
-            </button>
+    <!-- ================= NHÓM 2: ALL_D (KẾT NỐI XÃ HỘI) ================= -->
+    <div class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 space-y-6">
+        <div class="text-center">
+            <h3 class="text-base font-black text-[var(--color-text-main)]">Phân mức: Nhóm D (Mức độ kết nối xã hội)</h3>
+            <span class="text-xs text-[var(--color-text-sub)]">Điểm của bạn: <strong
+                    class="text-emerald-600 font-bold text-sm">{{ score_d }} điểm</strong></span>
         </div>
 
+        <!-- Biểu đồ Chart.js cho Nhóm D -->
+        <div class="relative w-full max-w-lg mx-auto h-64">
+            <canvas id="chartD"></canvas>
+        </div>
+
+        <!-- Nhận xét & Kết luận Nhóm D -->
+        <div class="p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] space-y-2">
+            {% if threshold_d %}
+            <div class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold text-xs">
+                <span class="material-symbols-outlined text-base">verified</span>
+                <span>Mức độ: {{ threshold_d.title }}</span>
+            </div>
+            {% if threshold_d.description %}
+            <div>
+                <h5 class="text-[11px] font-bold uppercase text-[var(--color-text-sub)] mb-0.5">Nhận xét chi tiết:</h5>
+                <p class="text-xs text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">
+                    {{ threshold_d.description }}</p>
+            </div>
+            {% endif %}
+            {% if threshold_d.recommendation %}
+            <div class="pt-2 border-t border-[var(--color-border)]">
+                <h5 class="text-[11px] font-bold uppercase text-[var(--color-text-sub)] mb-0.5">Lời khuyên:</h5>
+                <p class="text-xs text-[var(--color-text-main)] leading-relaxed" style="white-space: pre-line;">
+                    {{threshold_d.recommendation }}</p>
+            </div>
+            {% endif %}
+            {% else %}
+            <p class="text-xs text-[var(--color-text-sub)] italic">Chưa có thông tin đánh giá ngưỡng cho nhóm này.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Nút Điều Hướng & Gửi Mail -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+        <a href="{% url 'pages:home' %}"
+            class="w-full sm:w-auto flex-1 inline-flex items-center justify-center h-12 px-6 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] font-bold text-sm hover:bg-[var(--color-background)] transition-all">
+            <span class="material-symbols-outlined mr-2">home</span> Trở về trang chủ
+        </a>
+        <button type="button" onclick="openEmailModal()"
+            class="w-full sm:w-auto flex-1 inline-flex items-center justify-center h-12 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
+            <span class="material-symbols-outlined mr-2">picture_as_pdf</span> Nhận Báo Cáo PDF
+        </button>
     </div>
 </div>
 
-<!-- Include Modal Email -->
 {% include 'surveys/email_modal.html' %}
 
-<!-- SCRIPT KHỞI TẠO CHART.JS & ĐỒNG BỘ THEME -->
-{% if chart_data_json %}
+<!-- SCRIPT KHỞI TẠO BIỂU ĐỒ VÀ AUTOFILL EMAIL CHO MODAL BÁO CÁO -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // 1. Đăng ký plugin Annotation nếu khả dụng
-        if (window['chartjs-plugin-annotation']) {
-            Chart.register(window['chartjs-plugin-annotation']);
-        }
-
-        const canvas = document.getElementById('resultChart');
-        if (!canvas) return;
-
-        const rawData = JSON.parse('{{ chart_data_json|escapejs }}');
-        const ctx = canvas.getContext('2d');
-
-        // 2. Lấy biến màu CSS từ Theme
         function getThemeColor(varName, fallback) {
             return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
         }
 
-        function buildChartConfig() {
-            const colorPrimary = getThemeColor('--color-primary', '#1152D4');
-            const colorTextMain = getThemeColor('--color-text-main', '#0D121B');
-            const colorTextSub = getThemeColor('--color-text-sub', '#4C669A');
-            const colorBorder = getThemeColor('--color-border', '#E5E7EB');
-            const colorUserLine = getThemeColor('--color-user-line', '#F43F5E');
+        // Đọc các biến màu trực tiếp từ CSS variables của hệ thống
+        const colorPrimary = getThemeColor('--color-primary', '#1152D4');
+        const colorTextMain = getThemeColor('--color-text-main', '#0D121B');
+        const colorTextSub = getThemeColor('--color-text-sub', '#4C669A');
+        const colorBorder = getThemeColor('--color-border', '#E5E7EB');
+        const colorSuccess = getThemeColor('--color-success', '#10B981');
 
-            // Màu cột phụ hài hòa theo Theme
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            let otherBarColor = '#CBD5E1';
-            if (currentTheme === 'red') otherBarColor = '#FECDD3';
-            if (currentTheme === 'dark') otherBarColor = '#374151';
+        function renderThresholdChart(canvasId, chartDataJson, lineColor) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
 
-            const bgColors = rawData.scores.map((_, idx) =>
-                idx === rawData.matched_index ? colorPrimary : otherBarColor
-            );
+            const data = JSON.parse(chartDataJson);
+            const userScoreArray = new Array(data.labels.length).fill(data.user_score);
 
-            return {
+            new Chart(canvas.getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: rawData.labels,
-                    datasets: [{
-                        data: rawData.scores,
-                        backgroundColor: bgColors,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barThickness: 24, // Cột gọn gàng, thanh mảnh
-                    }]
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Giới hạn mức điểm',
+                            data: data.max_scores,
+                            backgroundColor: document.documentElement.classList.contains('dark') || getComputedStyle(document.documentElement).getPropertyValue('--color-background').includes('11')
+                                ? 'rgba(255, 255, 255, 0.05)'
+                                : 'rgba(100, 116, 139, 0.08)',
+                            borderColor: colorBorder,
+                            borderWidth: 1,
+                            borderRadius: 6,
+                            barThickness: 28,
+                        },
+                        {
+                            type: 'line',
+                            label: 'Điểm của bạn',
+                            data: userScoreArray,
+                            borderColor: lineColor,
+                            backgroundColor: lineColor,
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointBackgroundColor: lineColor,
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: { duration: 500 },
                     plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => `Thang điểm: ${context.raw}đ`
-                            }
-                        },
-                        // Vẽ đường gạch đứt mốc điểm người dùng
-                        annotation: {
-                            annotations: {
-                                userScoreLine: {
-                                    type: 'line',
-                                    yMin: rawData.total_score,
-                                    yMax: rawData.total_score,
-                                    borderColor: colorUserLine,
-                                    borderWidth: 2,
-                                    borderDash: [6, 4],
-                                    label: {
-                                        display: true,
-                                        content: `Điểm của bạn: ${rawData.total_score}đ`,
-                                        position: 'start',
-                                        backgroundColor: colorUserLine,
-                                        color: '#ffffff',
-                                        font: { size: 10, weight: 'bold' },
-                                        padding: 4
-                                    }
-                                }
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 11 },
+                                color: colorTextSub
                             }
                         }
                     },
                     scales: {
                         x: {
                             grid: { display: false },
-                            ticks: { color: colorTextMain, font: { weight: 'bold', size: 12 } }
+                            ticks: {
+                                color: colorTextMain,
+                                font: { weight: 'bold', size: 10 }
+                            }
                         },
                         y: {
-                            grid: { color: colorBorder, strokeDash: [2, 2] },
-                            ticks: { color: colorTextSub, font: { size: 11 } },
+                            grid: {
+                                color: colorBorder,
+                                strokeDash: [3, 3]
+                            },
+                            ticks: {
+                                color: colorTextSub,
+                                precision: 0
+                            },
                             beginAtZero: true
                         }
                     }
                 }
-            };
+            });
         }
 
-        // 3. Khởi tạo Biểu đồ
-        window.resultChartInstance = new Chart(ctx, buildChartConfig());
+        // 1. Render Biểu đồ ABC
+        renderThresholdChart('chartAbc', '{{ chart_abc_json|escapejs }}', colorPrimary);
 
-        // 4. Lắng nghe sự thay đổi Theme để đổi màu tức thì
-        const observer = new MutationObserver(() => {
-            if (window.resultChartInstance) {
-                window.resultChartInstance.destroy();
+        // 2. Render Biểu đồ D
+        renderThresholdChart('chartD', '{{ chart_d_json|escapejs }}', colorSuccess);
+
+        // 3. Tự động điền (Autofill) Email vào Modal Nhận Báo Cáo PDF (nếu có sẵn)
+        const emailInput = document.querySelector("#emailModal input[name='email'], #emailInput, input[type='email']");
+        if (emailInput && !emailInput.value) {
+            // Ưu tiên email từ tài khoản Django đã đăng nhập
+            const authEmail = "{{ request.user.email }}";
+            if (authEmail) {
+                emailInput.value = authEmail;
+            } else {
+                // Nếu chưa đăng nhập, lấy từ localStorage của modal thông tin ban đầu
+                const savedInfo = localStorage.getItem("survey_participant_info");
+                if (savedInfo) {
+                    try {
+                        const info = JSON.parse(savedInfo);
+                        if (info.email) {
+                            emailInput.value = info.email;
+                        }
+                    } catch (e) {
+                        console.error("Lỗi đọc localStorage:", e);
+                    }
+                }
             }
-            window.resultChartInstance = new Chart(ctx, buildChartConfig());
-        });
-
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['data-theme', 'class']
-        });
+        }
     });
 </script>
-{% endif %}
-
 {% endblock %}

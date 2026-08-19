@@ -1,0 +1,142 @@
+<!-- Modal Nhập Thông Tin Khảo Sát -->
+<div id="surveyInfoModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+    <div
+        class="bg-[var(--color-card-bg)] rounded-2xl shadow-xl ring-1 ring-[var(--color-border)] max-w-md w-full p-6 space-y-5 transform scale-95 transition-transform duration-300">
+        <div class="text-center">
+            <div
+                class="size-14 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-full flex items-center justify-center mx-auto mb-3">
+                <span class="material-symbols-outlined text-3xl">badge</span>
+            </div>
+            <h3 class="text-xl font-black text-[var(--color-text-main)]">Thông tin người tham gia</h3>
+            <p class="text-xs text-[var(--color-text-sub)] mt-1">Bạn có thể cập nhật thông tin hoặc bấm bỏ qua để làm
+                bài ngay.</p>
+        </div>
+
+        <form id="surveyInfoForm" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1.5">Họ và tên</label>
+                <input type="text" name="participant_name" placeholder="Nhập họ và tên (tùy chọn)..."
+                    class="w-full h-11 px-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-all">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1.5">Lớp / Đơn
+                    vị</label>
+                <input type="text" name="participant_class" placeholder="Ví dụ: 8A... (tùy chọn)"
+                    class="w-full h-11 px-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-all">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1.5">Email (Hoặc mã định
+                    danh)</label>
+                <input type="email" name="email" placeholder="nhapemail@gmail.com (tùy chọn)"
+                    class="w-full h-11 px-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-all">
+            </div>
+
+            <div class="flex items-center gap-3 pt-1">
+                <button type="button" id="skipModalBtn"
+                    class="w-1/3 h-12 bg-gray-200 hover:bg-gray-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-[var(--color-text-main)] font-bold rounded-xl text-sm transition-all cursor-pointer flex items-center justify-center">
+                    Bỏ qua
+                </button>
+                <button type="submit"
+                    class="w-2/3 h-12 bg-[var(--color-primary)] hover:opacity-95 text-white font-bold rounded-xl text-sm shadow-lg shadow-[var(--color-primary)]/25 transition-all cursor-pointer flex items-center justify-center gap-2">
+                    <span>Bắt đầu làm bài</span>
+                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("surveyInfoModal");
+        const form = document.getElementById("surveyInfoForm");
+        const skipBtn = document.getElementById("skipModalBtn");
+        const mainForm = document.getElementById("survey-form"); // Form nộp bài chính chứa các câu hỏi khảo sát
+
+        function showModal() {
+            modal.classList.remove("opacity-0", "pointer-events-none");
+            modal.querySelector("div > div").classList.remove("scale-95");
+        }
+
+        function hideModal() {
+            modal.classList.add("opacity-0", "pointer-events-none");
+            modal.querySelector("div > div").classList.add("scale-95");
+        }
+
+        // 1. Tự động điền thông tin từ tài khoản hoặc localStorage nếu có sẵn
+        const isAuthenticated = "{{ request.user.is_authenticated|yesno:'true,false' }}" === "true";
+        if (isAuthenticated) {
+            const authName = "{{ request.user.get_full_name|default:request.user.username }}";
+            const authEmail = "{{ request.user.email }}";
+
+            if (authName && form.querySelector("[name='participant_name']")) {
+                form.querySelector("[name='participant_name']").value = authName;
+            }
+            if (authEmail && form.querySelector("[name='email']")) {
+                form.querySelector("[name='email']").value = authEmail;
+            }
+        } else {
+            const savedInfo = localStorage.getItem("survey_participant_info");
+            if (savedInfo) {
+                try {
+                    const info = JSON.parse(savedInfo);
+                    if (info.name && form.querySelector("[name='participant_name']")) {
+                        form.querySelector("[name='participant_name']").value = info.name;
+                    }
+                    if (info.school_class && form.querySelector("[name='participant_class']")) {
+                        form.querySelector("[name='participant_class']").value = info.school_class;
+                    }
+                    if (info.email && form.querySelector("[name='email']")) {
+                        form.querySelector("[name='email']").value = info.email;
+                    }
+                } catch (e) {
+                    console.error("Lỗi đọc dữ liệu localStorage:", e);
+                }
+            }
+        }
+
+        // 2. Hiển thị modal khi load trang
+        showModal();
+
+        // Hàm xử lý chung để lưu thông tin và truyền sang form chính
+        function processAndSaveData() {
+            const formData = new FormData(form);
+            const name = formData.get("participant_name") || "";
+            const schoolClass = formData.get("participant_class") || "";
+            const email = formData.get("email") || "";
+
+            const updatedInfo = {
+                name: name,
+                school_class: schoolClass,
+                email: email
+            };
+
+            // Lưu vào localStorage cho các lần ghé thăm sau
+            if (name || schoolClass || email) {
+                localStorage.setItem("survey_participant_info", JSON.stringify(updatedInfo));
+            }
+
+            // Đồng bộ dữ liệu sang các input ẩn của form nộp bài chính (để gửi lên server)
+            if (mainForm) {
+                if (mainForm.querySelector("#hidden_participant_name")) mainForm.querySelector("#hidden_participant_name").value = name;
+                if (mainForm.querySelector("#hidden_participant_class")) mainForm.querySelector("#hidden_participant_class").value = schoolClass;
+                if (mainForm.querySelector("#hidden_email")) mainForm.querySelector("#hidden_email").value = email;
+            }
+
+            hideModal();
+        }
+
+        // 3. Nút Bỏ qua
+        skipBtn.addEventListener("click", function () {
+            processAndSaveData();
+        });
+
+        // 4. Xử lý khi bấm Bắt đầu làm bài
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            processAndSaveData();
+        });
+    });
+</script>

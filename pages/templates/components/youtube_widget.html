@@ -2,8 +2,8 @@
 <div class="bg-[var(--color-card-bg)] rounded-xl shadow-xl overflow-hidden ring-1 ring-[var(--color-border)]">
     <!-- Tiêu đề Widget -->
     <div class="p-4 bg-[var(--color-primary)] text-white">
-        <h3 class="text-lg font-bold tracking-tight">Video Giới thiệu & Hướng dẫn</h3>
-        <p class="text-white/80 text-xs">Xem video để hiểu rõ hơn về quy trình khảo sát</p>
+        <h3 class="text-lg font-bold tracking-tight">Video Giới thiệu</h3>
+        <p class="text-white/80 text-xs">Xem video để hiểu rõ hơn vì sao chúng ta cần khảo sát</p>
     </div>
 
     <div class="p-4 space-y-4">
@@ -27,7 +27,7 @@
         </div>
 
         <!-- Nút bấm hành động (CTA) -->
-        <a href="{% url 'polls:index' %}"
+        <a href="{% url 'surveys:reconnect360_detail' %}"
             class="w-full h-12 bg-[var(--color-accent)] hover:opacity-90 text-gray-900 font-bold rounded-lg shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-[1.02] active:scale-95">
             <span class="material-symbols-outlined text-[20px]">assignment</span>
             <span>Khảo sát ngay</span>

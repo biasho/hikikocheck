@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="vi" data-theme="{% block default_theme %}light{% endblock %}">
 
@@ -6,7 +5,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Reconnect 360°{% endblock %}</title>
+    {% load static %}
 
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
     <!-- 💥 ANTI-FLICKER SCRIPT (ĐẶT NGAY TRÊN CÙNG ĐỂ CHẠY TRƯỚC TẤT CẢ) -->
     <script>
         (function () {
@@ -27,7 +28,6 @@
     <!-- Static CSS -->
     <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-
     <style>
         /* CSS hỗ trợ Anti-Flicker cho màu nền HTML gốc */
         html {

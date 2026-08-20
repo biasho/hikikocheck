@@ -8,10 +8,10 @@
     <p class="mt-2 text-base text-[var(--color-text-muted, #64748b)]">Tìm hiểu về đội ngũ phát triển, mục tiêu và những người đồng hành đứng sau dự án Reconnect 360°.</p>
 </div>
 
-<!-- Layout chia 2 cột: Sidebar (trái) và Nội dung (phải) -->
-<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
+<!-- Layout chia 2 cột: Bỏ 'relative' ở container cha để sticky hoạt động chuẩn trên Desktop -->
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
     
-    <!-- SIDEBAR MENU -->
+    <!-- SIDEBAR MENU: Sticky cố định khi cuộn trang trên Desktop -->
     <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-16 lg:top-20 z-30 about-aside-box shadow-md lg:shadow-sm transition-all">
         <h3 class="hidden lg:block text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted, #94a3b8)] px-3 mb-3">Thông tin chung</h3>
         
@@ -156,7 +156,6 @@
 
 {% block extra_css %}
 <style>
-    /* Ép khung Aside giữ màu nền cố định & điều chỉnh z-index */
     .about-aside-box {
         border: 1px solid rgba(226, 232, 240, 0.9) !important;
         background-color: var(--color-surface, #ffffff) !important;
@@ -189,7 +188,6 @@
         }
     }
 
-    /* Sử dụng transition thay vì animation để tránh khựng khi hủy giữa chừng */
     .about-content {
         display: none;
         opacity: 0;
@@ -243,7 +241,6 @@
     let hoverTimeout;
     let currentTab = 'intro';
 
-    // Khởi tạo trạng thái ban đầu cho tab Intro
     document.addEventListener('DOMContentLoaded', () => {
         const initialContent = document.getElementById('acontent-intro');
         if (initialContent) {
@@ -307,7 +304,6 @@
         if (currentTab === tabId) return;
         currentTab = tabId;
 
-        // Cập nhật giao diện nút Tab
         document.querySelectorAll('.about-tab-btn').forEach(btn => {
             btn.classList.remove('about-tab-active');
             btn.classList.add('about-tab-inactive');
@@ -325,7 +321,6 @@
             }
         }
 
-        // Chuyển đổi nội dung êm ái bằng CSS Transition
         document.querySelectorAll('.about-content').forEach(content => {
             content.classList.remove('show');
             content.classList.remove('active');
@@ -334,7 +329,6 @@
         const target = document.getElementById('acontent-' + tabId);
         if (target) {
             target.classList.add('active');
-            // Cần delay ngắn (requestAnimationFrame) để trình duyệt ghi nhận lớp display: block trước khi biến đổi opacity
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     target.classList.add('show');
@@ -345,7 +339,6 @@
 
     function handleTabHover(tabId) {
         clearTimeout(hoverTimeout);
-        // Delay 120ms để chỉ chuyển tab khi người dùng thực sự muốn (tránh lướt nhanh)
         hoverTimeout = setTimeout(() => {
             switchAboutTab(tabId);
         }, 120);

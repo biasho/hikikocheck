@@ -1,15 +1,14 @@
-{% load survey_reconnect360 %}
 
 <!-- HEADER / NAVBAR -->
+{% load static %}
+{% load survey_reconnect360 %}
 <header
     class="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-card-bg)]/95 backdrop-blur-sm transition-colors">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-2">
             <!-- Logo -->
             <a href="{% url 'pages:home' %}" class="flex items-center gap-2 text-[var(--color-primary)] shrink-0">
-                <div class="size-8 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white">
-                    <span class="material-symbols-outlined text-[20px]">shield</span>
-                </div>
+                <img src="{% static 'images/reconnect360_logo.PNG' %}" alt="Reconnect 360°" class="h-12 w-auto object-contain">
                 <h2 class="text-[var(--color-text-main)] text-xl font-bold tracking-tight">Reconnect 360°</h2>
             </a>
 

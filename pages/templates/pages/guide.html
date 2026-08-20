@@ -9,42 +9,55 @@
 </div>
 
 <!-- Layout chia 2 cột: Sidebar (trái) và Nội dung (phải) -->
-<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
     
-    <!-- SIDEBAR MENU: Thay onclick -> onmouseenter & onclick -->
-    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-20 z-10 guide-aside-box">
+    <!-- SIDEBAR MENU (Đã fix dính đỉnh & che nền tuyệt đối) -->
+    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-0 lg:top-20 z-30 guide-aside-box shadow-md lg:shadow-sm relative overflow-hidden transition-all">
         <h3 class="hidden lg:block text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted, #94a3b8)] px-3 mb-3">Mục lục hướng dẫn</h3>
         
-        <nav class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-1 lg:pb-0 scrollbar-none">
-            <button onmouseenter="switchGuideTab('intro')" onclick="switchGuideTab('intro')" id="gtab-intro" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-active whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">info</span>
-                <span>Chào mừng & Giới thiệu</span>
-            </button>
-            <button onmouseenter="switchGuideTab('step1')" onclick="switchGuideTab('step1')" id="gtab-step1" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">login</span>
-                <span>Bước 1: Truy cập khảo sát</span>
-            </button>
-            <button onmouseenter="switchGuideTab('step2')" onclick="switchGuideTab('step2')" id="gtab-step2" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">quiz</span>
-                <span>Bước 2: Trả lời câu hỏi</span>
-            </button>
-            <button onmouseenter="switchGuideTab('step3')" onclick="switchGuideTab('step3')" id="gtab-step3" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">bar_chart</span>
-                <span>Bước 3: Xem kết quả</span>
-            </button>
-            <button onmouseenter="switchGuideTab('step4')" onclick="switchGuideTab('step4')" id="gtab-step4" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">support_agent</span>
-                <span>Bước 4: Báo cáo & Gợi ý</span>
-            </button>
-            <button onmouseenter="switchGuideTab('notes')" onclick="switchGuideTab('notes')" id="gtab-notes" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">security</span>
-                <span>Lưu ý & Bảo mật</span>
-            </button>
-        </nav>
+        <!-- Wrapper menu trượt ngang trên mobile -->
+        <div class="guide-scroll-container relative">
+            <nav id="guide-nav-scroll" onscroll="handleMenuScroll()" class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-none w-full snap-x snap-mandatory lg:snap-none">
+                <button onclick="switchGuideTab('intro')" id="gtab-intro" data-tab="intro" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-active whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">info</span>
+                    <span>Chào mừng & Giới thiệu</span>
+                </button>
+                <button onclick="switchGuideTab('step1')" id="gtab-step1" data-tab="step1" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">login</span>
+                    <span>Bước 1: Truy cập khảo sát</span>
+                </button>
+                <button onclick="switchGuideTab('step2')" id="gtab-step2" data-tab="step2" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">quiz</span>
+                    <span>Bước 2: Trả lời câu hỏi</span>
+                </button>
+                <button onclick="switchGuideTab('step3')" id="gtab-step3" data-tab="step3" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">bar_chart</span>
+                    <span>Bước 3: Xem kết quả</span>
+                </button>
+                <button onclick="switchGuideTab('step4')" id="gtab-step4" data-tab="step4" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">support_agent</span>
+                    <span>Bước 4: Báo cáo & Gợi ý</span>
+                </button>
+                <button onclick="switchGuideTab('notes')" id="gtab-notes" data-tab="notes" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">security</span>
+                    <span>Lưu ý & Bảo mật</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Thanh chỉ báo vuốt (Gạch ngang / Dots) cho Mobile -->
+        <div class="flex lg:hidden items-center justify-center gap-1.5 pt-1 border-t border-slate-100 dark:border-slate-800 mt-1">
+            <span class="scroll-dot w-5 h-1 rounded-full bg-[var(--color-primary)] transition-all duration-300" data-index="0"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="1"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="2"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="3"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="4"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="5"></span>
+        </div>
     </aside>
 
     <!-- NỘI DUNG CHI TIẾT (CONTENT PANEL) -->
-    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 guide-content-box">
+    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 guide-content-box shadow-sm z-10">
         
         <!-- Tab 1: Giới thiệu -->
         <div id="gcontent-intro" class="guide-content active space-y-4">
@@ -162,10 +175,9 @@
 
 {% block extra_css %}
 <style>
-    /* 1. Thiết kế viền mỏng 1px tinh tế & Đổ bóng chìm cho Khung */
     .guide-aside-box {
-        border: 1px solid rgba(226, 232, 240, 0.8) !important;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        background-color: var(--color-surface, #ffffff) !important;
     }
 
     .guide-content-box {
@@ -173,20 +185,36 @@
         box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
     }
 
-    /* 2. Trạng thái mặc định của các thẻ nội dung */
+    /* Đảm bảo nền mờ ở cạnh phải menu không bị nhìn xuyên nội dung */
+    @media (max-width: 1023px) {
+        .guide-scroll-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--color-surface, #ffffff));
+            pointer-events: none;
+        }
+
+        /* Đẩy nhẹ offset cuộn trang để tiêu đề không cọ xát menu sticky */
+        .guide-content-box {
+            scroll-margin-top: 80px;
+        }
+    }
+
     .guide-content {
         display: none;
         opacity: 0;
         transform: translateY(10px);
     }
 
-    /* 3. Hiệu ứng Xuất hiện Mượt mà */
     .guide-content.active {
         display: block;
         animation: smoothFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* TRẠNG THÁI ACTIVE TAB: Nền Primary + Đổ bóng nhẹ */
     .guide-tab-active {
         background-color: var(--color-primary, #1152d4) !important;
         color: #ffffff !important;
@@ -194,21 +222,18 @@
         box-shadow: 0 2px 8px rgba(17, 82, 212, 0.25);
     }
 
-    /* TRẠNG THÁI INACTIVE TAB: Viền mỏng mờ */
     .guide-tab-inactive {
         background-color: transparent;
         color: var(--color-text-main, #0f172a);
         border: 1px solid transparent;
     }
 
-    /* HOVER TRÊN NÚT CHƯA CHỌN: Đổi sang viền Xanh Primary dịu */
     .guide-tab-inactive:hover {
         background-color: var(--color-background, #f8fafc) !important;
         color: var(--color-primary, #1152d4) !important;
         border-color: rgba(17, 82, 212, 0.2) !important;
     }
 
-    /* Keyframe xuất hiện mượt */
     @keyframes smoothFadeIn {
         0% {
             opacity: 0;
@@ -220,7 +245,6 @@
         }
     }
 
-    /* Khung cuộn ẩn thanh scrollbar trên mobile */
     .scrollbar-none::-webkit-scrollbar {
         display: none;
     }
@@ -233,42 +257,86 @@
 
 {% block extra_js %}
 <script>
+    let isUserClicking = false;
     let scrollTimeout;
 
-    function switchGuideTab(tabId) {
-        // Ẩn tất cả nội dung
+    function handleMenuScroll() {
+        if (window.innerWidth >= 1024) return;
+
+        const container = document.getElementById('guide-nav-scroll');
+        if (!container) return;
+
+        const scrollLeft = container.scrollLeft;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        if (maxScrollLeft > 0) {
+            const ratio = scrollLeft / maxScrollLeft;
+            const dots = document.querySelectorAll('.scroll-dot');
+            const activeIndex = Math.min(Math.floor(ratio * dots.length), dots.length - 1);
+
+            dots.forEach((dot, index) => {
+                if (index === activeIndex) {
+                    dot.classList.remove('w-2', 'bg-slate-300');
+                    dot.classList.add('w-5', 'bg-[var(--color-primary)]');
+                } else {
+                    dot.classList.remove('w-5', 'bg-[var(--color-primary)]');
+                    dot.classList.add('w-2', 'bg-slate-300');
+                }
+            });
+        }
+
+        if (isUserClicking) return;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const buttons = container.querySelectorAll('.guide-tab-btn');
+            const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
+
+            let closestBtn = null;
+            let minDistance = Infinity;
+
+            buttons.forEach(btn => {
+                const rect = btn.getBoundingClientRect();
+                const btnCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(containerCenter - btnCenter);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestBtn = btn;
+                }
+            });
+
+            if (closestBtn) {
+                const tabId = closestBtn.getAttribute('data-tab');
+                switchGuideTab(tabId, false);
+            }
+        }, 150);
+    }
+
+    function switchGuideTab(tabId, shouldScrollMenu = true) {
         document.querySelectorAll('.guide-content').forEach(content => {
             content.classList.remove('active');
         });
         
-        // Hiện nội dung tương ứng
         const target = document.getElementById('gcontent-' + tabId);
         if (target) {
             target.classList.add('active');
         }
 
-        // Reset tất cả các nút tab về inactive
         document.querySelectorAll('.guide-tab-btn').forEach(btn => {
             btn.classList.remove('guide-tab-active');
             btn.classList.add('guide-tab-inactive');
         });
 
-        // Đổi màu nút được chọn/hover sang active
         const activeBtn = document.getElementById('gtab-' + tabId);
         if (activeBtn) {
             activeBtn.classList.add('guide-tab-active');
             activeBtn.classList.remove('guide-tab-inactive');
             
-            // Cuộn nhẹ nút tab vào vùng nhìn thấy trên mobile
-            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-
-        // Trên Mobile/Màn hình nhỏ (< 1024px): Cuộn xuống nội dung sau một khoảng trễ ngắn để tạo độ êm
-        if (window.innerWidth < 1024 && target) {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            if (shouldScrollMenu) {
+                isUserClicking = true;
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                setTimeout(() => { isUserClicking = false; }, 500);
+            }
         }
     }
 </script>

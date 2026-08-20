@@ -9,34 +9,45 @@
 </div>
 
 <!-- Layout chia 2 cột: Sidebar (trái) và Nội dung (phải) -->
-<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
     
-    <!-- SIDEBAR MENU -->
-    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-20 z-10 about-aside-box">
+    <!-- SIDEBAR MENU (Đã fix dính đỉnh & che nền tuyệt đối) -->
+    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-0 lg:top-20 z-30 about-aside-box shadow-md lg:shadow-sm relative overflow-hidden transition-all">
         <h3 class="hidden lg:block text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted, #94a3b8)] px-3 mb-3">Thông tin chung</h3>
         
-        <nav class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-1 lg:pb-0 scrollbar-none">
-            <button onmouseenter="switchAboutTab('intro')" onclick="switchAboutTab('intro')" id="atab-intro" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-active whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">groups</span>
-                <span>Nhóm phát triển</span>
-            </button>
-            <button onmouseenter="switchAboutTab('members')" onclick="switchAboutTab('members')" id="atab-members" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">badge</span>
-                <span>Thành viên nhóm</span>
-            </button>
-            <button onmouseenter="switchAboutTab('advisor')" onclick="switchAboutTab('advisor')" id="atab-advisor" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">school</span>
-                <span>Giáo viên hướng dẫn</span>
-            </button>
-            <button onmouseenter="switchAboutTab('goals')" onclick="switchAboutTab('goals')" id="atab-goals" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal">
-                <span class="material-symbols-outlined text-lg">target</span>
-                <span>Mục tiêu dự án</span>
-            </button>
-        </nav>
+        <!-- Wrapper menu trượt ngang trên mobile -->
+        <div class="about-scroll-container relative">
+            <nav id="about-nav-scroll" onscroll="handleAboutMenuScroll()" class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-none w-full snap-x snap-mandatory lg:snap-none">
+                <button onclick="switchAboutTab('intro')" id="atab-intro" data-tab="intro" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-active whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">groups</span>
+                    <span>Nhóm phát triển</span>
+                </button>
+                <button onclick="switchAboutTab('members')" id="atab-members" data-tab="members" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">badge</span>
+                    <span>Thành viên nhóm</span>
+                </button>
+                <button onclick="switchAboutTab('advisor')" id="atab-advisor" data-tab="advisor" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">school</span>
+                    <span>Giáo viên hướng dẫn</span>
+                </button>
+                <button onclick="switchAboutTab('goals')" id="atab-goals" data-tab="goals" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">target</span>
+                    <span>Mục tiêu dự án</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Thanh chỉ báo vuốt (Dots) cho Mobile -->
+        <div class="flex lg:hidden items-center justify-center gap-1.5 pt-1 border-t border-slate-100 dark:border-slate-800 mt-1">
+            <span class="scroll-dot w-5 h-1 rounded-full bg-[var(--color-primary)] transition-all duration-300" data-index="0"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="1"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="2"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="3"></span>
+        </div>
     </aside>
 
     <!-- NỘI DUNG CHI TIẾT (CONTENT PANEL) -->
-    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 about-content-box">
+    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 about-content-box shadow-sm z-10">
         
         <!-- Tab 1: Nhóm phát triển -->
         <div id="acontent-intro" class="about-content active space-y-4">
@@ -147,10 +158,9 @@
 
 {% block extra_css %}
 <style>
-    /* 1. Thiết kế viền mỏng 1px tinh tế & Đổ bóng chìm cho Khung */
     .about-aside-box {
-        border: 1px solid rgba(226, 232, 240, 0.8) !important;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        background-color: var(--color-surface, #ffffff) !important;
     }
 
     .about-content-box {
@@ -158,20 +168,35 @@
         box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
     }
 
-    /* 2. Trạng thái mặc định của các thẻ nội dung */
+    /* Đảm bảo nền mờ ở cạnh phải menu trên mobile */
+    @media (max-width: 1023px) {
+        .about-scroll-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--color-surface, #ffffff));
+            pointer-events: none;
+        }
+
+        .about-content-box {
+            scroll-margin-top: 80px;
+        }
+    }
+
     .about-content {
         display: none;
         opacity: 0;
         transform: translateY(10px);
     }
 
-    /* 3. Hiệu ứng Xuất hiện Mượt mà */
     .about-content.active {
         display: block;
         animation: smoothFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* TRẠNG THÁI ACTIVE TAB: Nền Primary + Đổ bóng nhẹ */
     .about-tab-active {
         background-color: var(--color-primary, #1152d4) !important;
         color: #ffffff !important;
@@ -179,21 +204,18 @@
         box-shadow: 0 2px 8px rgba(17, 82, 212, 0.25);
     }
 
-    /* TRẠNG THÁI INACTIVE TAB: Viền mỏng mờ */
     .about-tab-inactive {
         background-color: transparent;
         color: var(--color-text-main, #0f172a);
         border: 1px solid transparent;
     }
 
-    /* HOVER TRÊN NÚT CHƯA CHỌN: Đổi sang viền Xanh Primary dịu */
     .about-tab-inactive:hover {
         background-color: var(--color-background, #f8fafc) !important;
         color: var(--color-primary, #1152d4) !important;
         border-color: rgba(17, 82, 212, 0.2) !important;
     }
 
-    /* Keyframe xuất hiện mượt */
     @keyframes smoothFadeIn {
         0% {
             opacity: 0;
@@ -205,7 +227,6 @@
         }
     }
 
-    /* Khung cuộn ẩn thanh scrollbar trên mobile */
     .scrollbar-none::-webkit-scrollbar {
         display: none;
     }
@@ -218,42 +239,86 @@
 
 {% block extra_js %}
 <script>
+    let isUserClicking = false;
     let scrollTimeout;
 
-    function switchAboutTab(tabId) {
-        // Ẩn tất cả nội dung
+    function handleAboutMenuScroll() {
+        if (window.innerWidth >= 1024) return;
+
+        const container = document.getElementById('about-nav-scroll');
+        if (!container) return;
+
+        const scrollLeft = container.scrollLeft;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        if (maxScrollLeft > 0) {
+            const ratio = scrollLeft / maxScrollLeft;
+            const dots = document.querySelectorAll('.scroll-dot');
+            const activeIndex = Math.min(Math.floor(ratio * dots.length), dots.length - 1);
+
+            dots.forEach((dot, index) => {
+                if (index === activeIndex) {
+                    dot.classList.remove('w-2', 'bg-slate-300');
+                    dot.classList.add('w-5', 'bg-[var(--color-primary)]');
+                } else {
+                    dot.classList.remove('w-5', 'bg-[var(--color-primary)]');
+                    dot.classList.add('w-2', 'bg-slate-300');
+                }
+            });
+        }
+
+        if (isUserClicking) return;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const buttons = container.querySelectorAll('.about-tab-btn');
+            const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
+
+            let closestBtn = null;
+            let minDistance = Infinity;
+
+            buttons.forEach(btn => {
+                const rect = btn.getBoundingClientRect();
+                const btnCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(containerCenter - btnCenter);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestBtn = btn;
+                }
+            });
+
+            if (closestBtn) {
+                const tabId = closestBtn.getAttribute('data-tab');
+                switchAboutTab(tabId, false);
+            }
+        }, 150);
+    }
+
+    function switchAboutTab(tabId, shouldScrollMenu = true) {
         document.querySelectorAll('.about-content').forEach(content => {
             content.classList.remove('active');
         });
         
-        // Hiện nội dung tương ứng
         const target = document.getElementById('acontent-' + tabId);
         if (target) {
             target.classList.add('active');
         }
 
-        // Reset tất cả các nút tab về inactive
         document.querySelectorAll('.about-tab-btn').forEach(btn => {
             btn.classList.remove('about-tab-active');
             btn.classList.add('about-tab-inactive');
         });
 
-        // Đổi màu nút được chọn/hover sang active
         const activeBtn = document.getElementById('atab-' + tabId);
         if (activeBtn) {
             activeBtn.classList.add('about-tab-active');
             activeBtn.classList.remove('about-tab-inactive');
             
-            // Cuộn nhẹ nút tab vào vùng nhìn thấy trên mobile
-            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-
-        // Trên Mobile/Màn hình nhỏ (< 1024px): Cuộn xuống nội dung sau một khoảng trễ ngắn để tạo độ êm
-        if (window.innerWidth < 1024 && target) {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            if (shouldScrollMenu) {
+                isUserClicking = true;
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                setTimeout(() => { isUserClicking = false; }, 500);
+            }
         }
     }
 </script>

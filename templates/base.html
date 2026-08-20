@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Reconnect 360°{% endblock %}</title>
     {% load static %}
-
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
-    <!-- 💥 ANTI-FLICKER SCRIPT (ĐẶT NGAY TRÊN CÙNG ĐỂ CHẠY TRƯỚC TẤT CẢ) -->
     <script>
         (function () {
             const savedTheme = localStorage.getItem('user-custom-theme');
@@ -19,13 +17,11 @@
         })();
     </script>
 
-    <!-- Google Fonts & Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-    <!-- Static CSS -->
     <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <style>

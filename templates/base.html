@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="vi" data-theme="{% block default_theme %}light{% endblock %}">
 
@@ -5,26 +6,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Reconnect 360°{% endblock %}</title>
-    {% load static %}
+
+    <!-- Favicon Configuration -->
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+
+    <!-- Anti-Flicker Script -->
     <script>
         (function () {
             const savedTheme = localStorage.getItem('user-custom-theme');
             if (savedTheme) {
-                // Ép data-theme theo Theme người dùng đã chọn ngay lập tức
                 document.documentElement.setAttribute('data-theme', savedTheme);
             }
         })();
     </script>
 
+    <!-- Google Fonts & Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
+    <!-- Static CSS -->
     <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
     <style>
         /* CSS hỗ trợ Anti-Flicker cho màu nền HTML gốc */
         html {
@@ -74,10 +80,11 @@
         }
     </style>
     {% block extra_css %}{% endblock %}
+
     <!-- Chart.js Core -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Plugin Annotation (Nếu muốn vẽ đường gạch đứt mốc điểm người dùng) -->
+    <!-- Plugin Annotation -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"></script>
 </head>
 

@@ -310,6 +310,9 @@
   .top-4 {
     top: calc(var(--spacing) * 4);
   }
+  .top-16 {
+    top: calc(var(--spacing) * 16);
+  }
   .top-20 {
     top: calc(var(--spacing) * 20);
   }
@@ -1459,6 +1462,9 @@
   .pt-10 {
     padding-top: calc(var(--spacing) * 10);
   }
+  .pr-4 {
+    padding-right: calc(var(--spacing) * 4);
+  }
   .pb-1 {
     padding-bottom: var(--spacing);
   }
@@ -1822,6 +1828,11 @@
     -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
     backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
   }
+  .transition {
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
   .transition-all {
     transition-property: all;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -2109,17 +2120,8 @@
     .md\:\!hidden {
       display: none !important;
     }
-    .md\:block {
-      display: block;
-    }
     .md\:flex {
       display: flex;
-    }
-    .md\:hidden {
-      display: none;
-    }
-    .md\:w-72 {
-      width: calc(var(--spacing) * 72);
     }
     .md\:w-auto {
       width: auto;
@@ -2138,9 +2140,6 @@
     }
     .md\:items-end {
       align-items: flex-end;
-    }
-    .md\:gap-8 {
-      gap: calc(var(--spacing) * 8);
     }
     .md\:p-8 {
       padding: calc(var(--spacing) * 8);
@@ -2196,9 +2195,6 @@
     .lg\:block {
       display: block;
     }
-    .lg\:flex {
-      display: flex;
-    }
     .lg\:hidden {
       display: none;
     }
@@ -2246,6 +2242,9 @@
     }
     .lg\:py-3 {
       padding-block: calc(var(--spacing) * 3);
+    }
+    .lg\:pr-0 {
+      padding-right: 0px;
     }
     .lg\:pb-0 {
       padding-bottom: 0px;

@@ -1,0 +1,364 @@
+{% extends 'base.html' %}
+
+{% block title %}Hướng dẫn sử dụng - Reconnect 360°{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-3xl font-black tracking-tight text-[var(--color-text-main)] sm:text-4xl">📚 Hướng dẫn sử dụng</h1>
+    <p class="mt-2 text-base text-[var(--color-text-muted, #64748b)]">Tìm hiểu cách thức tham gia khảo sát, quy trình thực hiện và cách đọc hiểu báo cáo kết quả trên Reconnect 360°.</p>
+</div>
+
+<!-- Layout chia 2 cột: Sidebar (trái) và Nội dung (phải) -->
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
+    
+    <!-- SIDEBAR MENU -->
+    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-16 lg:top-20 z-30 guide-aside-box shadow-md lg:shadow-sm transition-all">
+        <h3 class="hidden lg:block text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted, #94a3b8)] px-3 mb-3">Mục lục hướng dẫn</h3>
+        
+        <!-- Wrapper menu trượt ngang trên mobile -->
+        <div class="guide-scroll-container relative w-full">
+            <nav id="guide-nav-scroll" onscroll="handleMenuScroll()" class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-none w-full snap-x snap-mandatory lg:snap-none pr-4 lg:pr-0">
+                <button onclick="switchGuideTab('intro')" onmouseenter="handleTabHover('intro')" onmouseleave="cancelTabHover()" id="gtab-intro" data-tab="intro" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-active whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">info</span>
+                    <span>Chào mừng & Giới thiệu</span>
+                </button>
+                <button onclick="switchGuideTab('step1')" onmouseenter="handleTabHover('step1')" onmouseleave="cancelTabHover()" id="gtab-step1" data-tab="step1" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">login</span>
+                    <span>Bước 1: Truy cập khảo sát</span>
+                </button>
+                <button onclick="switchGuideTab('step2')" onmouseenter="handleTabHover('step2')" onmouseleave="cancelTabHover()" id="gtab-step2" data-tab="step2" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">quiz</span>
+                    <span>Bước 2: Trả lời câu hỏi</span>
+                </button>
+                <button onclick="switchGuideTab('step3')" onmouseenter="handleTabHover('step3')" onmouseleave="cancelTabHover()" id="gtab-step3" data-tab="step3" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">bar_chart</span>
+                    <span>Bước 3: Xem kết quả</span>
+                </button>
+                <button onclick="switchGuideTab('step4')" onmouseenter="handleTabHover('step4')" onmouseleave="cancelTabHover()" id="gtab-step4" data-tab="step4" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">support_agent</span>
+                    <span>Bước 4: Báo cáo & Gợi ý</span>
+                </button>
+                <button onclick="switchGuideTab('notes')" onmouseenter="handleTabHover('notes')" onmouseleave="cancelTabHover()" id="gtab-notes" data-tab="notes" class="guide-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all guide-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">security</span>
+                    <span>Lưu ý & Bảo mật</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Thanh chỉ báo vuốt (Dots) cho Mobile -->
+        <div class="flex lg:hidden items-center justify-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 mt-1">
+            <span class="scroll-dot w-5 h-1 rounded-full bg-[var(--color-primary)] transition-all duration-300" data-index="0"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="1"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="2"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="3"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="4"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="5"></span>
+        </div>
+    </aside>
+
+    <!-- NỘI DUNG CHI TIẾT (CONTENT PANEL) -->
+    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 guide-content-box shadow-sm z-10">
+        
+        <!-- Tab 1: Giới thiệu -->
+        <div id="gcontent-intro" class="guide-content active space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Chào mừng bạn đến với Reconnect 360°!</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                <strong>Reconnect 360°</strong> là nền tảng hỗ trợ học sinh THCS tự đánh giá mức độ kết nối xã hội của bản thân thông qua bảng khảo sát trực tuyến. Chỉ với vài phút, bạn có thể hiểu hơn về cách mình đang kết nối với bạn bè, gia đình và những người xung quanh.
+            </p>
+            <div class="p-4 bg-[var(--color-background, #f8fafc)] border-l-4 border-[var(--color-primary, #1152d4)] rounded-r-lg mt-4">
+                <p class="text-sm italic text-[var(--color-text-main)]">"Kết nối bản thân • Kết nối mọi người • Kết nối tương lai 🌱"</p>
+            </div>
+        </div>
+
+        <!-- Tab 2: Bước 1 -->
+        <div id="gcontent-step1" class="guide-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Bước 1: Truy cập và cung cấp thông tin</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Tại trang chủ, nhấn nút <strong>"Bắt đầu khảo sát"</strong> để tham gia đánh giá. Trước khi bắt đầu, bạn sẽ được yêu cầu cung cấp một số thông tin cơ bản:
+            </p>
+            <ul class="list-disc pl-5 space-y-2 text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                <li>Khối lớp đang theo học</li>
+                <li>Giới tính (không bắt buộc)</li>
+                <li>Người sống cùng</li>
+                <li>Thời gian sử dụng mạng xã hội mỗi ngày</li>
+                <li>Mục đích sử dụng mạng xã hội</li>
+            </ul>
+            <p class="text-xs sm:text-sm font-medium text-amber-600 dark:text-amber-400 mt-2">
+                💡 Những thông tin này chỉ phục vụ mục đích thống kê và nghiên cứu, không ảnh hưởng đến kết quả đánh giá cá nhân.
+            </p>
+        </div>
+
+        <!-- Tab 3: Bước 2 -->
+        <div id="gcontent-step2" class="guide-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Bước 2: Trả lời các câu hỏi khảo sát</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Khảo sát gồm <strong>24 câu hỏi</strong>, được chia thành 4 nhóm chính:
+            </p>
+            <div class="overflow-x-auto my-4 rounded-lg border border-slate-200/80">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-[var(--color-background, #f1f5f9)] border-b border-slate-200/80">
+                            <th class="p-3 font-bold">Nhóm</th>
+                            <th class="p-3 font-bold">Nội dung đánh giá</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200/60">
+                        <tr><td class="p-3 font-semibold">A</td><td class="p-3">Không gian cá nhân và xu hướng thu mình</td></tr>
+                        <tr><td class="p-3 font-semibold">B</td><td class="p-3">Khó khăn trong giao tiếp xã hội</td></tr>
+                        <tr><td class="p-3 font-semibold">C</td><td class="p-3">Cảm nhận về sự gắn kết và hỗ trợ xã hội</td></tr>
+                        <tr><td class="p-3 font-semibold">D</td><td class="p-3">Mong muốn tái kết nối</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-sm sm:text-base text-[var(--color-text-muted, #475569)]">Đối với mỗi câu hỏi, hãy chọn mức độ phù hợp nhất với trải nghiệm của bạn trong <strong>6 tháng gần đây</strong> theo thang điểm:</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
+                <div class="p-2.5 sm:p-3 bg-[var(--color-background, #f8fafc)] rounded border border-slate-200/60 text-center text-xs sm:text-sm"><span class="block font-bold">0 điểm</span>Không bao giờ</div>
+                <div class="p-2.5 sm:p-3 bg-[var(--color-background, #f8fafc)] rounded border border-slate-200/60 text-center text-xs sm:text-sm"><span class="block font-bold">1 điểm</span>Hiếm khi</div>
+                <div class="p-2.5 sm:p-3 bg-[var(--color-background, #f8fafc)] rounded border border-slate-200/60 text-center text-xs sm:text-sm"><span class="block font-bold">2 điểm</span>Thỉnh thoảng</div>
+                <div class="p-2.5 sm:p-3 bg-[var(--color-background, #f8fafc)] rounded border border-slate-200/60 text-center text-xs sm:text-sm"><span class="block font-bold">3 điểm</span>Thường xuyên</div>
+                <div class="p-2.5 sm:p-3 bg-[var(--color-background, #f8fafc)] rounded border border-slate-200/60 text-center text-xs sm:text-sm col-span-2 sm:col-span-1"><span class="block font-bold">4 điểm</span>Gần như luôn luôn</div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Bước 3 -->
+        <div id="gcontent-step3" class="guide-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Bước 3: Xem kết quả đánh giá</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">Sau khi hoàn thành khảo sát, hệ thống sẽ tự động tính toán và hiển thị 2 chỉ số quan trọng:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="p-4 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)]">
+                    <h4 class="font-bold text-[var(--color-primary)]">Chỉ số khó khăn kết nối xã hội</h4>
+                    <span class="text-xs font-semibold px-2 py-1 bg-blue-100/80 text-blue-800 rounded inline-block my-2">Thang điểm 0 - 72</span>
+                    <p class="text-xs sm:text-sm text-[var(--color-text-muted)]">Phản ánh mức độ khó khăn mà bạn đang gặp phải trong việc kết nối với những người xung quanh.</p>
+                </div>
+                <div class="p-4 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)]">
+                    <h4 class="font-bold text-[var(--color-primary)]">Chỉ số sẵn sàng tái kết nối</h4>
+                    <span class="text-xs font-semibold px-2 py-1 bg-green-100/80 text-green-800 rounded inline-block my-2">Thang điểm 0 - 24</span>
+                    <p class="text-xs sm:text-sm text-[var(--color-text-muted)]">Cho thấy mức độ mong muốn xây dựng và phát triển các mối quan hệ xã hội của bạn.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Bước 4 -->
+        <div id="gcontent-step4" class="guide-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Bước 4: Đọc báo cáo và gợi ý</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">Từ kết quả khảo sát, Reconnect 360° sẽ cung cấp cho bạn:</p>
+            <ul class="list-disc pl-5 space-y-2 text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                <li>Nhận xét tổng quan về mức độ kết nối xã hội.</li>
+                <li>Giải thích ý nghĩa chi tiết từng chỉ số.</li>
+                <li>Một số định hướng giúp cải thiện khả năng giao tiếp và kết nối.</li>
+                <li>Các hình thức hỗ trợ phù hợp với nhu cầu của học sinh.</li>
+            </ul>
+        </div>
+
+        <!-- Tab 6: Lưu ý & Bảo mật -->
+        <div id="gcontent-notes" class="guide-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Lưu ý quan trọng & Bảo mật</h2>
+            
+            <div class="p-4 bg-red-50/60 dark:bg-red-950/20 border border-red-200/70 dark:border-red-900/40 rounded-lg">
+                <h4 class="font-bold text-red-700 dark:text-red-400 mb-1">⚠️ Miễn trừ trách nhiệm y khoa</h4>
+                <p class="text-xs sm:text-sm text-[var(--color-text-muted)]">Reconnect 360° không phải là công cụ chẩn đoán tâm lý hoặc y khoa. Kết quả chỉ mang tính chất tham khảo. Nếu gặp khó khăn kéo dài, hãy tìm kiếm sự hỗ trợ từ cha mẹ, giáo viên chủ nhiệm, giáo viên tư vấn học đường hoặc chuyên gia tâm lý.</p>
+            </div>
+
+            <div class="p-4 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/70 dark:border-emerald-900/40 rounded-lg mt-4">
+                <h4 class="font-bold text-emerald-700 dark:text-emerald-400 mb-1">✅ Cam kết bảo mật thông tin</h4>
+                <ul class="text-xs sm:text-sm text-[var(--color-text-muted)] space-y-1 mt-2">
+                    <li>• Tôn trọng quyền riêng tư của người dùng tuyệt đối.</li>
+                    <li>• Không sử dụng dữ liệu cá nhân cho mục đích thương mại.</li>
+                    <li>• Chỉ sử dụng dữ liệu khảo sát cho mục đích nghiên cứu và cải thiện hệ thống.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .guide-aside-box {
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        background-color: var(--color-surface, #ffffff) !important;
+        z-index: 30 !important;
+    }
+
+    .guide-content-box {
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+    }
+
+    @media (max-width: 1023px) {
+        .guide-content-box {
+            scroll-margin-top: 120px;
+        }
+
+        .guide-aside-box {
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08) !important;
+        }
+    }
+
+    /* Hiệu ứng chuyển tab bằng CSS Transition thay cho CSS Animation */
+    .guide-content {
+        display: none;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .guide-content.active {
+        display: block;
+    }
+
+    .guide-content.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .guide-tab-active {
+        background-color: var(--color-primary, #1152d4) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--color-primary, #1152d4) !important;
+        box-shadow: 0 2px 8px rgba(17, 82, 212, 0.25);
+    }
+
+    .guide-tab-inactive {
+        background-color: transparent;
+        color: var(--color-text-main, #0f172a);
+        border: 1px solid transparent;
+    }
+
+    .guide-tab-inactive:hover {
+        background-color: var(--color-background, #f8fafc) !important;
+        color: var(--color-primary, #1152d4) !important;
+        border-color: rgba(17, 82, 212, 0.2) !important;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isUserClicking = false;
+    let scrollTimeout;
+    let hoverTimeout;
+    let currentTab = 'intro';
+
+    // Khởi tạo hiển thị tab intro ban đầu
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialContent = document.getElementById('gcontent-intro');
+        if (initialContent) {
+            initialContent.classList.add('show');
+        }
+    });
+
+    function handleMenuScroll() {
+        if (window.innerWidth >= 1024) return;
+
+        const container = document.getElementById('guide-nav-scroll');
+        if (!container) return;
+
+        const scrollLeft = container.scrollLeft;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        if (maxScrollLeft > 0) {
+            const ratio = scrollLeft / maxScrollLeft;
+            const dots = document.querySelectorAll('.scroll-dot');
+            const activeIndex = Math.min(Math.floor(ratio * dots.length), dots.length - 1);
+
+            dots.forEach((dot, index) => {
+                if (index === activeIndex) {
+                    dot.classList.remove('w-2', 'bg-slate-300');
+                    dot.classList.add('w-5', 'bg-[var(--color-primary)]');
+                } else {
+                    dot.classList.remove('w-5', 'bg-[var(--color-primary)]');
+                    dot.classList.add('w-2', 'bg-slate-300');
+                }
+            });
+        }
+
+        if (isUserClicking) return;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const buttons = container.querySelectorAll('.guide-tab-btn');
+            const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
+
+            let closestBtn = null;
+            let minDistance = Infinity;
+
+            buttons.forEach(btn => {
+                const rect = btn.getBoundingClientRect();
+                const btnCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(containerCenter - btnCenter);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestBtn = btn;
+                }
+            });
+
+            if (closestBtn) {
+                const tabId = closestBtn.getAttribute('data-tab');
+                switchGuideTab(tabId, false);
+            }
+        }, 150);
+    }
+
+    function switchGuideTab(tabId, shouldScrollMenu = true) {
+        if (currentTab === tabId) return;
+        currentTab = tabId;
+
+        // Cập nhật nút tab active
+        document.querySelectorAll('.guide-tab-btn').forEach(btn => {
+            btn.classList.remove('guide-tab-active');
+            btn.classList.add('guide-tab-inactive');
+        });
+
+        const activeBtn = document.getElementById('gtab-' + tabId);
+        if (activeBtn) {
+            activeBtn.classList.add('guide-tab-active');
+            activeBtn.classList.remove('guide-tab-inactive');
+            
+            if (shouldScrollMenu) {
+                isUserClicking = true;
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                setTimeout(() => { isUserClicking = false; }, 500);
+            }
+        }
+
+        // Chuyển tab mượt mà bằng CSS Transition
+        document.querySelectorAll('.guide-content').forEach(content => {
+            content.classList.remove('show');
+            content.classList.remove('active');
+        });
+
+        const target = document.getElementById('gcontent-' + tabId);
+        if (target) {
+            target.classList.add('active');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    target.classList.add('show');
+                });
+            });
+        }
+    }
+
+    function handleTabHover(tabId) {
+        clearTimeout(hoverTimeout);
+        // Delay 120ms giúp lọc bớt trường hợp vô tình lướt qua tab
+        hoverTimeout = setTimeout(() => {
+            switchGuideTab(tabId);
+        }, 120);
+    }
+
+    function cancelTabHover() {
+        clearTimeout(hoverTimeout);
+    }
+</script>
+{% endblock %}

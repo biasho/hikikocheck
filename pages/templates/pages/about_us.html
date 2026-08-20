@@ -1,51 +1,351 @@
 {% extends 'base.html' %}
-{% load static %}
 
-{% block default_theme %}light{% endblock %}
 {% block title %}Về chúng tôi - Reconnect 360°{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-5xl mx-auto px-4 py-6">
+<div class="mb-6">
+    <h1 class="text-3xl font-black tracking-tight text-[var(--color-text-main)] sm:text-4xl">👥 Về chúng tôi</h1>
+    <p class="mt-2 text-base text-[var(--color-text-muted, #64748b)]">Tìm hiểu về đội ngũ phát triển, mục tiêu và những người đồng hành đứng sau dự án Reconnect 360°.</p>
+</div>
 
-    <!-- Breadcrumb -->
-    <nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
-        <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
-        <span class="mx-2">/</span>
-        <span class="text-[var(--color-text-main)] font-medium">Về chúng tôi</span>
-    </nav>
+<!-- Layout chia 2 cột: Bỏ 'relative' ở container cha để sticky hoạt động chuẩn trên Desktop -->
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+    
+    <!-- SIDEBAR MENU: Sticky cố định khi cuộn trang trên Desktop -->
+    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-16 lg:top-20 z-30 about-aside-box shadow-md lg:shadow-sm transition-all">
+        <h3 class="hidden lg:block text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted, #94a3b8)] px-3 mb-3">Thông tin chung</h3>
+        
+        <!-- Wrapper menu trượt ngang trên mobile -->
+        <div class="about-scroll-container relative overflow-hidden">
+            <nav id="about-nav-scroll" onscroll="handleAboutMenuScroll()" class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-none w-full snap-x snap-mandatory lg:snap-none">
+                <button onclick="switchAboutTab('intro')" onmouseenter="handleTabHover('intro')" onmouseleave="cancelTabHover()" id="atab-intro" data-tab="intro" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-active whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">groups</span>
+                    <span>Nhóm phát triển</span>
+                </button>
+                <button onclick="switchAboutTab('members')" onmouseenter="handleTabHover('members')" onmouseleave="cancelTabHover()" id="atab-members" data-tab="members" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">badge</span>
+                    <span>Thành viên nhóm</span>
+                </button>
+                <button onclick="switchAboutTab('advisor')" onmouseenter="handleTabHover('advisor')" onmouseleave="cancelTabHover()" id="atab-advisor" data-tab="advisor" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">school</span>
+                    <span>Giáo viên hướng dẫn</span>
+                </button>
+                <button onclick="switchAboutTab('goals')" onmouseenter="handleTabHover('goals')" onmouseleave="cancelTabHover()" id="atab-goals" data-tab="goals" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">target</span>
+                    <span>Mục tiêu dự án</span>
+                </button>
+            </nav>
+        </div>
 
-    <div class="w-full space-y-12 mb-12">
+        <!-- Thanh chỉ báo vuốt (Dots) giữ cố định cùng khối Aside -->
+        <div class="flex lg:hidden items-center justify-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 mt-1">
+            <span class="scroll-dot w-5 h-1 rounded-full bg-[var(--color-primary)] transition-all duration-300" data-index="0"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="1"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="2"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="3"></span>
+        </div>
+    </aside>
 
-        <!-- Hero Section: Lời Giới Thiệu -->
-        <section
-            class="w-full bg-[var(--color-card-bg)] rounded-2xl p-6 md:p-10 shadow-sm ring-1 ring-[var(--color-border)] relative overflow-hidden">
-            <div class="max-w-3xl">
-                <span
-                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-[var(--color-primary)]/10 text-[var(--color-primary)] mb-4">
-                    <span class="material-symbols-outlined text-sm">info</span>
-                    Về hệ thống Reconnect 360°
-                </span>
-                <h1 class="text-3xl md:text-4xl font-black text-[var(--color-text-main)] mb-4 leading-tight">
-                    Kết nối bản thân • Kết nối mọi người • Kết nối tương lai
-                </h1>
-                <p class="text-[var(--color-text-sub)] leading-relaxed text-base mb-6">
-                    <strong>Reconnect 360°</strong> là nền tảng hỗ trợ học sinh THCS tự đánh giá và nhìn nhận mức độ kết
-                    nối xã hội thông qua các câu hỏi khảo sát về giao tiếp, hoạt động tập thể và nguyện vọng cá nhân.
-                </p>
-                <div
-                    class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm flex gap-3 items-start">
-                    <span class="material-symbols-outlined text-xl shrink-0 mt-0.5">warning</span>
-                    <div>
-                        <strong>Lưu ý quan trọng:</strong> Kết quả khảo sát không phải là chẩn đoán y khoa hoặc tâm lý.
-                        Hệ thống chỉ cung cấp thông tin tham khảo giúp học sinh hiểu bản thân hơn và định hướng các bước
-                        kết nối phù hợp.
+    <!-- NỘI DUNG CHI TIẾT (CONTENT PANEL) -->
+    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 about-content-box shadow-sm z-10">
+        
+        <!-- Tab 1: Nhóm phát triển -->
+        <div id="acontent-intro" class="about-content active space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Những người đứng sau Reconnect 360°</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                <strong>Reconnect 360°</strong> là dự án được xây dựng và phát triển bởi <strong>Trần Ngọc Mai Khôi</strong> (lớp 9A15) và <strong>Võ Dương Nhân Kiệt</strong> (lớp 9A12), học sinh Trường THPT Chuyên Trần Đại Nghĩa, Thành phố Hồ Chí Minh.
+            </p>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Dự án được thực hiện dưới sự hướng dẫn và hỗ trợ chuyên môn của <strong>cô Lý Thị Thùy Duyên</strong>, giáo viên Tổ Sinh học, Trường THPT Chuyên Trần Đại Nghĩa.
+            </p>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Xuất phát từ sự quan tâm đến sức khỏe tinh thần học đường và chất lượng các mối quan hệ xã hội của học sinh THCS, chúng tôi nhận thấy rằng nhiều bạn trẻ đang gặp khó khăn trong việc giao tiếp, hòa nhập hoặc chia sẻ cảm xúc với những người xung quanh. Trong khi đó, việc hiểu rõ bản thân và xây dựng các kết nối xã hội tích cực đóng vai trò quan trọng đối với sự phát triển toàn diện của mỗi học sinh.
+            </p>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Từ thực tế đó, ý tưởng về Reconnect 360° được hình thành bởi Trần Ngọc Mai Khôi với mong muốn tạo ra một công cụ giúp học sinh tự nhìn nhận mức độ kết nối xã hội của bản thân thông qua các khảo sát khoa học, thân thiện và dễ tiếp cận. Sau đó, Võ Dương Nhân Kiệt cùng tham gia phát triển dự án, đóng góp vào quá trình nghiên cứu nội dung, thiết kế và hoàn thiện hệ thống.
+            </p>
+            <div class="p-4 bg-[var(--color-background, #f8fafc)] border-l-4 border-[var(--color-primary, #1152d4)] rounded-r-lg mt-4">
+                <p class="text-sm italic text-[var(--color-text-main)]">"Kết nối bản thân là bước đầu tiên để kết nối với mọi người và hướng tới tương lai."</p>
+            </div>
+        </div>
+
+        <!-- Tab 2: Thành viên nhóm -->
+        <div id="acontent-members" class="about-content space-y-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Thành viên nhóm phát triển</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-5 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] space-y-2">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-3xl text-[var(--color-primary, #1152d4)]">account_circle</span>
+                        <div>
+                            <h3 class="font-bold text-lg text-[var(--color-text-main)]">Trần Ngọc Mai Khôi</h3>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 bg-blue-100/80 text-blue-800 rounded-full inline-block">Lớp 9A15</span>
+                        </div>
                     </div>
+                    <p class="text-sm leading-relaxed text-[var(--color-text-muted, #475569)] pt-2">
+                        Là người đưa ra ý tưởng ban đầu cho Reconnect 360°, Mai Khôi phụ trách định hướng phát triển dự án, thiết kế và xây dựng hệ thống. Với niềm yêu thích công nghệ và mong muốn tạo ra những sản phẩm có giá trị cho cộng đồng học sinh, Mai Khôi tập trung phát triển nền tảng trực tuyến giúp người dùng dễ dàng tiếp cận, thực hiện khảo sát và theo dõi kết quả một cách trực quan.
+                    </p>
+                </div>
+
+                <div class="p-5 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] space-y-2">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-3xl text-[var(--color-primary, #1152d4)]">account_circle</span>
+                        <div>
+                            <h3 class="font-bold text-lg text-[var(--color-text-main)]">Võ Dương Nhân Kiệt</h3>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 bg-blue-100/80 text-blue-800 rounded-full inline-block">Lớp 9A12</span>
+                        </div>
+                    </div>
+                    <p class="text-sm leading-relaxed text-[var(--color-text-muted, #475569)] pt-2">
+                        Nhân Kiệt phụ trách nghiên cứu tài liệu, xây dựng nội dung khảo sát và phối hợp phát triển các giải pháp nhằm đảm bảo tính thực tiễn của dự án. Với sự quan tâm đến đời sống học đường và sự phát triển của thanh thiếu niên, Nhân Kiệt mong muốn Reconnect 360° có thể góp phần giúp học sinh hiểu rõ bản thân hơn và xây dựng những mối quan hệ tích cực trong cuộc sống.
+                    </p>
                 </div>
             </div>
-        </section>
+        </div>
 
+        <!-- Tab 3: Giáo viên hướng dẫn -->
+        <div id="acontent-advisor" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Vai trò của giáo viên hướng dẫn</h2>
+            
+            <div class="p-5 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] space-y-3">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-3xl text-[var(--color-primary, #1152d4)]">supervisor_account</span>
+                    <div>
+                        <h3 class="font-bold text-lg text-[var(--color-text-main)]">Cô Lý Thị Thùy Duyên</h3>
+                        <p class="text-xs font-medium text-[var(--color-text-muted, #64748b)]">Giáo viên Tổ Sinh học - Trường THPT Chuyên Trần Đại Nghĩa</p>
+                    </div>
+                </div>
+                <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)] pt-1">
+                    Trong quá trình thực hiện dự án, cô Lý Thị Thùy Duyên đã đồng hành với nhóm với vai trò cố vấn chuyên môn, hỗ trợ định hướng nghiên cứu, góp ý về nội dung khảo sát và phương pháp tiếp cận phù hợp với đối tượng học sinh THCS. Những góp ý và sự hướng dẫn tận tình của cô là nguồn động viên quan trọng giúp nhóm hoàn thiện dự án một cách khoa học, thực tiễn và hướng đến giá trị giáo dục tích cực.
+                </p>
+            </div>
+        </div>
 
+        <!-- Tab 4: Mục tiêu dự án -->
+        <div id="acontent-goals" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">Mục tiêu của dự án</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Thông qua Reconnect 360°, chúng tôi mong muốn hướng đến các mục tiêu thiết thực:
+            </p>
+            <ul class="space-y-3 pt-1">
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Giúp học sinh THCS hiểu rõ hơn về mức độ kết nối xã hội của bản thân.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Khuyến khích xây dựng các mối quan hệ tích cực với gia đình, bạn bè và thầy cô.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Nâng cao nhận thức về vai trò của kết nối xã hội đối với sức khỏe tinh thần.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Tạo ra một công cụ trực tuyến thân thiện, dễ sử dụng và phù hợp với học sinh.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Góp phần xây dựng môi trường học đường gắn kết, an toàn và giàu sự sẻ chia.</span>
+                </li>
+            </ul>
+        </div>
 
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-aside-box {
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        background-color: var(--color-surface, #ffffff) !important;
+        z-index: 30 !important;
+    }
+
+    .about-content-box {
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+    }
+
+    @media (max-width: 1023px) {
+        .about-scroll-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--color-surface, #ffffff));
+            pointer-events: none;
+        }
+
+        .about-content-box {
+            scroll-margin-top: 120px;
+        }
+
+        .about-aside-box {
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08) !important;
+        }
+    }
+
+    .about-content {
+        display: none;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .about-content.active {
+        display: block;
+    }
+
+    .about-content.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .about-tab-active {
+        background-color: var(--color-primary, #1152d4) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--color-primary, #1152d4) !important;
+        box-shadow: 0 2px 8px rgba(17, 82, 212, 0.25);
+    }
+
+    .about-tab-inactive {
+        background-color: transparent;
+        color: var(--color-text-main, #0f172a);
+        border: 1px solid transparent;
+    }
+
+    .about-tab-inactive:hover {
+        background-color: var(--color-background, #f8fafc) !important;
+        color: var(--color-primary, #1152d4) !important;
+        border-color: rgba(17, 82, 212, 0.2) !important;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isUserClicking = false;
+    let scrollTimeout;
+    let hoverTimeout;
+    let currentTab = 'intro';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialContent = document.getElementById('acontent-intro');
+        if (initialContent) {
+            initialContent.classList.add('show');
+        }
+    });
+
+    function handleAboutMenuScroll() {
+        if (window.innerWidth >= 1024) return;
+
+        const container = document.getElementById('about-nav-scroll');
+        if (!container) return;
+
+        const scrollLeft = container.scrollLeft;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        if (maxScrollLeft > 0) {
+            const ratio = scrollLeft / maxScrollLeft;
+            const dots = document.querySelectorAll('.scroll-dot');
+            const activeIndex = Math.min(Math.floor(ratio * dots.length), dots.length - 1);
+
+            dots.forEach((dot, index) => {
+                if (index === activeIndex) {
+                    dot.classList.remove('w-2', 'bg-slate-300');
+                    dot.classList.add('w-5', 'bg-[var(--color-primary)]');
+                } else {
+                    dot.classList.remove('w-5', 'bg-[var(--color-primary)]');
+                    dot.classList.add('w-2', 'bg-slate-300');
+                }
+            });
+        }
+
+        if (isUserClicking) return;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const buttons = container.querySelectorAll('.about-tab-btn');
+            const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
+
+            let closestBtn = null;
+            let minDistance = Infinity;
+
+            buttons.forEach(btn => {
+                const rect = btn.getBoundingClientRect();
+                const btnCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(containerCenter - btnCenter);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestBtn = btn;
+                }
+            });
+
+            if (closestBtn) {
+                const tabId = closestBtn.getAttribute('data-tab');
+                switchAboutTab(tabId, false);
+            }
+        }, 150);
+    }
+
+    function switchAboutTab(tabId, shouldScrollMenu = true) {
+        if (currentTab === tabId) return;
+        currentTab = tabId;
+
+        document.querySelectorAll('.about-tab-btn').forEach(btn => {
+            btn.classList.remove('about-tab-active');
+            btn.classList.add('about-tab-inactive');
+        });
+
+        const activeBtn = document.getElementById('atab-' + tabId);
+        if (activeBtn) {
+            activeBtn.classList.add('about-tab-active');
+            activeBtn.classList.remove('about-tab-inactive');
+            
+            if (shouldScrollMenu) {
+                isUserClicking = true;
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                setTimeout(() => { isUserClicking = false; }, 500);
+            }
+        }
+
+        document.querySelectorAll('.about-content').forEach(content => {
+            content.classList.remove('show');
+            content.classList.remove('active');
+        });
+
+        const target = document.getElementById('acontent-' + tabId);
+        if (target) {
+            target.classList.add('active');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    target.classList.add('show');
+                });
+            });
+        }
+    }
+
+    function handleTabHover(tabId) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(() => {
+            switchAboutTab(tabId);
+        }, 120);
+    }
+
+    function cancelTabHover() {
+        clearTimeout(hoverTimeout);
+    }
+</script>
 {% endblock %}

@@ -1,12 +1,14 @@
 <!-- FOOTER -->
+{% load static %}
+
 <footer class="bg-background-light dark:bg-[#151c2f] border-t border-gray-200 dark:border-gray-800 mt-12 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-2 text-primary">
-                <div class="size-6 rounded bg-primary flex items-center justify-center text-white">
-                    <span class="material-symbols-outlined text-[16px]">shield</span>
-                </div>
-                <span class="text-text-main dark:text-white font-bold text-lg">Reconnect 360°</span>
+               <a href="{% url 'pages:home' %}" class="flex items-center gap-2 text-[var(--color-primary)] shrink-0">
+                <img src="{% static 'images/reconnect360_logo.PNG' %}" alt="Reconnect 360°" class="h-12 w-auto object-contain">
+                <h2 class="text-[var(--color-text-main)] text-xl font-bold tracking-tight">Reconnect 360°</h2>
+            </a>
             </div>
             <div class="flex gap-8 text-sm text-text-sub">
                 <a class="hover:text-primary" href="#">Chính sách bảo mật</a>

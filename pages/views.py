@@ -9,3 +9,6 @@ def about(request):
     return render(request, 'pages/about.html')
 def about_us(request):
     return render(request, 'pages/about_us.html')
+
+def guide(request):
+    return render(request, 'pages/guide.html')  # Tên file template hướng dẫn vừa tạo

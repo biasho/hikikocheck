@@ -1,15 +1,89 @@
 <!-- templates/includes/nav_links.html -->
-<a class="text-[var(--color-primary)] font-semibold text-sm hover:opacity-80 transition-opacity whitespace-nowrap py-1"
-    href="{% url 'pages:home' %}">Trang chủ</a>
 
-<a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap py-1"
-    href="{% url 'pages:about' %}">Giới thiệu</a>
+<!-- Trang chủ (Icon) -->
+<a class="relative group overflow-hidden inline-flex items-center justify-center p-2 rounded-xl transition-all duration-300
+          {% if request.resolver_match.url_name == 'home' %}
+              bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold
+          {% else %}
+              text-[var(--color-text-sub)] hover:text-[var(--color-primary)] hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+   href="{% url 'pages:home' %}"
+   title="Trang chủ"
+   aria-label="Trang chủ">
+    <span class="material-symbols-outlined text-xl relative z-10">home</span>
+    
+    <!-- Vệt sáng quét mượt qua toàn bộ nút -->
+    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/80 dark:via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"></span>
+</a>
 
-<a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap py-1"
-    href="#">Hướng dẫn</a>
+<!-- Giới thiệu -->
+<a class="relative group overflow-hidden text-sm px-3.5 py-2 rounded-xl transition-all duration-300 whitespace-nowrap inline-flex items-center justify-center
+          {% if request.resolver_match.url_name == 'about' %}
+              text-[var(--color-primary)] font-semibold bg-[var(--color-primary)]/10
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:text-[var(--color-primary)] hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'pages:about' %}">
+    <span class="relative z-10">Giới thiệu</span>
+    
+    {% if request.resolver_match.url_name == 'about' %}
+        <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-6 h-[2.5px] bg-[var(--color-primary)] rounded-full z-10"></span>
+    {% endif %}
 
-<a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap py-1"
-    href="{% url 'surveys:reconnect_report' %}">Báo cáo</a>
+    <!-- Vệt sáng quét mượt -->
+    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/80 dark:via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"></span>
+</a>
 
-<a class="text-[var(--color-text-main)] text-sm font-medium hover:text-[var(--color-primary)] transition-colors whitespace-nowrap py-1"
-    href="{% url 'pages:about_us' %}">Về chúng tôi</a>
+<!-- Hướng dẫn -->
+<a class="relative group overflow-hidden text-sm px-3.5 py-2 rounded-xl transition-all duration-300 whitespace-nowrap inline-flex items-center justify-center
+          {% if request.resolver_match.url_name == 'guide' %}
+              text-[var(--color-primary)] font-semibold bg-[var(--color-primary)]/10
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:text-[var(--color-primary)] hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'pages:guide' %}">
+    <span class="relative z-10">Hướng dẫn</span>
+    
+    {% if request.resolver_match.url_name == 'guide' %}
+        <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-6 h-[2.5px] bg-[var(--color-primary)] rounded-full z-10"></span>
+    {% endif %}
+
+    <!-- Vệt sáng quét mượt -->
+    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/80 dark:via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"></span>
+</a>
+
+<!-- Báo cáo -->
+<a class="relative group overflow-hidden text-sm px-3.5 py-2 rounded-xl transition-all duration-300 whitespace-nowrap inline-flex items-center justify-center
+          {% if request.resolver_match.url_name == 'reconnect_report' %}
+              text-[var(--color-primary)] font-semibold bg-[var(--color-primary)]/10
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:text-[var(--color-primary)] hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'surveys:reconnect_report' %}">
+    <span class="relative z-10">Báo cáo</span>
+    
+    {% if request.resolver_match.url_name == 'reconnect_report' %}
+        <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-6 h-[2.5px] bg-[var(--color-primary)] rounded-full z-10"></span>
+    {% endif %}
+
+    <!-- Vệt sáng quét mượt -->
+    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/80 dark:via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"></span>
+</a>
+
+<!-- Về chúng tôi -->
+<a class="relative group overflow-hidden text-sm px-3.5 py-2 rounded-xl transition-all duration-300 whitespace-nowrap inline-flex items-center justify-center
+          {% if request.resolver_match.url_name == 'about_us' %}
+              text-[var(--color-primary)] font-semibold bg-[var(--color-primary)]/10
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:text-[var(--color-primary)] hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'pages:about_us' %}">
+    <span class="relative z-10">Về chúng tôi</span>
+    
+    {% if request.resolver_match.url_name == 'about_us' %}
+        <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-6 h-[2.5px] bg-[var(--color-primary)] rounded-full z-10"></span>
+    {% endif %}
+
+    <!-- Vệt sáng quét mượt -->
+    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/80 dark:via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"></span>
+</a>

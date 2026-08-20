@@ -188,19 +188,19 @@
         <!-- Nút Điều Hướng / Chuyển Step -->
         <div class="flex items-center justify-between gap-4 mt-6">
             <button type="button" id="btn-prev" onclick="changeStep(-1)"
-                class="px-5 py-2.5 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] font-semibold text-xs hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center gap-2">
+                class="px-5 py-2.5 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] font-semibold text-xs hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center gap-2 cursor-pointer">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
                 Trở lại
             </button>
 
             <button type="button" id="btn-next" onclick="changeStep(1)"
-                class="px-6 py-2.5 rounded-xl bg-[var(--color-primary)] text-white font-semibold text-xs shadow-md hover:opacity-90 transition-all flex items-center gap-2">
+                class="px-6 py-2.5 rounded-xl bg-[var(--color-primary)] text-white font-semibold text-xs shadow-md hover:opacity-90 transition-all flex items-center gap-2 cursor-pointer">
                 Tiếp theo
                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </button>
 
             <button type="submit" id="btn-submit"
-                class="hidden px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs shadow-md hover:bg-emerald-700 transition-all items-center gap-2">
+                class="hidden px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs shadow-md hover:bg-emerald-700 transition-all items-center gap-2 cursor-pointer">
                 Hoàn thành & Nộp bài
                 <span class="material-symbols-outlined text-sm">send</span>
             </button>
@@ -227,13 +227,106 @@
     let currentStep = 0;
     let stepCards = [];
     let toastTimeout = null;
+    
+    // Tên key dùng để lưu trong trình duyệt (dựa theo Slug để không đụng độ các bài khảo sát khác)
+    const STORAGE_KEY = 'survey_progress_{{ composite.slug }}';
 
     document.addEventListener('DOMContentLoaded', () => {
         stepCards = Array.from(document.querySelectorAll('.survey-step-card'));
+        
+        // 1. Khôi phục dữ liệu đã làm từ LocalStorage (nếu có)
+        restoreSurveyProgress();
+
         if (stepCards.length > 0) {
-            showStep(0);
+            showStep(currentStep);
         }
+
+        // 2. Cảnh báo khi người dùng tắt tab / tắt trình duyệt khi chưa hoàn thành
+        window.addEventListener('beforeunload', (e) => {
+            const form = document.getElementById('survey-form');
+            if (form && !form.dataset.submitted) {
+                // Một số trình duyệt hiện thông báo mặc định khi e.preventDefault()
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     });
+
+    // --- TỰ ĐỘNG LƯU TIẾN ĐỘ VÀO LOCALSTORAGE ---
+    function saveSurveyProgress() {
+        const form = document.getElementById('survey-form');
+        if (!form) return;
+
+        const formData = new FormData(form);
+        const data = {
+            currentStep: currentStep,
+            answers: {}
+        };
+
+        // Lưu tất cả input dạng Radio, Checkbox, Text
+        const inputs = form.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            if (!input.name || input.type === 'hidden' || input.name === 'csrfmiddlewaretoken') return;
+
+            if (input.type === 'radio' || input.type === 'checkbox') {
+                if (input.checked) {
+                    if (!data.answers[input.name]) data.answers[input.name] = [];
+                    data.answers[input.name].push(input.value);
+                }
+            } else {
+                if (input.value.trim() !== '') {
+                    data.answers[input.name] = input.value;
+                }
+            }
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // --- KHÔI PHỤC TIẾN ĐỘ TỪ LOCALSTORAGE ---
+    function restoreSurveyProgress() {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (!savedData) return;
+
+        try {
+            const data = JSON.parse(savedData);
+            if (data.currentStep) currentStep = data.currentStep;
+
+            if (data.answers) {
+                Object.keys(data.answers).forEach(name => {
+                    const values = Array.isArray(data.answers[name]) ? data.answers[name] : [data.answers[name]];
+                    
+                    values.forEach(val => {
+                        const input = document.querySelector(`[name="${name}"][value="${CSS.escape(val)}"]`);
+                        if (input) {
+                            input.checked = true;
+                            
+                            // Nếu là checkbox có ô nhập ý kiến khác
+                            if (input.type === 'checkbox') {
+                                toggleCustomInput(input);
+                            }
+                        } else {
+                            // Xử lý ô Textarea hoặc Ô nhập ý kiến "Khác"
+                            const textInput = document.querySelector(`[name="${name}"]`);
+                            if (textInput && (textInput.type === 'text' || textInput.tagName === 'TEXTAREA')) {
+                                textInput.value = val;
+                                // Mở hiện ô custom text nếu có
+                                const wrapper = textInput.closest('.custom-text-wrapper');
+                                if (wrapper) wrapper.classList.remove('hidden');
+                            }
+                        }
+                    });
+                });
+            }
+        } catch (e) {
+            console.error('Lỗi khôi phục tiến độ khảo sát:', e);
+        }
+    }
+
+    // --- XÓA LOCALSTORAGE KHI NỘP BÀI THÀNH CÔNG ---
+    function clearSurveyProgress() {
+        localStorage.removeItem(STORAGE_KEY);
+    }
 
     function toggleCustomInput(checkbox) {
         const optionItem = checkbox.closest('.p-3\\.5');
@@ -242,8 +335,6 @@
         if (wrapper) {
             if (checkbox.checked) {
                 wrapper.classList.remove('hidden');
-                const textInput = wrapper.querySelector('input[type="text"]');
-                if (textInput) textInput.focus();
             } else {
                 wrapper.classList.add('hidden');
                 const textInput = wrapper.querySelector('input[type="text"]');
@@ -276,7 +367,6 @@
     }
 
     function changeStep(delta) {
-        // Chỉ khi bấm nút TIẾP THEO (delta === 1) mới validate và tô đỏ câu chưa làm
         if (delta === 1 && !validateCurrentStep()) {
             showWarning();
             return;
@@ -285,11 +375,11 @@
         currentStep += delta;
         if (currentStep >= 0 && currentStep < stepCards.length) {
             showStep(currentStep);
+            saveSurveyProgress(); // Lưu bước hiện tại khi bấm Tiếp theo / Trở lại
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
 
-    // Hàm tô/xóa màu cảnh báo cho từng thẻ câu hỏi
     function highlightQuestion(qCard, isError) {
         if (isError) {
             qCard.classList.add('ring-2', 'ring-red-500/80', 'bg-red-500/5');
@@ -300,7 +390,6 @@
         }
     }
 
-    // Chỉ gọi hàm này KHI BẤM NÚT "Tiếp theo" hoặc "Nộp bài"
     function validateCurrentStep() {
         if (!stepCards[currentStep]) return true;
 
@@ -313,14 +402,13 @@
 
             if (!isValid) {
                 allValid = false;
-                highlightQuestion(qCard, true); // Bấm nút mới tô đỏ
+                highlightQuestion(qCard, true);
                 if (!firstInvalidCard) firstInvalidCard = qCard;
             } else {
                 highlightQuestion(qCard, false);
             }
         });
 
-        // Tự động cuộn đến câu bị thiếu
         if (firstInvalidCard) {
             firstInvalidCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -328,7 +416,6 @@
         return allValid;
     }
 
-    // Hàm kiểm tra tính hợp lệ của 1 câu hỏi đơn lẻ
     function checkQuestionValidity(qCard) {
         const radios = qCard.querySelectorAll('input[type="radio"]');
         const checkboxes = qCard.querySelectorAll('input[type="checkbox"]');
@@ -356,11 +443,10 @@
         return true;
     }
 
-    // Hàm gọi khi người dùng đang CHỌN/NHẬP CÂU TRẢ LỜI
     function checkAnswered(inputElement) {
         updateProgress();
+        saveSurveyProgress(); // Tự động lưu mỗi khi tick chọn / gõ chữ
 
-        // Nếu người dùng vừa trả lời câu đang bị tô đỏ, lập tức gỡ màu đỏ câu đó ra
         if (inputElement) {
             const qCard = inputElement.closest('.question-item');
             if (qCard && checkQuestionValidity(qCard)) {
@@ -426,6 +512,11 @@
             showWarning();
             return false;
         }
+        
+        // Đánh dấu form đã nộp thành công và xóa bộ nhớ tạm local
+        const form = event.target;
+        form.dataset.submitted = "true";
+        clearSurveyProgress();
         return true;
     }
 </script>

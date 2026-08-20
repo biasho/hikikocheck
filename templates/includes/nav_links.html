@@ -41,7 +41,7 @@
           {% else %}
               text-[var(--color-text-main)] font-medium hover:text-[var(--color-primary)] hover:bg-gray-100 dark:hover:bg-gray-800
           {% endif %}"
-    href="#">
+    href="{% url 'pages:guide' %}">
     <span class="relative z-10">Hướng dẫn</span>
     
     {% if request.resolver_match.url_name == 'guide' %}

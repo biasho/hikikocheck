@@ -2009,9 +2009,6 @@
     .hover\:underline:hover {
       text-decoration-line: underline;
     }
-    .hover\:opacity-80:hover {
-      opacity: 80%;
-    }
     .hover\:opacity-90:hover {
       opacity: 90%;
     }
@@ -2369,9 +2366,6 @@
     }
     .dark\:text-rose-400 {
       color: var(--color-rose-400);
-    }
-    .dark\:text-white {
-      color: var(--color-white);
     }
     @media (hover: hover) {
       .dark\:hover\:bg-gray-800:hover {

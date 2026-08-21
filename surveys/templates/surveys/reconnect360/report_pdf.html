@@ -4,22 +4,12 @@
     <meta charset="utf-8">
     <title>Kết quả Báo cáo Khảo sát - Reconnect 360°</title>
     <style>
-        /* Khai báo chuẩn font DejaVuSans cho xhtml2pdf */
-        @font-face {
-            font-family: 'DejaVuSans';
-            src: url('fonts/DejaVuSans.ttf');
-            -pdf-font-name: 'DejaVuSans';
-            font-weight: normal;
-            font-style: normal;
-        }
-
         @page {
             size: A4 portrait;
             margin: 15mm 15mm 15mm 15mm;
         }
-
         body {
-            font-family: 'DejaVuSans', sans-serif;
+            font-family: "DejaVu Sans", sans-serif;
             font-size: 11px;
             color: #0D121B;
             line-height: 1.5;
@@ -34,7 +24,6 @@
             margin-bottom: 20px;
         }
         .brand-name {
-            font-family: 'DejaVuSans', sans-serif;
             font-size: 12px;
             font-weight: bold;
             color: #1152D4;
@@ -42,14 +31,12 @@
             letter-spacing: 1px;
         }
         .main-title {
-            font-family: 'DejaVuSans', sans-serif;
             font-size: 18px;
             font-weight: bold;
             color: #0D121B;
             margin-top: 4px;
         }
         .sub-title {
-            font-family: 'DejaVuSans', sans-serif;
             font-size: 11px;
             color: #4C669A;
             margin-top: 2px;
@@ -129,7 +116,7 @@
         .level-badge {
             font-size: 11px;
             font-weight: bold;
-            color: #D97706;
+            color: #D97706; /* color-amber */
             margin-bottom: 6px;
         }
         .section-label {
@@ -163,7 +150,7 @@
     <div class="header">
         <div class="brand-name">Reconnect 360°</div>
         <div class="main-title">BÁO CÁO KẾT QUẢ KHẢO SÁT</div>
-        <div class="sub-title">Bộ khảo sát: {{ survey_title }}</div>
+        <div class="sub-title">Bộ khảo sát: {{ composite.title }}</div>
     </div>
 
     <!-- Tổng Điểm Toàn Bài -->
@@ -176,15 +163,17 @@
     <div class="group-box">
         <div class="group-header">
             <div class="group-title">Phân mức: Nhóm A + B + C (Xu hướng thu mình)</div>
-            <div class="group-score-abc">Điểm của bạn: {{ score_abc|default:submission.score_abc }} điểm</div>
+            <div class="group-score-abc">Điểm của bạn: {{ score_abc }} điểm</div>
         </div>
 
-        {% if chart_base64 %}
+        <!-- Biểu đồ Nhóm ABC (Hình chụp từ Frontend hoặc sinh từ Backend) -->
+        {% if chart_abc_base64 %}
         <div class="chart-container">
-            <img class="chart-img" src="data:image/png;base64,{{ chart_base64 }}" alt="Biểu đồ kết quả" />
+            <img class="chart-img" src="data:image/png;base64,{{ chart_abc_base64 }}" alt="Biểu đồ Nhóm ABC" />
         </div>
         {% endif %}
 
+        <!-- Nhận xét & Lời khuyên Nhóm ABC -->
         <div class="eval-box">
             {% if threshold_abc %}
                 <div class="level-badge">★ Mức độ: {{ threshold_abc.title }}</div>
@@ -210,9 +199,17 @@
     <div class="group-box">
         <div class="group-header">
             <div class="group-title">Phân mức: Nhóm D (Mức độ kết nối xã hội)</div>
-            <div class="group-score-d">Điểm của bạn: {{ score_d|default:submission.score_d }} điểm</div>
+            <div class="group-score-d">Điểm của bạn: {{ score_d }} điểm</div>
         </div>
 
+        <!-- Biểu đồ Nhóm D (Hình chụp từ Frontend hoặc sinh từ Backend) -->
+        {% if chart_d_base64 %}
+        <div class="chart-container">
+            <img class="chart-img" src="data:image/png;base64,{{ chart_d_base64 }}" alt="Biểu đồ Nhóm D" />
+        </div>
+        {% endif %}
+
+        <!-- Nhận xét & Lời khuyên Nhóm D -->
         <div class="eval-box">
             {% if threshold_d %}
                 <div class="level-badge">★ Mức độ: {{ threshold_d.title }}</div>

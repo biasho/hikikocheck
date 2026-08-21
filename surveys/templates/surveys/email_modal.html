@@ -91,7 +91,6 @@
         content.classList.add('scale-95');
     }
 
-    // TỰ ĐỘNG BẬT POPUP KHI TRANG KHẢO SÁT/KẾT QUẢ VỪA TẢI XONG
     function initAutoShowModal() {
         setTimeout(openEmailModal, 500);
 
@@ -111,37 +110,52 @@
         initAutoShowModal();
     }
 
-    // Hàm phụ trợ tạo ảnh Base64 từ Canvas có nền trắng (tránh bị đen nền khi xuất PDF)
+    // Hàm chuyển đổi canvas sang Base64 với nền trắng
     function canvasToBase64WithWhiteBg(canvas) {
         const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = canvas.width;
-        tempCanvas.height = canvas.height;
+        tempCanvas.width = canvas.width || 400;
+        tempCanvas.height = canvas.height || 200;
         const ctx = tempCanvas.getContext('2d');
         
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-        ctx.drawImage(canvas, 0, 0);
-        
+        try {
+            ctx.drawImage(canvas, 0, 0);
+        } catch (e) {
+            console.error("Lỗi vẽ canvas:", e);
+        }
         return tempCanvas.toDataURL('image/png');
     }
 
-    // Hàm phụ trợ ghép 2 Canvas (Chart ABC & Chart D) thành 1 ảnh duy nhất
-    function mergeTwoCanvases(canvas1, canvas2) {
+    // Hàm ghép nhiều canvas biểu đồ thành 1 ảnh duy nhất
+    function mergeCanvases(canvases) {
+        if (!canvases || canvases.length === 0) return '';
+        
+        let totalWidth = 0;
+        let totalHeight = 0;
+        
+        canvases.forEach(c => {
+            totalWidth = Math.max(totalWidth, c.width || 400);
+            totalHeight += (c.height || 200) + 15; // Khoảng cách giữa các biểu đồ
+        });
+
         const mergedCanvas = document.createElement('canvas');
-        mergedCanvas.width = Math.max(canvas1.width, canvas2.width);
-        mergedCanvas.height = canvas1.height + canvas2.height + 20; // 20px khoảng cách
+        mergedCanvas.width = totalWidth;
+        mergedCanvas.height = totalHeight;
         
         const ctx = mergedCanvas.getContext('2d');
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, mergedCanvas.width, mergedCanvas.height);
         
-        ctx.drawImage(canvas1, 0, 0);
-        ctx.drawImage(canvas2, 0, canvas1.height + 20);
+        let currentY = 0;
+        canvases.forEach(c => {
+            ctx.drawImage(c, 0, currentY);
+            currentY += (c.height || 200) + 15;
+        });
         
         return mergedCanvas.toDataURL('image/png');
     }
 
-    // Hàm gửi AJAX kèm dữ liệu Chart.js Base64
     async function sendResultEmail(event) {
         event.preventDefault();
         const form = event.target;
@@ -149,20 +163,25 @@
         const statusMsg = document.getElementById('email-status-msg');
         const chartInput = document.getElementById('chart_base64_input');
 
-        // --- TRÍCH XUẤT ẢNH CHART.JS SANG BASE64 ---
-        const canvasABC = document.getElementById('chartABC') || document.getElementById('resultChartABC');
-        const canvasD = document.getElementById('chartD') || document.getElementById('resultChartD');
-        const canvasSingle = document.getElementById('resultChart') || document.getElementById('chart');
+        // --- TỰ ĐỘNG TÌM TẤT CẢ CÁC BIỂU ĐỒ CANVAS TRÊN TRANG ---
+        const allCanvas = document.querySelectorAll('canvas');
+        if (allCanvas && allCanvas.length > 0) {
+            // Lọc ra các canvas thực sự hiển thị (có width/height lớn hơn 0)
+            const validCanvases = Array.from(allCanvas).filter(c => c.width > 0 && c.height > 0);
+            
+            if (validCanvases.length > 1) {
+                chartInput.value = mergeCanvases(validCanvases);
+            } else if (validCanvases.length === 1) {
+                chartInput.value = canvasToBase64WithWhiteBg(validCanvases[0]);
+            }
+        }
 
-        if (canvasABC && canvasD) {
-            // Trường hợp có cả 2 biểu đồ: Ghép lại thành 1 ảnh
-            chartInput.value = mergeTwoCanvases(canvasABC, canvasD);
-        } else if (canvasSingle) {
-            // Trường hợp 1 biểu đồ duy nhất
-            chartInput.value = canvasToBase64WithWhiteBg(canvasSingle);
-        } else if (window.resultChartInstance) {
-            // Lấy từ Instance Chart.js
-            chartInput.value = window.resultChartInstance.toBase64Image('image/png', 1.0);
+        // Dự phòng lấy từ Chart.js instance nếu có
+        if (!chartInput.value && window.Chart && window.Chart.instances) {
+            const instances = Object.values(window.Chart.instances);
+            if (instances.length > 0 && instances[0].canvas) {
+                chartInput.value = canvasToBase64WithWhiteBg(instances[0].canvas);
+            }
         }
 
         btn.disabled = true;

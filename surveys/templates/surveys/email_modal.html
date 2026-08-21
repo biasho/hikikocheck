@@ -27,7 +27,7 @@
         <p class="text-sm text-[var(--color-text-sub)] mb-6 leading-relaxed">
             Kết quả của bạn thuộc nhóm
             <strong class="text-[var(--color-primary)]">
-                [{% if threshold %}{{ threshold.title }}{% else %}Trung bình{% endif %}]
+                [{% if threshold_abc %}{{ threshold_abc.title }}{% elif threshold %}{{ threshold.title }}{% else %}Trung bình{% endif %}]
             </strong>.
             Nhập email của bạn để nhận báo cáo PDF chi tiết đính kèm biểu đồ và lời khuyên từ chuyên gia.
         </p>
@@ -111,25 +111,58 @@
         initAutoShowModal();
     }
 
+    // Hàm phụ trợ tạo ảnh Base64 từ Canvas có nền trắng (tránh bị đen nền khi xuất PDF)
+    function canvasToBase64WithWhiteBg(canvas) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const ctx = tempCanvas.getContext('2d');
+        
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        ctx.drawImage(canvas, 0, 0);
+        
+        return tempCanvas.toDataURL('image/png');
+    }
+
+    // Hàm phụ trợ ghép 2 Canvas (Chart ABC & Chart D) thành 1 ảnh duy nhất
+    function mergeTwoCanvases(canvas1, canvas2) {
+        const mergedCanvas = document.createElement('canvas');
+        mergedCanvas.width = Math.max(canvas1.width, canvas2.width);
+        mergedCanvas.height = canvas1.height + canvas2.height + 20; // 20px khoảng cách
+        
+        const ctx = mergedCanvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, mergedCanvas.width, mergedCanvas.height);
+        
+        ctx.drawImage(canvas1, 0, 0);
+        ctx.drawImage(canvas2, 0, canvas1.height + 20);
+        
+        return mergedCanvas.toDataURL('image/png');
+    }
+
     // Hàm gửi AJAX kèm dữ liệu Chart.js Base64
     async function sendResultEmail(event) {
         event.preventDefault();
         const form = event.target;
         const btn = document.getElementById('btn-send-email');
         const statusMsg = document.getElementById('email-status-msg');
-
-        // 1. TỰ ĐỘNG TRÍCH XUẤT ẢNH CHART.JS SANG BASE64 KHI SUBMIT
         const chartInput = document.getElementById('chart_base64_input');
 
-        if (window.resultChartInstance) {
-            // Trường hợp 1: Xuất từ instance Chart.js
+        // --- TRÍCH XUẤT ẢNH CHART.JS SANG BASE64 ---
+        const canvasABC = document.getElementById('chartABC') || document.getElementById('resultChartABC');
+        const canvasD = document.getElementById('chartD') || document.getElementById('resultChartD');
+        const canvasSingle = document.getElementById('resultChart') || document.getElementById('chart');
+
+        if (canvasABC && canvasD) {
+            // Trường hợp có cả 2 biểu đồ: Ghép lại thành 1 ảnh
+            chartInput.value = mergeTwoCanvases(canvasABC, canvasD);
+        } else if (canvasSingle) {
+            // Trường hợp 1 biểu đồ duy nhất
+            chartInput.value = canvasToBase64WithWhiteBg(canvasSingle);
+        } else if (window.resultChartInstance) {
+            // Lấy từ Instance Chart.js
             chartInput.value = window.resultChartInstance.toBase64Image('image/png', 1.0);
-        } else {
-            // Trường hợp 2: Lấy trực tiếp từ canvas element
-            const chartCanvas = document.getElementById('resultChart');
-            if (chartCanvas) {
-                chartInput.value = chartCanvas.toDataURL('image/png');
-            }
         }
 
         btn.disabled = true;

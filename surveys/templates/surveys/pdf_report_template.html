@@ -1,7 +1,240 @@
-{% if chart_base64 %}
-<div style="text-align: center; margin-top: 20px;">
-    <h3>Biểu đồ phân tích kết quả</h3>
-    <!-- Thẻ img nhận trực tiếp data URI -->
-    <img src="{{ chart_base64 }}" style="max-width: 100%; height: auto;" />
-</div>
-{% endif %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Kết quả Báo cáo Khảo sát - Reconnect 360°</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 15mm 15mm 15mm 15mm;
+        }
+        body {
+            font-family: "DejaVu Sans", sans-serif;
+            font-size: 11px;
+            color: #0D121B;
+            line-height: 1.5;
+            background-color: #ffffff;
+        }
+        
+        /* Header Logo & Title */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #1152D4;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .brand-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #1152D4;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .main-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0D121B;
+            margin-top: 4px;
+        }
+        .sub-title {
+            font-size: 11px;
+            color: #4C669A;
+            margin-top: 2px;
+        }
+
+        /* Thẻ Tổng Điểm */
+        .score-card {
+            background-color: #F8FAFC;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score-label {
+            font-size: 10px;
+            font-weight: bold;
+            color: #4C669A;
+            text-transform: uppercase;
+        }
+        .total-score-val {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1152D4;
+            margin-top: 2px;
+        }
+
+        /* Khung nội dung từng Nhóm */
+        .group-box {
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 18px;
+            background-color: #ffffff;
+        }
+        .group-header {
+            text-align: center;
+            border-bottom: 1px dashed #E5E7EB;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .group-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0D121B;
+        }
+        .group-score-abc {
+            font-size: 11px;
+            color: #1152D4;
+            font-weight: bold;
+        }
+        .group-score-d {
+            font-size: 11px;
+            color: #059669;
+            font-weight: bold;
+        }
+
+        /* Biểu đồ Base64 */
+        .chart-container {
+            text-align: center;
+            margin: 10px 0 15px 0;
+        }
+        .chart-img {
+            max-width: 480px;
+            max-height: 180px;
+            width: auto;
+            height: auto;
+        }
+
+        /* Khung Nhận xét & Lời khuyên */
+        .eval-box {
+            background-color: #F8FAFC;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+        .level-badge {
+            font-size: 11px;
+            font-weight: bold;
+            color: #D97706; /* color-amber */
+            margin-bottom: 6px;
+        }
+        .section-label {
+            font-size: 9px;
+            font-weight: bold;
+            color: #4C669A;
+            text-transform: uppercase;
+            margin-top: 6px;
+            margin-bottom: 2px;
+        }
+        .eval-text {
+            font-size: 10.5px;
+            color: #0D121B;
+            white-space: pre-line;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 9px;
+            color: #94A3B8;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="brand-name">Reconnect 360°</div>
+        <div class="main-title">BÁO CÁO KẾT QUẢ KHẢO SÁT</div>
+        <div class="sub-title">Bộ khảo sát: {{ composite.title }}</div>
+    </div>
+
+    <!-- Tổng Điểm Toàn Bài -->
+    <div class="score-card">
+        <div class="total-score-label">TỔNG ĐIỂM TOÀN BÀI</div>
+        <div class="total-score-val">{{ total_score }} <span style="font-size: 12px; color: #4C669A;">điểm</span></div>
+    </div>
+
+    <!-- ================= NHÓM 1: ALL_ABC (THU MÌNH) ================= -->
+    <div class="group-box">
+        <div class="group-header">
+            <div class="group-title">Phân mức: Nhóm A + B + C (Xu hướng thu mình)</div>
+            <div class="group-score-abc">Điểm của bạn: {{ score_abc }} điểm</div>
+        </div>
+
+        <!-- Biểu đồ Nhóm ABC (Hình chụp từ Frontend hoặc sinh từ Backend) -->
+        {% if chart_abc_base64 %}
+        <div class="chart-container">
+            <img class="chart-img" src="data:image/png;base64,{{ chart_abc_base64 }}" alt="Biểu đồ Nhóm ABC" />
+        </div>
+        {% endif %}
+
+        <!-- Nhận xét & Lời khuyên Nhóm ABC -->
+        <div class="eval-box">
+            {% if threshold_abc %}
+                <div class="level-badge">★ Mức độ: {{ threshold_abc.title }}</div>
+                
+                {% if threshold_abc.description %}
+                <div class="section-label">NHẬN XÉT CHI TIẾT:</div>
+                <div class="eval-text">{{ threshold_abc.description }}</div>
+                {% endif %}
+
+                {% if threshold_abc.recommendation %}
+                <div style="border-top: 1px solid #E5E7EB; margin-top: 6px; padding-top: 4px;">
+                    <div class="section-label">LỜI KHUYÊN:</div>
+                    <div class="eval-text">{{ threshold_abc.recommendation }}</div>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="eval-text" style="color: #64748b; font-style: italic;">Chưa có thông tin đánh giá ngưỡng cho nhóm này.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ================= NHÓM 2: ALL_D (KẾT NỐI XÃ HỘI) ================= -->
+    <div class="group-box">
+        <div class="group-header">
+            <div class="group-title">Phân mức: Nhóm D (Mức độ kết nối xã hội)</div>
+            <div class="group-score-d">Điểm của bạn: {{ score_d }} điểm</div>
+        </div>
+
+        <!-- Biểu đồ Nhóm D (Hình chụp từ Frontend hoặc sinh từ Backend) -->
+        {% if chart_d_base64 %}
+        <div class="chart-container">
+            <img class="chart-img" src="data:image/png;base64,{{ chart_d_base64 }}" alt="Biểu đồ Nhóm D" />
+        </div>
+        {% endif %}
+
+        <!-- Nhận xét & Lời khuyên Nhóm D -->
+        <div class="eval-box">
+            {% if threshold_d %}
+                <div class="level-badge">★ Mức độ: {{ threshold_d.title }}</div>
+                
+                {% if threshold_d.description %}
+                <div class="section-label">NHẬN XÉT CHI TIẾT:</div>
+                <div class="eval-text">{{ threshold_d.description }}</div>
+                {% endif %}
+
+                {% if threshold_d.recommendation %}
+                <div style="border-top: 1px solid #E5E7EB; margin-top: 6px; padding-top: 4px;">
+                    <div class="section-label">LỜI KHUYÊN:</div>
+                    <div class="eval-text">{{ threshold_d.recommendation }}</div>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="eval-text" style="color: #64748b; font-style: italic;">Chưa có thông tin đánh giá ngưỡng cho nhóm này.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Báo cáo này được tự động tạo bởi Nền tảng Đánh giá & Kết nối Tâm lý Học đường Reconnect 360° (reconnect360.vn).
+    </div>
+
+</body>
+</html>

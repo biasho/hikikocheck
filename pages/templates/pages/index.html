@@ -9,10 +9,18 @@
 {% block content %}
 <!-- Breadcrumbs -->
 <nav class="flex items-center text-sm text-[var(--color-text-sub)] mb-6">
-    <a class="hover:text-[var(--color-primary)]" href="{% url 'pages:home' %}">Trang chủ</a>
-    <span class="mx-2">/</span>
-    <span class="text-[var(--color-text-main)] font-medium">Hệ thống Đánh giá & Khảo sát</span>
+    <a class="hover:text-[var(--color-primary)] inline-flex items-center" href="{% url 'pages:home' %}" title="Trang chủ">
+        <!-- Thêm style chỉnh độ dày nét về 100 -->
+        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'wght' 100;">home</span>
+    </a>
+    
+    <!-- Thêm style chỉnh độ dày nét về 100 -->
+    <span class="material-symbols-outlined text-[16px] mx-1 select-none text-[var(--color-text-sub)]" style="font-variation-settings: 'wght' 100;">chevron_right</span>
+    
+    <span class="text-[var(--color-text-main)] font-medium">Kết nối bản thân • Kết nối mọi người • Kết nối tương lai</span>
 </nav>
+
+
 
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
     <!-- Left Column: Main Content -->
@@ -29,11 +37,11 @@
                     class="inline-flex items-center rounded-full bg-[var(--color-accent)] px-3 py-1 text-xs font-bold text-gray-900 mb-4">
                     <span class="material-symbols-outlined text-[14px] mr-1">verified</span> Hệ thống hàng đầu 2026
                 </span>
-                <h1 class="text-4xl md:text-5xl font-black text-white leading-tight mb-4">
-                    Khảo sát & Đánh giá Toàn diện
-                </h1>
+              <h1 class="text-2xl sm:text-3xl lg:text-5xl font-black text-white leading-tight mb-4">
+    Khảo sát & Đánh giá toàn diện
+</h1>
                 <p class="text-gray-200 text-lg font-medium leading-relaxed mb-6">
-                    Theo dõi, phân tích và tối ưu hóa hệ thống 24/7 với dữ liệu thời gian thực và báo cáo trực
+                    Phân tích và tối ưu hóa hệ thống 24/7 với dữ liệu thời gian thực và báo cáo trực
                     quan.
                 </p>
                 <div class="flex flex-wrap gap-4">
@@ -189,29 +197,18 @@
                         <div
                             class="absolute left-0 top-0 size-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold z-10">
                             1</div>
-                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Tạo cuộc khảo sát</h4>
-                        <p class="text-[var(--color-text-sub)] text-sm">Nhập thông tin, tạo danh sách các câu hỏi và tùy
-                            chỉnh phương
-                            án trả lời.</p>
+                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Thực hiện khảo sát</h4>
+                        <p class="text-[var(--color-text-sub)] text-sm">Nhập thông tin, trả lời các câu hỏi.</p>
                     </div>
                     <div class="relative pl-12 pb-8">
                         <div
                             class="absolute left-0 top-0 size-8 rounded-full bg-[var(--color-card-bg)] border-2 border-[var(--color-primary)] text-[var(--color-primary)] flex items-center justify-center font-bold z-10">
                             2</div>
-                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Chia sẻ liên kết</h4>
-                        <p class="text-[var(--color-text-sub)] text-sm">Gửi đường dẫn khảo sát đến người dùng hoặc chia
-                            sẻ trên các nền
-                            tảng mạng xã hội.</p>
-                    </div>
-                    <div class="relative pl-12">
-                        <div
-                            class="absolute left-0 top-0 size-8 rounded-full bg-[var(--color-card-bg)] border-2 border-[var(--color-primary)] text-[var(--color-primary)] flex items-center justify-center font-bold z-10">
-                            3</div>
-                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Xem kết quả & Báo cáo</h4>
+                        <h4 class="text-lg font-bold text-[var(--color-text-main)] mb-2">Xem kết quả</h4>
                         <p class="text-[var(--color-text-sub)] text-sm">Hệ thống tự động tổng hợp kết quả theo dạng biểu
-                            đồ trực quan.
-                        </p>
+                            đồ trực quan.</p>
                     </div>
+                   
                 </div>
             </div>
         </section>
@@ -246,7 +243,9 @@
         <div class="sticky top-24 space-y-6">
 
             <!-- Nhúng Widget Video Youtube & Khảo sát vào đây -->
+
             {% include 'components/youtube_widget.html' %}
+            {% include 'components/club.html' %}
 
             <!-- Contact/Support Mini Card -->
             <div class="bg-[var(--color-card-bg)] rounded-xl p-6 shadow-sm ring-1 ring-[var(--color-border)]">
@@ -287,4 +286,6 @@
         </div>
     </div>
 </section>
+           {% include 'surveys/single/feedback_button_floating_bottom.html' %}
+
 {% endblock %}

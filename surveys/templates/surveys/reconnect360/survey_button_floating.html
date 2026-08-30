@@ -1,0 +1,136 @@
+{% if 'surveys' not in request.path %}
+{% load static %}
+<!-- Floating Survey Button (Nút Dọc) -->
+<div style="position: fixed; top: 70%; right: 0; transform: translateY(-50%); z-index: 999999; pointer-events: auto;">
+    <a href="{% url 'surveys:reconnect360_detail' %}" 
+       title="Làm khảo sát ngay"
+       class="survey-floating-btn-vertical">
+        
+        <!-- Chấm tròn nhấp nháy -->
+        <span class="status-dot"></span>
+
+        <!-- Nhãn chữ Khảo sát -->
+        <span class="btn-text">Khảo sát</span>
+    </a>
+</div>
+
+<!-- CSS Cho Nút Dọc -->
+<style>
+    .survey-floating-btn-vertical {
+        position: relative;
+        display: flex;
+        flex-direction: column; /* Xếp chấm tròn và chữ theo chiều dọc */
+        align-items: center;
+        gap: 8px;
+        padding: 12px 12px 12px 6px; /* Padding phù hợp với dáng dọc */
+        background-color: var(--color-primary-light, #eff6ff);
+        color: var(--color-primary, #1152d4);
+        
+        /* Bo góc bên trái cho khối dọc */
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        text-decoration: none;
+        
+        border-left: 1.5px solid var(--color-primary, #1152d4);
+        border-top: 1px solid var(--color-primary-border, rgba(17, 82, 212, 0.25));
+        border-bottom: 1px solid var(--color-primary-border, rgba(17, 82, 212, 0.25));
+        border-right: none;
+        
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        
+        /* Đẩy nhẹ nút ẩn 6px về bên phải */
+        transform: translateX(6px);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                    background-color 0.3s ease, 
+                    color 0.3s ease, 
+                    box-shadow 0.3s ease;
+        animation: activeGlowPulse 2s infinite;
+    }
+
+    .survey-floating-btn-vertical .status-dot {
+        position: relative;
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: var(--color-primary, #1152d4);
+        z-index: 2;
+        transition: background-color 0.3s ease;
+    }
+
+    .survey-floating-btn-vertical .btn-text {
+        position: relative;
+        z-index: 2;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        user-select: none;
+        transition: color 0.3s ease;
+        
+        /* Xoay chữ chạy dọc từ trên xuống dưới */
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+    }
+
+    /* Hiệu ứng nhấp nháy phát sáng */
+    @keyframes activeGlowPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(17, 82, 212, 0.4), -2px 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        50% {
+            box-shadow: -4px 0 16px 4px rgba(17, 82, 212, 0.35), -2px 4px 12px rgba(0, 0, 0, 0.08);
+            border-left-color: var(--color-primary, #1152d4);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(17, 82, 212, 0), -2px 4px 10px rgba(0, 0, 0, 0.05);
+        }
+    }
+
+    /* Vệt sáng quét qua nút dọc */
+    .survey-floating-btn-vertical::before {
+        content: '';
+        position: absolute;
+        top: -150%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            180deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.5) 50%,
+            transparent 100%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* TRẠNG THÁI HOVER: Trượt hết ra trái, chuyển nền xanh */
+    .survey-floating-btn-vertical:hover {
+        animation: none !important;
+        transform: translateX(0) !important;
+        background-color: var(--color-primary, #1152d4) !important;
+        color: #ffffff !important;
+        box-shadow: -4px 8px 24px rgba(17, 82, 212, 0.4) !important;
+        border-color: transparent !important;
+    }
+
+    .survey-floating-btn-vertical:hover .status-dot {
+        background-color: #ffffff !important;
+    }
+
+    .survey-floating-btn-vertical:hover .btn-text {
+        color: #ffffff !important;
+    }
+
+    /* Quét vệt sáng từ trên xuống khi hover */
+    .survey-floating-btn-vertical:hover::before {
+        top: 150%;
+        transition: top 0.65s ease-in-out;
+    }
+</style>
+{% endif %}

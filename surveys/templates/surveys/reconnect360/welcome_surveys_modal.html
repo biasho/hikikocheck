@@ -1,0 +1,151 @@
+{% load static %}
+
+<!-- ================= POPUP BẮT ĐẦU KHẢO SÁT ================= -->
+<div id="welcomeModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md transition-all duration-300 opacity-100">
+
+    <!-- Khung Modal chính -->
+    <div id="welcomeModalContent"
+        class="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl w-full max-w-md rounded-2xl overflow-hidden p-6 md:p-8 shadow-[0_12px_40px_0_rgba(0,0,0,0.15)] border border-white/50 dark:border-slate-700/50 text-center transform scale-100 transition-all duration-300 relative">
+
+        <!-- Nút đóng (X) -->
+        <button type="button" onclick="closeWelcomeModal()" aria-label="Đóng"
+            class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+
+        <!-- Logo Reconnect 360° xoay tròn -->
+        <div class="flex items-center justify-center mx-auto mb-5">
+            <img src="{% static 'images/reconnect360_logo.png' %}" 
+                 alt="Reconnect 360°" 
+                 class="h-16 md:h-20 w-auto rounded-full mix-blend-multiply dark:mix-blend-normal object-contain animate-spin-slow hover:scale-110 transition-transform duration-300">
+        </div>
+
+        <!-- Tiêu đề -->
+        <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3">
+            Dành cho mình một phút để nhìn lại bản thân nhé.
+        </h3>
+
+        <!-- Thông điệp hướng dẫn -->
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+            Hãy thả lỏng, hít thở thật sâu và bắt đầu hành trình nào!
+        </p>
+
+        <!-- Nút Sẵn sàng -->
+        <button type="button" onclick="closeWelcomeModal()"
+            class="group relative w-full h-12 rounded-2xl border active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer overflow-hidden btn-shine custom-ready-btn">
+             
+            <!-- Chữ Sẵn sàng: Thêm class ready-text để ép chuyển màu trắng khi nút được hover -->
+            <span class="relative z-10 text-xs md:text-sm font-bold uppercase tracking-wider ready-text transition-colors duration-300">
+                Sẵn sàng
+            </span>
+            
+            <!-- Icon tên lửa màu vàng nhấp nháy -->
+            <span class="relative z-10 material-symbols-outlined text-lg md:text-xl animate-rocket-blink select-none" style="color: #f59e0b !important;">
+                rocket_launch
+            </span>
+        </button>
+    </div>
+</div>
+
+<!-- TÙY CHỈNH CSS ANIMATION & HOVER -->
+<style>
+    /* Hiệu ứng xoay mượt cho Logo */
+    @keyframes spinSlow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+        animation: spinSlow 10s linear infinite;
+    }
+
+    /* Hiệu ứng nhấp nháy phát sáng Tên lửa */
+    @keyframes rocketBlink {
+        0%, 100% {
+            opacity: 1;
+            color: #f59e0b;
+            transform: scale(1) rotate(0deg);
+        }
+        50% {
+            opacity: 0.4;
+            color: #f97316;
+            transform: scale(1.15) rotate(-6deg);
+        }
+    }
+    .animate-rocket-blink {
+        animation: rocketBlink 1.2s infinite ease-in-out;
+        display: inline-block;
+    }
+
+    /* Tạo lớp nền vệt sáng chạy ngang nút khi Hover */
+    .btn-shine::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            transparent 100%
+        );
+        transform: skewX(-20deg);
+        transition: none;
+    }
+
+    .btn-shine:hover::before {
+        left: 140%;
+        transition: left 0.75s ease-in-out;
+    }
+
+    /* Màu chữ mặc định và khi hover của nút */
+    .ready-text {
+        color: var(--color-primary);
+    }
+
+    /* Tùy chỉnh trạng thái khi hover vào nút */
+    .custom-ready-btn {
+        background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+        border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+        transition: all 0.3s ease;
+    }
+
+    .custom-ready-btn:hover {
+        background-color: var(--color-primary) !important;
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 4px 16px color-mix(in srgb, var(--color-primary) 40%, transparent);
+    }
+
+    /* Ép chữ chuyển sang màu trắng tuyệt đối khi rê chuột vào nút */
+    .custom-ready-btn:hover .ready-text {
+        color: #ffffff !important;
+    }
+</style>
+
+<!-- JAVASCRIPT ĐIỀU KHIỂN MODAL -->
+<script>
+    function closeWelcomeModal() {
+        const modal = document.getElementById('welcomeModal');
+        const content = document.getElementById('welcomeModalContent');
+        if (!modal || !content) return;
+
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        content.classList.remove('scale-100');
+        content.classList.add('scale-95');
+    }
+
+    (function initModalListeners() {
+        const welcomeModal = document.getElementById('welcomeModal');
+        if (welcomeModal) {
+            welcomeModal.addEventListener('click', function (e) {
+                if (e.target === this) closeWelcomeModal();
+            });
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeWelcomeModal();
+        });
+    })();
+</script>

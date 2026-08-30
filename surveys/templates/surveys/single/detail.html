@@ -1,0 +1,548 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block default_theme %}light{% endblock %}
+{% block title %}{{ survey.title }} - Reconnect 360°{% endblock %}
+
+{% block content %}
+<style>
+  /* Utility & Accessibility */
+  .sr-only-custom {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border-width: 0 !important;
+  }
+
+  /* Style chung cho Radio Card và Checkbox Card */
+  .custom-radio-card,
+  .option-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    user-select: none;
+  }
+
+  /* Hiệu ứng HOVER & CHECKED đồng bộ */
+  .custom-radio-card:hover,
+  .custom-radio-card:has(input:checked),
+  .option-card:hover,
+  .option-card:has(input:checked) {
+    border-color: var(--color-primary) !important;
+    background-color: var(--color-primary-soft, rgba(var(--color-primary-rgb, 59, 130, 246), 0.08)) !important;
+  }
+
+  /* Đổi màu chữ khi HOVER / CHECKED */
+  .custom-radio-card:hover .card-title,
+  .custom-radio-card:has(input:checked) .card-title,
+  .option-card:hover .option-text,
+  .option-card:has(input:checked) .option-text {
+    color: var(--color-primary) !important;
+  }
+
+  /* --- 1. CUSTOM RADIO CARD (Single Choice) --- */
+  .custom-radio-card .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .custom-radio-card:has(input:checked) .card-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* --- 2. CUSTOM CHECKBOX CARD (Multiple Choice) --- */
+  .option-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-main);
+    padding-right: 0.75rem;
+  }
+
+  .option-card input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1.5px solid var(--color-border);
+    border-radius: 0.375rem;
+    background-color: transparent;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .option-card:hover input[type="checkbox"] {
+    border-color: var(--color-primary);
+  }
+
+  .option-card input[type="checkbox"]::before {
+    content: "";
+    width: 0.65rem;
+    height: 0.65rem;
+    transform: scale(0);
+    transition: 0.15s transform ease-in-out;
+    background-color: #ffffff;
+    clip-path: polygon(14% 44%, 0 58%, 36% 94%, 100% 28%, 84% 14%, 35% 64%);
+  }
+
+  .option-card input[type="checkbox"]:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
+  }
+
+  .option-card input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+</style>
+
+<!-- Breadcrumb -->
+<nav class="flex items-center text-xs text-[var(--color-text-sub)] mb-5">
+    <a class="hover:text-[var(--color-primary)] transition-colors" href="{% url 'pages:home' %}">Trang chủ</a>
+    <span class="mx-2">/</span>
+    <span class="text-[var(--color-text-main)] font-medium truncate max-w-xs">{{ survey.title }}</span>
+</nav>
+
+<!-- Widget Tiến Độ Nổi Ở Góc Trên Bên Phải -->
+<div class="fixed top-20 right-4 md:right-8 z-40 bg-white/30 dark:bg-black/30 backdrop-blur-xl border rounded-xl p-2 w-40 transition-all" 
+     style="border-color: rgba(var(--color-primary-rgb, 16, 185, 129), 0.2); box-shadow: 0 25px 50px -12px rgba(var(--color-primary-rgb, 16, 185, 129), 0.03);">
+    
+    <!-- font-bold giảm xuống font-medium và tracking rộng hơn để chữ thanh mảnh hơn -->
+    <div class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">
+        Tiến độ hoàn thành
+    </div>
+    
+    <div class="flex justify-between items-center text-xs mb-1.5">
+        <span id="progress-text" class="text-zinc-600 dark:text-zinc-300 font-light">
+            <!-- Đổi sang font-medium thay vì font-extrabold dày đặc -->
+            <strong id="answered-count" class="font-medium" style="color: #059669 !important;">0</strong>
+            <span id="total-count-text" class="text-zinc-400/80 dark:text-zinc-500 font-light">/ 0 câu</span>
+        </span>
+        <!-- Phần trăm đổi từ font-extrabold xuống font-semibold để mảnh và sắc nét -->
+        <span id="progress-percent" class="font-semibold" style="color: #059669 !important;">0%</span>
+    </div>
+    
+    <div class="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden p-0.5">
+        <div id="progress-bar" 
+             class="h-full min-w-[2px] transition-all duration-300 ease-out rounded-full shadow-[0_0_8px_rgba(16,185,129,0.3)]" 
+             style="width: 0%; background-color: var(--bar-color, #10b981) !important; will-change: width;"></div>
+    </div>
+</div>
+
+<style>
+#progress-bar {
+    --bar-color: #10b981;
+}
+.dark #progress-bar {
+    --bar-color: #34d399;
+}
+</style>
+
+
+
+
+
+
+<div class="max-w-2xl mx-auto px-4 pb-12">
+
+    <!-- Form Khảo Sát Đơn -->
+    <form id="survey-form" method="POST" action="{% url 'surveys:submit_detail' slug=survey.slug %}" onsubmit="return handleFormSubmit(event)">
+        {% csrf_token %}
+
+        {% for question in questions %}
+
+        <!-- Header Riêng Cho Nhóm -->
+        {% ifchanged question.group %}
+        <div class="group-header-card hidden mb-4 p-4 rounded-2xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-between"
+            data-group-header="{% if question.group %}{{ question.group.code }}{% else %}other{% endif %}">
+            <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">folder_open</span>
+                <h2 class="text-xs md:text-sm font-bold text-[var(--color-primary)]">
+                    {% if question.group %}{{ question.group.name }}{% else %}Nhóm chung{% endif %}
+                </h2>
+            </div>
+        </div>
+        {% endifchanged %}
+
+        <!-- Card từng câu hỏi -->
+        <div class="question-item hidden bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 mb-4 transition-all"
+            data-group="{% if question.group %}{{ question.group.code }}{% else %}other{% endif %}"
+            data-group-name="{% if question.group %}{{ question.group.name }}{% else %}Nhóm chung{% endif %}">
+
+            <div class="flex items-start gap-3 mb-5">
+                <span class="size-7 rounded-xl bg-[var(--color-primary)] text-white font-bold text-xs flex items-center justify-center shrink-0">
+                    {{ forloop.counter }}
+                </span>
+                <h3 class="text-xs md:text-sm font-bold text-[var(--color-text-main)] leading-snug">
+                    {{ question.text }}
+                </h3>
+            </div>
+
+            <!-- 1. Single Choice -->
+            {% if question.question_type == 'single_choice' %}
+            <div class="space-y-2.5">
+                {% for option in question.options.all %}
+                <label for="option-{{ option.id }}" class="custom-radio-card group">
+                    <input type="radio" id="option-{{ option.id }}" name="question_{{ question.id }}" value="{{ option.id }}" onchange="checkAnswered(this)" class="sr-only-custom">
+
+                    <div class="flex flex-col gap-1">
+                        <span class="card-title text-xs font-medium text-[var(--color-text-main)] transition-colors">
+                            {{ option.text }}
+                        </span>
+                        {% if option.description %}
+                        <p class="text-[11px] text-[var(--color-text-muted,#6b7280)]">
+                            {{ option.description }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-icon shrink-0">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+
+            <!-- 2. Multiple Choice -->
+            {% elif question.question_type == 'multiple_choice' %}
+            <div class="space-y-2.5">
+                {% for option in question.options.all %}
+                <label for="option_{{ option.id }}" class="option-card">
+                    <span class="option-text">
+                        {{ option.text }}
+                    </span>
+                    <input type="checkbox" id="option_{{ option.id }}" name="question_{{ question.id }}" value="{{ option.id }}" onchange="checkAnswered(this)">
+                </label>
+                {% endfor %}
+            </div>
+
+            <!-- 3. Rating -->
+            {% elif question.question_type == 'rating' %}
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                {% for option in question.options.all %}
+                <label class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:border-[var(--color-primary)] cursor-pointer transition-colors text-center group">
+                    <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}" onchange="checkAnswered(this)"
+                        class="size-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-gray-300 mb-2">
+                    <span class="text-[11px] font-semibold text-[var(--color-text-main)] group-hover:text-[var(--color-primary)]">
+                        {{ option.text }}
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <!-- 4. Text -->
+            {% elif question.question_type == 'text' %}
+            <textarea name="question_{{ question.id }}" rows="3" oninput="checkAnswered(this)"
+                placeholder="Nhập câu trả lời của bạn..."
+                class="w-full p-3.5 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-main)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none text-xs"></textarea>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+        <!-- Thanh Nút Điều Hướng -->
+        <div class="flex items-center justify-between gap-3 mt-6">
+            <button type="button" id="btn-prev" onclick="changeStep(-1)"
+                class="flex items-center justify-center h-10 px-5 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] hover:bg-[var(--color-card-bg)] font-bold text-xs transition-colors cursor-pointer">
+                <span class="material-symbols-outlined mr-1 text-base">arrow_back</span>
+                Nhóm trước
+            </button>
+
+            <button type="button" id="btn-next" onclick="changeStep(1)"
+                class="flex-1 sm:flex-none flex items-center justify-center h-10 px-6 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-xs shadow-md shadow-[var(--color-primary)]/20 transition-all cursor-pointer">
+                Nhóm tiếp theo
+                <span class="material-symbols-outlined ml-1 text-base">arrow_forward</span>
+            </button>
+
+       <style>
+  #btn-submit {
+    position: relative;
+    overflow: hidden;
+    /* Hiệu ứng Glassmorphic ban đầu ăn theo màu theme chủ đạo */
+    background: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--color-primary-rgb, 16, 185, 129), 0.25) !important;
+    color: var(--color-primary) !important;
+  }
+
+  /* Tạo viền kính mờ cho Dark Mode của nút bấm */
+  .dark #btn-submit {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(var(--color-primary-rgb, 16, 185, 129), 0.15) !important;
+  }
+
+  #btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    transition: all 0.5s ease-in-out;
+  }
+
+  /* Khi di chuột qua (Hover) */
+  #btn-submit:hover::before {
+    left: 100%;
+  }
+
+  #btn-submit:hover {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 20px -5px rgba(var(--color-primary-rgb, 16, 185, 129), 0.4);
+    border-color: transparent !important;
+  }
+
+  #btn-submit:hover span {
+    color: #ffffff !important;
+  }
+</style>
+
+<button type="submit" id="btn-submit" class="group inline-flex items-center justify-center h-10 px-4 rounded-xl font-bold text-sm transition-all duration-200 ease-in-out cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50 shadow-lg shadow-black/[0.02]">
+  <span class="material-symbols-outlined mr-1.5 text-base text-current transition-transform duration-200 ease-in-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:rotate-12">send</span>
+  <span>Nộp bài khảo sát</span>
+</button>
+
+        </div>
+    </form>
+</div>
+
+<!-- TOAST CẢNH BÁO NỔI PHONG CÁCH GLASSMORPHISM HOÀN TOÀN MỚI -->
+<div id="validation-warning"
+    class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-11/12 bg-amber-500/20 dark:bg-amber-500/10 backdrop-blur-xl border border-amber-500/30 text-amber-800 dark:text-amber-200 p-3.5 rounded-xl shadow-2xl shadow-amber-900/5 items-center gap-3 transition-all duration-300 -translate-y-8 opacity-0 pointer-events-none">
+    <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-xl shrink-0">warning</span>
+    <div class="flex-1">
+        <p class="font-bold text-[10px] uppercase tracking-wider mb-0.5 text-amber-700 dark:text-amber-400">Chú ý</p>
+        <p class="text-xs leading-tight font-bold">Vui lòng hoàn thành các câu hỏi trắc nghiệm trong nhóm này trước khi tiếp tục!</p>
+    </div>
+    <button type="button" onclick="hideWarning()"
+        class="cursor-pointer text-amber-700/60 dark:text-amber-400/60 hover:text-amber-900 dark:hover:text-amber-200 p-1 pointer-events-auto transition-colors">
+        <span class="material-symbols-outlined text-base">close</span>
+    </button>
+</div>
+
+</div>
+
+<script>
+    let currentStep = 0;
+    let questionGroups = [];
+    let toastTimeout = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const allQuestions = Array.from(document.querySelectorAll('.question-item'));
+        if (allQuestions.length === 0) return;
+
+        const groupMap = new Map();
+        allQuestions.forEach(qCard => {
+            const groupCode = qCard.getAttribute('data-group');
+            if (!groupMap.has(groupCode)) {
+                groupMap.set(groupCode, []);
+            }
+            groupMap.get(groupCode).push(qCard);
+        });
+
+        groupMap.forEach((questions) => {
+            questionGroups.push(questions);
+        });
+
+        if (questionGroups.length > 0) {
+            showStep(0);
+        }
+    });
+
+    function showStep(index) {
+        document.querySelectorAll('.question-item').forEach(q => q.classList.add('hidden'));
+        document.querySelectorAll('.group-header-card').forEach(h => h.classList.add('hidden'));
+
+        questionGroups[index].forEach(q => q.classList.remove('hidden'));
+
+        const currentGroupCode = questionGroups[index][0].getAttribute('data-group');
+        const activeHeader = document.querySelector(`.group-header-card[data-group-header="${currentGroupCode}"]`);
+        if (activeHeader) {
+            activeHeader.classList.remove('hidden');
+        }
+
+        document.getElementById('btn-prev').style.visibility = (index === 0) ? 'hidden' : 'visible';
+
+        if (index === questionGroups.length - 1) {
+            document.getElementById('btn-next').classList.add('hidden');
+            document.getElementById('btn-submit').classList.remove('hidden');
+            document.getElementById('btn-submit').classList.add('flex');
+        } else {
+            document.getElementById('btn-next').classList.remove('hidden');
+            document.getElementById('btn-submit').classList.add('hidden');
+            document.getElementById('btn-submit').classList.remove('flex');
+        }
+
+        updateProgress();
+        hideWarning();
+    }
+
+    function changeStep(delta) {
+        if (delta === 1 && !validateCurrentStep()) {
+            showWarning();
+            return;
+        }
+
+        currentStep += delta;
+        if (currentStep >= 0 && currentStep < questionGroups.length) {
+            showStep(currentStep);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function highlightQuestion(qCard, isError) {
+        if (isError) {
+            qCard.classList.add('ring-2', 'ring-red-500/80', 'bg-red-500/5');
+            qCard.classList.remove('ring-[var(--color-border)]');
+        } else {
+            qCard.classList.remove('ring-2', 'ring-red-500/80', 'bg-red-500/5');
+            qCard.classList.add('ring-[var(--color-border)]');
+        }
+    }
+
+    function checkQuestionValidity(qCard) {
+        const radios = qCard.querySelectorAll('input[type="radio"]');
+        const checkboxes = qCard.querySelectorAll('input[type="checkbox"]');
+        const textarea = qCard.querySelector('textarea');
+
+        if (radios.length > 0) {
+            return Array.from(radios).some(r => r.checked);
+        } else if (checkboxes.length > 0) {
+            return Array.from(checkboxes).some(c => c.checked);
+        } else if (textarea) {
+            return true;
+        }
+        return true;
+    }
+
+    function validateCurrentStep() {
+        const currentQuestions = questionGroups[currentStep];
+        let allValid = true;
+        let firstInvalidCard = null;
+
+        currentQuestions.forEach(qCard => {
+            const isValid = checkQuestionValidity(qCard);
+
+            if (!isValid) {
+                allValid = false;
+                highlightQuestion(qCard, true);
+                if (!firstInvalidCard) firstInvalidCard = qCard;
+            } else {
+                highlightQuestion(qCard, false);
+            }
+        });
+
+        if (firstInvalidCard) {
+            firstInvalidCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        return allValid;
+    }
+
+    function updateProgress() {
+        const allQuestions = document.querySelectorAll('.question-item');
+        const totalQuestions = allQuestions.length;
+
+        let answeredCount = 0;
+
+        allQuestions.forEach(qCard => {
+            const radios = qCard.querySelectorAll('input[type="radio"]');
+            const checkboxes = qCard.querySelectorAll('input[type="checkbox"]');
+            const textarea = qCard.querySelector('textarea');
+
+            if (Array.from(radios).some(r => r.checked) || Array.from(checkboxes).some(c => c.checked)) {
+                answeredCount++;
+            } else if (textarea && textarea.value.trim() !== '') {
+                answeredCount++;
+            }
+        });
+
+        const percent = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+
+        document.getElementById('answered-count').innerText = answeredCount;
+        document.getElementById('total-count-text').innerText = `/ ${totalQuestions} câu`;
+        document.getElementById('progress-percent').innerText = `${percent}%`;
+        document.getElementById('progress-bar').style.width = `${percent}%`;
+    }
+
+    function showWarning() {
+        const toast = document.getElementById('validation-warning');
+        if (!toast) return;
+
+        clearTimeout(toastTimeout);
+        toast.classList.remove('hidden');
+        toast.classList.add('flex');
+
+        requestAnimationFrame(() => {
+            toast.classList.remove('-translate-y-8', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        });
+
+        toastTimeout = setTimeout(() => {
+            hideWarning();
+        }, 5000);
+    }
+
+    function hideWarning() {
+        const toast = document.getElementById('validation-warning');
+        if (!toast) return;
+
+        toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        toast.classList.add('-translate-y-8', 'opacity-0', 'pointer-events-none');
+
+        setTimeout(() => {
+            toast.classList.remove('flex');
+            toast.classList.add('hidden');
+        }, 300);
+    }
+
+    function checkAnswered(inputElement) {
+        updateProgress();
+        if (inputElement) {
+            const qCard = inputElement.closest('.question-item');
+            if (qCard && checkQuestionValidity(qCard)) {
+                highlightQuestion(qCard, false);
+            }
+        }
+    }
+
+    function handleFormSubmit(event) {
+        if (!validateCurrentStep()) {
+            event.preventDefault();
+            showWarning();
+            return false;
+        }
+        return true;
+    }
+</script>
+{% endblock %}

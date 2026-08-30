@@ -2,129 +2,126 @@
 {% load static %}
 
 {% block default_theme %}light{% endblock %}
-{% block title %}{{ composite.title }} - HikikoCheck System{% endblock %}
+{% block title %}{{ composite.title }} - Reconnect 360°{% endblock %}
 
 {% block content %}
 <style>
-    /* Utility & Accessibility */
-    .sr-only-custom {
-        position: absolute !important;
-        width: 1px !important;
-        height: 1px !important;
-        padding: 0 !important;
-        margin: -1px !important;
-        overflow: hidden !important;
-        clip: rect(0, 0, 0, 0) !important;
-        white-space: nowrap !important;
-        border-width: 0 !important;
-    }
+  /* Utility & Accessibility */
+  .sr-only-custom {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border-width: 0 !important;
+  }
 
-    /* Style chung cho Radio Card và Checkbox Card */
-    .custom-radio-card,
-    .option-card {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.875rem 1rem;
-        border-radius: 0.75rem;
-        border: 1px solid var(--color-border);
-        background-color: var(--color-background);
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        user-select: none;
-    }
+  /* Style chung cho Radio Card và Checkbox Card */
+  .custom-radio-card,
+  .option-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    user-select: none;
+  }
 
-    /* Hiệu ứng HOVER & CHECKED đồng bộ */
-    .custom-radio-card:hover,
-    .custom-radio-card:has(input:checked),
-    .option-card:hover,
-    .option-card:has(input:checked) {
-        border-color: var(--color-primary) !important;
-        background-color: var(--color-primary-soft, rgba(var(--color-primary-rgb, 59, 130, 246), 0.08)) !important;
-    }
+  /* Hiệu ứng HOVER & CHECKED đồng bộ */
+  .custom-radio-card:hover,
+  .custom-radio-card:has(input:checked),
+  .option-card:hover,
+  .option-card:has(input:checked) {
+    border-color: var(--color-primary) !important;
+    background-color: var(--color-primary-soft, rgba(var(--color-primary-rgb, 59, 130, 246), 0.08)) !important;
+  }
 
-    /* Đổi màu chữ khi HOVER / CHECKED */
-    .custom-radio-card:hover .card-title,
-    .custom-radio-card:has(input:checked) .card-title,
-    .option-card:hover .option-text,
-    .option-card:has(input:checked) .option-text {
-        color: var(--color-primary) !important;
-    }
+  /* Đổi màu chữ khi HOVER / CHECKED */
+  .custom-radio-card:hover .card-title,
+  .custom-radio-card:has(input:checked) .card-title,
+  .option-card:hover .option-text,
+  .option-card:has(input:checked) .option-text {
+    color: var(--color-primary) !important;
+  }
 
-    /* --- 1. CUSTOM RADIO CARD (Single Choice) --- */
-    .custom-radio-card .card-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-primary);
-        opacity: 0;
-        transform: scale(0.5);
-        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+  /* --- 1. CUSTOM RADIO CARD (Single Choice) --- */
+  .custom-radio-card .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 
-    .custom-radio-card:has(input:checked) .card-icon {
-        opacity: 1;
-        transform: scale(1);
-    }
+  .custom-radio-card:has(input:checked) .card-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-    /* --- 2. CUSTOM CHECKBOX CARD (Multiple Choice) --- */
-    .option-text {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--color-text-main);
-        padding-right: 0.75rem;
-    }
+  /* --- 2. CUSTOM CHECKBOX CARD (Multiple Choice) --- */
+  .option-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-main);
+    padding-right: 0.75rem;
+  }
 
-    .option-card input[type="checkbox"] {
-        appearance: none;
-        -webkit-appearance: none;
-        margin: 0;
-        flex-shrink: 0;
-        width: 1.125rem;
-        height: 1.125rem;
-        border: 1.5px solid var(--color-border);
-        border-radius: 0.375rem;
-        background-color: transparent;
-        cursor: pointer;
-        display: grid;
-        place-content: center;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+  .option-card input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1.5px solid var(--color-border);
+    border-radius: 0.375rem;
+    background-color: transparent;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-    .option-card:hover input[type="checkbox"] {
-        border-color: var(--color-primary);
-    }
+  .option-card:hover input[type="checkbox"] {
+    border-color: var(--color-primary);
+  }
 
-    .option-card input[type="checkbox"]::before {
-        content: "";
-        width: 0.65rem;
-        height: 0.65rem;
-        transform: scale(0);
-        transition: 0.15s transform ease-in-out;
-        background-color: #ffffff;
-        clip-path: polygon(14% 44%, 0 58%, 36% 94%, 100% 28%, 84% 14%, 35% 64%);
-    }
+  .option-card input[type="checkbox"]::before {
+    content: "";
+    width: 0.65rem;
+    height: 0.65rem;
+    transform: scale(0);
+    transition: 0.15s transform ease-in-out;
+    background-color: #ffffff;
+    clip-path: polygon(14% 44%, 0 58%, 36% 94%, 100% 28%, 84% 14%, 35% 64%);
+  }
 
-    .option-card input[type="checkbox"]:checked {
-        background-color: var(--color-primary);
-        border-color: var(--color-primary);
-        box-shadow: 0 2px 6px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
-    }
+  .option-card input[type="checkbox"]:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
+  }
 
-    .option-card input[type="checkbox"]:checked::before {
-        transform: scale(1);
-    }
+  .option-card input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
 
-    /* Màu chữ nhạt hơn cho nhãn Đang làm */
-    .progress-label {
-        color: var(--color-text-sub);
-        opacity: 0.75;
-        font-weight: 500;
-    }
+  /* Màu chữ nhạt hơn cho nhãn Đang làm */
+  .progress-label {
+    color: var(--color-text-sub);
+    opacity: 0.75;
+    font-weight: 500;
+  }
 </style>
-
-<!-- NHÚNG MODAL CHÀO MỪNG VÀO TRANG KHẢO SÁT -->
-{% include 'surveys/reconnect360/welcome_surveys_modal.html' %}
 
 <!-- Breadcrumb -->
 <nav class="flex items-center text-xs text-[var(--color-text-sub)] mb-5">
@@ -136,44 +133,34 @@
 </nav>
 
 <!-- Widget Tiến Độ Nổi Ở Góc Trên Bên Phải -->
-<!-- Widget Tiến Độ Nổi Ở Góc Trên Bên Phải (Mobile) và Tự Động Di Chuyển Sang Trái Sát Bài Làm (Laptop/Desktop) -->
-<!-- Widget Tiến Độ Nổi Ở Góc Trên Bên Phải (Mobile) và Tự Động Di Chuyển Sang Trái Sát Bài Làm (Laptop/Desktop) -->
-<div class="fixed top-20 right-4 lg:right-auto lg:left-[calc(50%-510px)] xl:left-[calc(50%-540px)] z-40 bg-white/30 dark:bg-black/30 backdrop-blur-xl border rounded-xl p-2 w-48 md:w-48 transition-all"
-     style="border-color: rgba(var(--color-primary-rgb, 16, 185, 129), 0.2); box-shadow: 0 25px 50px -12px rgba(var(--color-primary-rgb, 16, 185, 129), 0.03);">
-    
-    <div id="step-group-name" class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400  tracking-widest truncate mb-1" title="Tên phần khảo sát">
-        <span class="progress-label text-zinc-400 dark:text-zinc-500 font-light">Đang làm:</span> Đang tải...
+<div
+    class="fixed top-20 right-4 md:right-8 z-40 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl rounded-2xl p-3.5 w-64 md:w-80 transition-all">
+    <div id="step-group-name" class="text-xs font-bold text-[var(--color-text-main)] truncate mb-1" title="Tên phần khảo sát">
+        <span class="progress-label">Đang làm:</span> Đang tải...
     </div>
-    
-    <div class="flex justify-between items-center text-xs mb-1.5">
-        <!-- Thuộc tính truncate giúp chữ "câu" nếu có dài cũng tự động ngắt mượt mà -->
-        <span id="progress-text" class="text-zinc-600 dark:text-zinc-300 font-light truncate text-[11px]">Bước 1/1 (0/0 câu)</span>
-        <!-- Thêm pl-4 để ép số % luôn cách chữ số câu một khoảng trống tinh tế -->
-        <span id="progress-percent" class="font-semibold shrink-0 pl-4" style="color: #059669 !important;">0%</span>
+    <div class="flex justify-between items-center gap-2 text-xs font-medium text-[var(--color-text-sub)] mb-1.5">
+        <span id="progress-text" class="truncate text-[11px]">Bước 1/1 (0/0 câu)</span>
+        <span id="progress-percent" class="text-[var(--color-primary)] font-bold shrink-0">0%</span>
     </div>
-    
-    <div class="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden p-0.5">
-        <div id="progress-bar" 
-             class="h-full min-w-[2px] transition-all duration-300 ease-out rounded-full shadow-[0_0_8px_rgba(16,185,129,0.3)]" 
-             style="width: 0%; background-color: var(--bar-color, #10b981) !important; will-change: width;"></div>
+    <div class="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+        <div id="progress-bar" class="h-full bg-[var(--color-primary)] transition-all duration-300 rounded-full"
+            style="width: 0%;"></div>
     </div>
 </div>
 
-<style>
-#progress-bar {
-    --bar-color: #10b981;
-}
-.dark #progress-bar {
-    --bar-color: #34d399;
-}
-</style>
-
-
-
-
 <div class="max-w-2xl mx-auto px-4 pb-12">
 
-   
+    <!-- Thông báo Django Messages -->
+    {% if messages %}
+    {% for message in messages %}
+    <div
+        class="mb-5 p-3.5 rounded-xl bg-green-500/10 border border-green-500/30 text-green-700 dark:text-green-400 flex items-center gap-3">
+        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+        <p class="font-semibold text-xs">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+
     <!-- Header Bộ Khảo Sát Tổng Hợp -->
     <section class="bg-[var(--color-card-bg)] rounded-2xl shadow-sm ring-1 ring-[var(--color-border)] p-6 mb-5">
         <h1 class="text-xl md:text-2xl font-bold text-[var(--color-text-main)] mb-2 leading-snug">
@@ -198,21 +185,21 @@
 
             <!-- Tiêu đề Step -->
             <div
-                class="mb-4 p-4 rounded-2xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-start gap-3">
-                <span
-                    class="material-symbols-outlined text-[var(--color-primary)] text-base md:text-lg shrink-0 mt-0.5">list_alt</span>
-                <h2
-                    class="text-xs md:text-sm font-bold text-[var(--color-primary)] uppercase tracking-wider leading-relaxed">
-                    {% if group.grouper %}
-                    Phần {{ item.order }}: {{ group.grouper.name }}
-                    {% else %}
-                    {% if item.name %}
-                    {{ item.name }}
-                    {% else %}
-                    Phần {{ item.order }}: {{ item.survey.title }}
-                    {% endif %}
-                    {% endif %}
-                </h2>
+                class="mb-4 p-4 rounded-2xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-lg">folder_open</span>
+                    <h2 class="text-xs md:text-sm font-bold text-[var(--color-primary)] uppercase tracking-wider">
+                        {% if group.grouper %}
+                        Phần {{ item.order }}: {{ group.grouper.name }}
+                        {% else %}
+                        {% if item.name %}
+                        {{ item.name }}
+                        {% else %}
+                        Phần {{ item.order }}: {{ item.survey.title }}
+                        {% endif %}
+                        {% endif %}
+                    </h2>
+                </div>
             </div>
 
             {% if item.survey.description and forloop.first %}
@@ -245,8 +232,7 @@
                             value="{{ option.id }}" onchange="checkAnswered(this)" class="sr-only-custom">
 
                         <div class="flex flex-col gap-1">
-                            <span
-                                class="card-title text-xs font-medium text-[var(--color-text-main)] transition-colors">
+                            <span class="card-title text-xs font-medium text-[var(--color-text-main)] transition-colors">
                                 {{ option.text }}
                             </span>
                             {% if option.description %}
@@ -257,8 +243,7 @@
                         </div>
 
                         <div class="card-icon shrink-0">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                stroke-width="2.5">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
@@ -276,7 +261,8 @@
                                 {{ option.text }}
                             </span>
                             <input type="checkbox" id="option_{{ option.id }}" name="question_{{ question.id }}"
-                                value="{{ option.id }}" onchange="toggleCustomInput(this); checkAnswered(this);">
+                                value="{{ option.id }}"
+                                onchange="toggleCustomInput(this); checkAnswered(this);">
                         </label>
 
                         {% if option.is_custom_input or option.has_text_field or "khác" in option.text|lower or "other" in option.text|lower %}
@@ -294,19 +280,16 @@
                 {% elif question.question_type == 'rating' %}
                 <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                     {% for option in question.options.all %}
-                    <label for="option-{{ option.id }}"
-                        class="custom-radio-card group flex-col justify-center text-center p-3.5">
-                        <input type="radio" id="option-{{ option.id }}" name="question_{{ question.id }}"
-                            value="{{ option.id }}" onchange="checkAnswered(this)" class="sr-only-custom">
+                    <label for="option-{{ option.id }}" class="custom-radio-card group flex-col justify-center text-center p-3.5">
+                        <input type="radio" id="option-{{ option.id }}" name="question_{{ question.id }}" value="{{ option.id }}"
+                            onchange="checkAnswered(this)" class="sr-only-custom">
 
-                        <span
-                            class="card-title text-[11px] font-semibold text-[var(--color-text-main)] transition-colors mb-1">
+                        <span class="card-title text-[11px] font-semibold text-[var(--color-text-main)] transition-colors mb-1">
                             {{ option.text }}
                         </span>
 
                         <div class="card-icon shrink-0">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                stroke-width="2.5">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
@@ -328,116 +311,63 @@
         {% endfor %}
         {% endfor %}
 
-       <!-- Nút Điều Hướng -->
-        <div class="flex items-center justify-between gap-2 md:gap-4 mt-6">
-            <!-- Nút Trở lại -->
+        <!-- Nút Điều Hướng -->
+        <div class="flex items-center justify-between gap-4 mt-6">
             <button type="button" id="btn-prev" onclick="changeStep(-1)"
-                class="group inline-flex items-center justify-center h-10 px-3 md:px-5 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] font-semibold text-xs hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50 shadow-sm shrink-0">
-                <span class="material-symbols-outlined text-base transition-transform duration-200 ease-in-out group-hover:-translate-x-0.5">arrow_back</span>
-                <span class="hidden sm:inline ml-1.5">Trở lại</span>
+                class="px-5 py-2.5 rounded-xl border border-[var(--color-border)] text-[var(--color-text-main)] font-semibold text-xs hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center gap-2 cursor-pointer">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Trở lại
             </button>
 
-            <!-- Nút Tiếp theo -->
             <button type="button" id="btn-next" onclick="changeStep(1)"
-                class="group inline-flex items-center justify-center h-10 px-4 md:px-5 rounded-xl bg-[var(--color-primary)] text-white font-semibold text-xs shadow-md hover:opacity-90 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50">
-                <span>Tiếp theo</span>
-                <span class="material-symbols-outlined ml-1.5 text-base transition-transform duration-200 ease-in-out group-hover:translate-x-0.5">arrow_forward</span>
+                class="px-6 py-2.5 rounded-xl bg-[var(--color-primary)] text-white font-semibold text-xs shadow-md hover:opacity-90 transition-all flex items-center gap-2 cursor-pointer">
+                Tiếp theo
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </button>
 
-            <!-- Style cho hiệu ứng quét sáng của nút Nộp bài -->
-            <style>
-                #btn-submit {
-                    position: relative;
-                    overflow: hidden;
-                }
-
-                #btn-submit::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: -100%;
-                    width: 100%;
-                    height: 100%;
-                    background: linear-gradient(
-                        120deg,
-                        transparent,
-                        rgba(255, 255, 255, 0.4),
-                        transparent
-                    );
-                    transition: all 0.5s ease-in-out;
-                }
-
-                #btn-submit:hover::before {
-                    left: 100%;
-                }
-
-                #btn-submit:hover {
-                    background-color: #059669 !important;
-                    color: #ffffff !important;
-                    box-shadow: 0 0 10px #059669;
-                }
-                
-                #btn-submit:hover span {
-                    color: #ffffff !important;
-                }
-            </style>
-
-            <button type="submit" id="btn-submit" style="display: none;"
-                class="group inline-flex items-center justify-center h-10 px-4 md:px-5 rounded-xl bg-emerald-600 text-white font-semibold text-xs transition-all duration-200 ease-in-out cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-md">
-                <span class="material-symbols-outlined mr-1.5 text-base text-current transition-transform duration-200 ease-in-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:rotate-12 shrink-0">send</span>
-                <span>Nộp bài</span>
+            <button type="submit" id="btn-submit"
+                class="hidden px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs shadow-md hover:bg-emerald-700 transition-all items-center gap-2 cursor-pointer">
+                Nộp bài
+                <span class="material-symbols-outlined text-sm">send</span>
             </button>
         </div>
-        
     </form>
 </div>
 
-<!-- TOAST ĐỘNG VIÊN -->
+<!-- TOAST ĐỘNG VIÊN (HOÀN CHỈNH, CHUẨN MÀU VÀNG & TRẮNG) -->
 <div id="motivation-toast"
-    style="display: none; position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 90%; max-width: 400px; opacity: 0; background: rgba(255, 255, 255, 0.6) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);"
-    class="p-4 rounded-2xl shadow-xl flex items-center transition-all duration-300 border border-white/40 ring-8 ring-orange-500/5 overflow-hidden relative">
+    style="display: none; position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 90%; max-width: 380px; opacity: 0; background: linear-gradient(135deg, rgba(24, 24, 27, 0.98) 0%, rgba(39, 39, 42, 0.98) 100%) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);"
+    class="p-4 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-3.5 transition-all duration-300 border border-amber-400/60 ring-8 ring-amber-500/10 overflow-hidden relative">
+    
+    <!-- Vạch sáng điểm nhấn bên trái -->
+    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-400 to-amber-600"></div>
 
-    <style>
-        @keyframes softGlow {
-            0%, 100% {
-                box-shadow: 0 0 5px rgba(234, 88, 12, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(234, 88, 12, 0.85);
-            }
-        }
-    </style>
-
-    <div class="absolute left-0 top-0 bottom-0 w-1.5"
-        style="background: linear-gradient(to bottom, #ff6b2b, #e05314) !important;"></div>
-
-    <div class="w-11 h-11 rounded-2xl bg-orange-100 flex items-center justify-center shrink-0 ml-1"
-        style="animation: softGlow 2s infinite ease-in-out !important;">
-        <span class="material-symbols-outlined text-2xl font-bold" style="color: #ea580c !important;"
-            id="motivation-icon">sentiment_very_satisfied</span>
+    <!-- Icon với màu vàng nổi bật, không bị trắng lấn át -->
+    <div class="size-11 rounded-2xl bg-gradient-to-br from-amber-400/20 to-amber-600/30 flex items-center justify-center shrink-0 animate-bounce shadow-inner border border-amber-400/30 ml-1">
+        <span class="material-symbols-outlined text-amber-400 text-2xl font-bold" style="color: #fbbf24 !important;" id="motivation-icon">sentiment_very_satisfied</span>
     </div>
-
-    <div class="flex-1" style="margin-left: 20px !important;">
-        <p class="font-extrabold text-[11px] uppercase tracking-wider mb-0.5" style="color: #ea580c !important;"
-            id="motivation-title">Cố lên nhé!</p>
-        <p class="text-xs leading-relaxed font-semibold" style="color: #292524 !important;" id="motivation-text">Bạn đã
-            đi được nửa chặng đường rồi, cố lên!</p>
+    
+    <!-- Nội dung thông báo -->
+    <div class="flex-1">
+        <p class="font-extrabold text-[11px] uppercase tracking-wider mb-0.5 text-amber-400" style="color: #fbbf24 !important;" id="motivation-title">Cố lên nhé!</p>
+        <p class="text-xs leading-relaxed font-medium text-zinc-200" style="color: #e4e4e7 !important;" id="motivation-text">Bạn đã đi được nửa chặng đường rồi, cố lên!</p>
     </div>
-
+    
+    <!-- Nút đóng -->
     <button type="button" onclick="hideMotivationToast()"
-        class="cursor-pointer text-orange-600/60 hover:text-orange-900 p-1.5 rounded-xl hover:bg-orange-100 transition-all shrink-0 border-0 bg-transparent">
-        <span class="material-symbols-outlined text-base" style="color: #ea580c !important;">close</span>
+        class="cursor-pointer text-zinc-400 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition-all pointer-events-auto shrink-0">
+        <span class="material-symbols-outlined text-base">close</span>
     </button>
 </div>
 
 <!-- TOAST CẢNH BÁO -->
 <div id="validation-warning"
-    class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-11/12 bg-amber-500 text-white p-4 rounded-2xl shadow-2xl items-center gap-3 transition-all duration-300 -translate-y-8 opacity-0 pointer-events-none">
+    style="display: none; position: fixed; top: 96px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 90%; max-width: 380px; opacity: 0;"
+    class="bg-amber-500 text-white p-4 rounded-2xl shadow-2xl items-center gap-3 transition-all duration-300">
     <span class="material-symbols-outlined text-white text-xl shrink-0">warning</span>
     <div class="flex-1">
         <p class="font-bold text-xs uppercase tracking-wider mb-0.5">Chú ý</p>
-        <p class="text-xs leading-tight font-medium">Vui lòng hoàn thành tất cả các câu hỏi trong phần này trước khi
-            tiếp tục!</p>
+        <p class="text-xs leading-tight font-medium">Vui lòng hoàn thành tất cả các câu hỏi trong phần này trước khi tiếp tục!</p>
     </div>
     <button type="button" onclick="hideWarning()"
         class="cursor-pointer text-white/80 hover:text-white p-1 pointer-events-auto">
@@ -450,10 +380,10 @@
     let stepCards = [];
     let toastTimeout = null;
     let motivationTimeout = null;
-
+    
     let shownHalfwayModal = false;
     let shownFinalModal = false;
-
+    
     const STORAGE_KEY = 'survey_progress_{{ composite.slug }}';
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -463,7 +393,7 @@
         }
 
         stepCards = Array.from(document.querySelectorAll('.survey-step-card'));
-
+        
         restoreSurveyProgress();
 
         if (stepCards.length > 0) {
@@ -524,7 +454,7 @@
             if (data.answers) {
                 Object.keys(data.answers).forEach(name => {
                     const values = Array.isArray(data.answers[name]) ? data.answers[name] : [data.answers[name]];
-
+                    
                     values.forEach(val => {
                         const escapedVal = (window.CSS && CSS.escape) ? CSS.escape(val) : val;
                         const input = document.querySelector(`[name="${name}"][value="${escapedVal}"]`);
@@ -577,6 +507,16 @@
 
         document.getElementById('btn-prev').style.visibility = (index === 0) ? 'hidden' : 'visible';
 
+        if (index === stepCards.length - 1) {
+            document.getElementById('btn-next').classList.add('hidden');
+            document.getElementById('btn-submit').classList.remove('hidden');
+            document.getElementById('btn-submit').classList.add('flex');
+        } else {
+            document.getElementById('btn-next').classList.remove('hidden');
+            document.getElementById('btn-submit').classList.add('hidden');
+            document.getElementById('btn-submit').classList.remove('flex');
+        }
+
         updateProgress();
         hideWarning();
         checkAndShowMotivationModal(index);
@@ -621,6 +561,7 @@
         }
     }
 
+    /* PHÁT ÂM THANH THÔNG BÁO VUI NHỘN (Web Audio API) */
     function playFunSound() {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -628,12 +569,13 @@
             const ctx = new AudioContext();
             const now = ctx.currentTime;
 
+            // Nốt 1
             const osc1 = ctx.createOscillator();
             const gain1 = ctx.createGain();
             osc1.type = 'sine';
             osc1.frequency.setValueAtTime(587.33, now);
             osc1.frequency.exponentialRampToValueAtTime(880, now + 0.1);
-
+            
             gain1.gain.setValueAtTime(0.15, now);
             gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
 
@@ -643,11 +585,12 @@
             osc1.start(now);
             osc1.stop(now + 0.25);
 
+            // Nốt 2
             const osc2 = ctx.createOscillator();
             const gain2 = ctx.createGain();
             osc2.type = 'triangle';
             osc2.frequency.setValueAtTime(1174.66, now + 0.15);
-
+            
             gain2.gain.setValueAtTime(0.1, now + 0.15);
             gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
 
@@ -673,16 +616,17 @@
         if (titleElem) titleElem.innerText = title;
         if (textElem) textElem.innerText = text;
 
-        if (window.motivationTimer) clearTimeout(window.motivationTimer);
-
+        clearTimeout(motivationTimeout);
         playFunSound();
 
+        // Bật hiển thị dạng flex trực tiếp
         toast.style.display = 'flex';
+
         setTimeout(() => {
             toast.style.opacity = '1';
         }, 20);
 
-        window.motivationTimer = setTimeout(() => {
+        motivationTimeout = setTimeout(() => {
             hideMotivationToast();
         }, 5000);
     }
@@ -691,7 +635,6 @@
         const toast = document.getElementById('motivation-toast');
         if (!toast) return;
 
-        if (window.motivationTimer) clearTimeout(window.motivationTimer);
         toast.style.opacity = '0';
 
         setTimeout(() => {
@@ -703,17 +646,14 @@
         const toast = document.getElementById('validation-warning');
         if (!toast) return;
 
-        if (window.warningTimer) clearTimeout(window.warningTimer);
-
-        toast.classList.remove('hidden');
-        toast.classList.add('flex');
+        clearTimeout(toastTimeout);
+        toast.style.display = 'flex';
 
         setTimeout(() => {
-            toast.classList.remove('-translate-y-8', 'opacity-0', 'pointer-events-none');
-            toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+            toast.style.opacity = '1';
         }, 20);
 
-        window.warningTimer = setTimeout(() => {
+        toastTimeout = setTimeout(() => {
             hideWarning();
         }, 5000);
     }
@@ -722,14 +662,10 @@
         const toast = document.getElementById('validation-warning');
         if (!toast) return;
 
-        if (window.warningTimer) clearTimeout(window.warningTimer);
-
-        toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
-        toast.classList.add('-translate-y-8', 'opacity-0', 'pointer-events-none');
+        toast.style.opacity = '0';
 
         setTimeout(() => {
-            toast.classList.remove('flex');
-            toast.classList.add('hidden');
+            toast.style.display = 'none';
         }, 300);
     }
 
@@ -842,40 +778,18 @@
         if (progressElem) {
             progressElem.innerText = `Bước ${currentStep + 1}/${totalSteps} (${answeredCount}/${totalQuestions} câu)`;
         }
-
+        
         document.getElementById('progress-percent').innerText = `${percent}%`;
         document.getElementById('progress-bar').style.width = `${percent}%`;
-
-        // === XỬ LÝ HIỂN THỊ NÚT ĐIỀU HƯỚNG ===
-        const btnNext = document.getElementById('btn-next');
-        const btnSubmit = document.getElementById('btn-submit');
-        const isLastStep = (currentStep === stepCards.length - 1);
-
-        if (btnNext && btnSubmit) {
-            if (isLastStep) {
-                // ĐANG Ở BƯỚC CUỐI: Ẩn tuyệt đối nút "Tiếp theo", chỉ hiện nút "Nộp bài"
-                btnNext.style.display = 'none';
-                btnSubmit.style.display = 'inline-flex';
-            } else {
-                // ĐANG Ở CÁC BƯỚC TRƯỚC: Luôn hiện nút "Tiếp theo"
-                btnNext.style.display = 'inline-flex';
-
-                // Nếu đã hoàn thành 100% thì hiển thị thêm nút "Nộp bài" cho phép nộp sớm
-                if (percent === 100) {
-                    btnSubmit.style.display = 'inline-flex';
-                } else {
-                    btnSubmit.style.display = 'none';
-                }
-            }
-        }
     }
+
     function handleFormSubmit(event) {
         if (!validateCurrentStep()) {
             event.preventDefault();
             showWarning();
             return false;
         }
-
+        
         const form = event.target;
         form.dataset.submitted = "true";
         clearSurveyProgress();

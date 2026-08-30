@@ -1,0 +1,174 @@
+<!-- MODAL CHI TIẾT KHẢO SÁT & THỐNG KÊ -->
+<div id="detailModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl shadow-xl w-full max-w-2xl p-6 relative transition-all max-h-[90vh] flex flex-col">
+    
+    <!-- Tiêu đề Modal -->
+    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-700/60 shrink-0">
+      <div>
+        <h3 id="modalTitle" class="text-base font-bold text-gray-800 dark:text-slate-100">Chi tiết lượt nộp & Báo cáo</h3>
+        <p id="modalSubTitle" class="text-xs text-gray-500 dark:text-slate-400 mt-0.5"></p>
+      </div>
+      <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-slate-200 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Trạng thái Loading -->
+    <div id="modalLoading" class="py-10 text-center text-gray-500 dark:text-slate-400 text-sm shrink-0">
+      <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-blue-600 border-t-transparent mb-2"></div>
+      <p>Đang tải dữ liệu...</p>
+    </div>
+
+    <!-- Trạng thái Lỗi -->
+    <div id="modalError" class="hidden py-8 text-center text-red-500 text-sm font-medium shrink-0">
+      Không thể tải chi tiết lượt làm bài. Vui lòng thử lại!
+    </div>
+
+    <!-- Nội dung chính (Cuộn được) -->
+    <div id="modalContent" class="hidden py-4 space-y-6 overflow-y-auto pr-1">
+      
+      <!-- 1. Bảng danh sách điểm thành phần -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-slate-400">Kết quả khảo sát</h4>
+        <div class="overflow-x-auto bg-gray-50 dark:bg-slate-900/50 rounded-xl p-3 border border-gray-100 dark:border-slate-700/60">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 dark:border-slate-700/60 text-gray-400 dark:text-slate-400 text-xs uppercase font-medium">
+                <th class="pb-2">Tên bài khảo sát</th>
+                <th class="pb-2 text-right">Điểm đạt được</th>
+              </tr>
+            </thead>
+            <tbody id="modalSurveyList" class="divide-y divide-gray-200/60 dark:divide-slate-700/40">
+              <!-- Dữ liệu điểm -->
+            </tbody>
+          </table>
+          <div class="flex justify-between items-center pt-3 mt-2 border-t border-gray-200 dark:border-slate-700/60 font-semibold text-sm text-gray-800 dark:text-slate-100">
+            <span>Tổng điểm:</span>
+            <span id="modalTotalScore" class="text-blue-600 dark:text-blue-400 text-base">0đ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Thống kê câu hỏi & Đáp án đã chọn -->
+      <div id="modalStatsSection" class="space-y-3 hidden">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-slate-400">Thống kê chi tiết câu hỏi</h4>
+        <div id="modalStatsList" class="space-y-3">
+          <!-- Dữ liệu câu hỏi & đáp án kèm điểm sẽ tự động chèn vào đây -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Nút đóng -->
+    <div class="mt-4 pt-3 border-t border-gray-100 dark:border-slate-700/60 text-right shrink-0">
+      <button onclick="closeDetailModal()" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-slate-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg transition-colors">
+        Đóng
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT XỬ LÝ MODAL -->
+<script>
+  function openDetailModal(submissionId) {
+    const modal = document.getElementById('detailModal');
+    const loading = document.getElementById('modalLoading');
+    const content = document.getElementById('modalContent');
+    const errorBox = document.getElementById('modalError');
+
+    const titleElem = document.getElementById('modalTitle');
+    const subTitleElem = document.getElementById('modalSubTitle');
+    const surveyListElem = document.getElementById('modalSurveyList');
+    const totalScoreElem = document.getElementById('modalTotalScore');
+    const statsSection = document.getElementById('modalStatsSection');
+    const statsList = document.getElementById('modalStatsList');
+
+    if (modal) modal.classList.remove('hidden');
+    if (loading) loading.classList.remove('hidden');
+    if (content) content.classList.add('hidden');
+    if (errorBox) errorBox.classList.add('hidden');
+
+    fetch(`/users/submissions/${submissionId}/`, {
+      method: 'GET',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
+      return response.json();
+    })
+    .then(data => {
+      titleElem.innerText = data.title;
+      subTitleElem.innerText = `Mã lượt nộp: #${data.id} • ${data.type_label} • ${data.submitted_at}`;
+
+      // 1. Render Bảng điểm thành phần
+      if (data.surveys && data.surveys.length > 0) {
+        surveyListElem.innerHTML = data.surveys.map(s => `
+          <tr>
+            <td class="py-2.5 text-gray-700 dark:text-slate-300 font-medium">${s.survey_title}</td>
+            <td class="py-2.5 text-right font-bold text-blue-600 dark:text-blue-400">${s.score}đ</td>
+          </tr>
+        `).join('');
+      } else {
+        surveyListElem.innerHTML = `
+          <tr>
+            <td colspan="2" class="py-4 text-center text-gray-400 dark:text-slate-500">Không có dữ liệu bài khảo sát</td>
+          </tr>
+        `;
+      }
+
+      totalScoreElem.innerText = `${data.total_score}đ`;
+
+      // 2. Render Thống kê Câu hỏi & Điểm đáp án
+      if (data.stats_data && data.stats_data.length > 0) {
+        statsSection.classList.remove('hidden');
+        statsList.innerHTML = data.stats_data.map((item, idx) => `
+          <div class="p-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-100 dark:border-slate-700/60 rounded-xl space-y-2">
+            <div class="flex justify-between items-start gap-2">
+              <span class="text-xs font-bold text-gray-800 dark:text-slate-200">Câu ${idx + 1}: ${item.question_text}</span>
+            </div>
+
+            <!-- Trắc nghiệm (Hiển thị lựa chọn và điểm số) -->
+            ${item.sorted_choices ? `
+              <ul class="space-y-1">
+                ${item.sorted_choices.map(([choice, score]) => `
+                  <li class="flex justify-between items-center text-xs p-1.5 rounded bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700/40">
+                    <span class="text-gray-600 dark:text-slate-300">${choice}</span>
+                    <span class="font-bold text-blue-600 dark:text-blue-400">${score}đ</span>
+                  </li>
+                `).join('')}
+              </ul>
+            ` : ''}
+
+            <!-- Tự luận -->
+            ${item.text_answers ? `
+              <div class="space-y-1 max-h-28 overflow-y-auto">
+                ${item.text_answers.map(text => `
+                  <div class="p-1.5 text-xs italic bg-white dark:bg-slate-800 rounded border border-gray-100 dark:border-slate-700/40 text-gray-700 dark:text-slate-300">
+                    "${text}"
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } else {
+        statsSection.classList.add('hidden');
+      }
+
+      loading.classList.add('hidden');
+      content.classList.remove('hidden');
+    })
+    .catch(err => {
+      console.error('Lỗi Fetch submission_detail:', err);
+      loading.classList.add('hidden');
+      errorBox.classList.remove('hidden');
+    });
+  }
+
+  function closeDetailModal() {
+    document.getElementById('detailModal').classList.add('hidden');
+  }
+</script>

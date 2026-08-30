@@ -1,0 +1,73 @@
+<!-- templates/includes/nav_links.html -->
+
+<!-- Trang chủ -->
+<a class="w-fit flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200
+          {% if request.resolver_match.url_name == 'home' %}
+              bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+   href="{% url 'pages:home' %}">
+    <span class="material-symbols-outlined text-xl shrink-0">home</span>
+    <span>Trang chủ</span>
+</a>
+
+<!-- Giới thiệu -->
+<a class="w-fit flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200
+          {% if request.resolver_match.url_name == 'about' %}
+              bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'pages:about' %}">
+    <span class="material-symbols-outlined text-xl shrink-0">info</span>
+    <span>Giới thiệu</span>
+</a>
+
+<!-- Cơ sở khoa học -->
+<a class="w-fit flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200
+          {% if request.resolver_match.url_name == 'methodology' %}
+              bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'pages:methodology' %}">
+    <span class="material-symbols-outlined text-xl shrink-0">science</span>
+    <span>Cơ sở khoa học</span>
+</a>
+
+<!-- Hướng dẫn -->
+<a class="w-fit flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200
+          {% if request.resolver_match.url_name == 'guide' %}
+              bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'pages:guide' %}">
+    <span class="material-symbols-outlined text-xl shrink-0">help</span>
+    <span>Hướng dẫn</span>
+</a>
+
+<!-- Thống kê -->
+<a class="w-fit flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200
+          {% if request.resolver_match.url_name == 'reconnect_report' %}
+              bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'surveys:reconnect_report' %}">
+    <span class="material-symbols-outlined text-xl shrink-0">bar_chart</span>
+    <span>Thống kê</span>
+</a>
+
+<!-- Về chúng tôi -->
+<a class="w-fit flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200
+          {% if request.resolver_match.url_name == 'about_us' %}
+              bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold
+          {% else %}
+              text-[var(--color-text-main)] font-medium hover:bg-gray-100 dark:hover:bg-gray-800
+          {% endif %}"
+    href="{% url 'pages:about_us' %}">
+    <span class="material-symbols-outlined text-xl shrink-0">groups</span>
+    <span>Về chúng tôi</span>
+</a>

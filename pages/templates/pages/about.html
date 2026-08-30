@@ -25,11 +25,11 @@
                     <span class="material-symbols-outlined text-sm">info</span>
                     Về hệ thống Reconnect 360°
                 </span>
-                <h1 class="text-3xl md:text-4xl font-black text-[var(--color-text-main)] mb-4 leading-tight">
-                    Kết nối bản thân • Kết nối mọi người • Kết nối tương lai
-                </h1>
+      <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text)] mb-4 leading-snug">
+    Kết nối bản thân <span class="text-[var(--color-primary)] mx-1">•</span> Kết nối mọi người <span class="text-[var(--color-primary)] mx-1">•</span> Kết nối tương lai
+</h2>
                 <p class="text-[var(--color-text-sub)] leading-relaxed text-base mb-6">
-                    <strong>Reconnect 360°</strong> là nền tảng hỗ trợ học sinh THCS tự đánh giá và nhìn nhận mức độ kết
+                    <strong>Reconnect 360°</strong> là nền tảng hỗ trợ học sinh THCS - THPT tự đánh giá và nhìn nhận mức độ kết
                     nối xã hội thông qua các câu hỏi khảo sát về giao tiếp, hoạt động tập thể và nguyện vọng cá nhân.
                 </p>
                 <div
@@ -82,7 +82,6 @@
                 </p>
             </div>
         </section>
-
         <!-- PHẦN I: Khuyến nghị theo Chỉ số Khó khăn (Đã thêm mt-12 để đẩy xa khỏi khối điểm bên trên) -->
         <section class="mt-12 space-y-6 w-full">
             <div class="border-b border-[var(--color-border)] pb-4">
@@ -402,6 +401,7 @@
                 </div>
             </div>
         </section>
+            {% include 'components/tacgia.html' %}
 
         <div class="text-center mt-16 mb-8 w-full flex justify-center items-center">
             <a href="{% url 'surveys:reconnect360_detail' %}"

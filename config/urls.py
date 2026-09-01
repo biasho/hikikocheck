@@ -12,8 +12,8 @@ urlpatterns = [
     # Định tuyến cho app Users
     path('users/', include('users.urls', namespace='users')),
 
-    # Social Auth (Google/Facebook)
-    path('oauth/', include('allauth.urls')),
+   # Đổi 'oauth/' thành 'accounts/'
+    path('accounts/', include('allauth.urls')),
 
     # Trang chủ & Trang tĩnh
     path('', include('pages.urls')),

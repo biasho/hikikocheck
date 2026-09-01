@@ -1,140 +1,123 @@
-{% extends 'base.html' %}
+{% extends 'base_dashboard.html' %}
 {% load static %}
 
-{% block title %}Trang Cá Nhân - Reconnect 360°{% endblock %}
+{% block title %}Trang cá nhân | Reconnect 360°{% endblock %}
+
+{% block header_title %}
+  <h1 class="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100">Hồ sơ cá nhân</h1>
+{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-8">
-    <div class="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-2xl shadow-sm p-6 md:p-8">
+<div class="max-w-4xl space-y-6">
 
-        <h1 class="text-2xl font-bold text-[var(--color-text-main)] mb-6">Trang cá nhân</h1>
+  <!-- KHỐI THÔNG TIN TÀI KHOẢN -->
+  <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700/60 rounded-xl shadow-sm p-6 md:p-8 transition-colors">
+    <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-100 dark:border-slate-700">Thông tin cá nhân</h2>
 
-        <form method="POST" enctype="multipart/form-data" action="{% url 'users:profile' %}" class="space-y-6">
-            {% csrf_token %}
+    <form method="POST" enctype="multipart/form-data" action="{% url 'users:profile' %}" class="space-y-6">
+      {% csrf_token %}
 
-            <!-- SECTION AVATAR & TÊN TÀI KHOẢN -->
-            <div class="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-[var(--color-border)]">
-                <div class="relative group">
-                    <!-- Ảnh Avatar hiển thị -->
-                    <div
-                        class="w-24 h-24 rounded-full overflow-hidden border-2 border-[var(--color-border)] bg-gray-100 flex items-center justify-center shrink-0">
-                        {% if profile.avatar %}
-                        <img id="avatar-preview" src="{{ profile.avatar.url }}" alt="Avatar"
-                            class="w-full h-full object-cover">
-                        {% else %}
-                        <img id="avatar-preview" src="{% static 'images/default-avatar.png' %}" alt="Avatar"
-                            class="w-full h-full object-cover hidden">
-                        <span id="avatar-placeholder"
-                            class="material-symbols-outlined text-4xl text-gray-400">person</span>
-                        {% endif %}
-                    </div>
+      <!-- AVATAR & TÊN -->
+      <div class="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-gray-100 dark:border-slate-700">
+        <div class="relative group">
+          <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+            {% if profile.avatar %}
+              <img id="avatar-preview" src="{{ profile.avatar.url }}" alt="Avatar" class="w-full h-full object-cover">
+            {% else %}
+              <img id="avatar-preview" src="{% static 'images/default-avatar.png' %}" alt="Avatar" class="w-full h-full object-cover hidden">
+              <i id="avatar-placeholder" data-lucide="user" class="w-10 h-10 text-gray-400 dark:text-slate-500"></i>
+            {% endif %}
+          </div>
 
-                    <!-- Nút chọn ảnh đè lên Avatar -->
-                    <label for="id_avatar"
-                        class="absolute bottom-0 right-0 bg-[var(--color-primary)] text-white p-2 rounded-full cursor-pointer shadow-md hover:opacity-90 transition-opacity">
-                        <span class="material-symbols-outlined text-[18px] block">photo_camera</span>
-                    </label>
-                    <input type="file" name="avatar" id="id_avatar" accept="image/*" class="hidden"
-                        onchange="previewImage(event)">
-                </div>
+          <label for="id_avatar" class="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full cursor-pointer shadow-md transition-colors">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+          </label>
+          <input type="file" name="avatar" id="id_avatar" accept="image/*" class="hidden" onchange="previewImage(event)">
+        </div>
 
-                <div class="text-center sm:text-left space-y-1">
-                    <h2 class="text-xl font-bold text-[var(--color-text-main)]">{{ user.username }}</h2>
-                    <p class="text-sm text-[var(--color-text-sub)]">{{ user.email }}</p>
+        <div class="text-center sm:text-left space-y-1">
+          <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">{{ user.username }}</h2>
+          <p class="text-sm text-gray-500 dark:text-slate-400">{{ user.email }}</p>
 
-                    <span
-                        class="inline-block text-xs px-2.5 py-1 rounded-full bg-blue-50 text-[var(--color-primary)] font-medium border border-blue-100 mt-1">
-                        {% if profile.role %}{{ profile.role.name }}{% else %}Chưa phân vai trò{% endif %}
-                    </span>
-                </div>
-            </div>
+          <span class="inline-block text-xs px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-medium border border-blue-100 dark:border-blue-900 mt-1">
+            {% if profile.role %}{{ profile.role.name }}{% else %}Chưa phân vai trò{% endif %}
+          </span>
+        </div>
+      </div>
 
-            <!-- SECTION THÔNG TIN TÀI KHOẢN -->
-            <div class="space-y-4">
-                <h3 class="text-lg font-bold text-[var(--color-text-main)]">Thông tin tài khoản</h3>
+      <!-- FIELDS INPUT -->
+      <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="id_first_name" class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1">Tên</label>
+            <input type="text" name="first_name" id="id_first_name" value="{{ user.first_name }}" placeholder="Nhập tên..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Tên -->
-                    <div>
-                        <label for="id_first_name"
-                            class="block text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Tên</label>
-                        <input type="text" name="first_name" id="id_first_name" value="{{ user.first_name }}"
-                            placeholder="Nhập tên..."
-                            class="w-full px-3.5 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-colors">
-                    </div>
+          <div>
+            <label for="id_last_name" class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1">Họ</label>
+            <input type="text" name="last_name" id="id_last_name" value="{{ user.last_name }}" placeholder="Nhập họ..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
+        </div>
 
-                    <!-- Họ -->
-                    <div>
-                        <label for="id_last_name"
-                            class="block text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Họ</label>
-                        <input type="text" name="last_name" id="id_last_name" value="{{ user.last_name }}"
-                            placeholder="Nhập họ..."
-                            class="w-full px-3.5 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-colors">
-                    </div>
-                </div>
+        <div>
+          <label for="id_phone_number" class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1">Số điện thoại</label>
+          <input type="text" name="phone_number" id="id_phone_number" value="{{ profile.phone_number|default:'' }}" placeholder="Nhập số điện thoại..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+        </div>
 
-                <!-- Số điện thoại (Chỉnh name thành phone_number) -->
-                <div>
-                    <label for="id_phone_number"
-                        class="block text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Số điện
-                        thoại</label>
-                    <input type="text" name="phone_number" id="id_phone_number"
-                        value="{{ profile.phone_number|default:'' }}" placeholder="Nhập số điện thoại..."
-                        class="w-full px-3.5 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-colors">
-                </div>
+        <div>
+          <label for="id_bio" class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1">Tiểu sử (Bio)</label>
+          <textarea name="bio" id="id_bio" rows="3" placeholder="Giới thiệu ngắn về bạn..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors resize-none">{{ profile.bio|default:'' }}</textarea>
+        </div>
+      </div>
 
-                <!-- Tiểu sử (Bio) -->
-                <div>
-                    <label for="id_bio" class="block text-xs font-bold uppercase text-[var(--color-text-sub)] mb-1">Tiểu
-                        sử (Bio)</label>
-                    <textarea name="bio" id="id_bio" rows="3" placeholder="Giới thiệu ngắn về bạn..."
-                        class="w-full px-3.5 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text-main)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-colors resize-none">{{ profile.bio|default:'' }}</textarea>
-                </div>
-            </div>
+      <!-- BUTTON ACTIONS -->
+      <div class="pt-4 border-t border-gray-100 dark:border-slate-700 flex items-center justify-between">
+        <a href="{% url 'users:dashboard' %}" class="text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-white transition-colors">
+          ← Quay lại Tổng quan
+        </a>
 
-            <!-- BUTTON ACTIONS -->
-            <div class="pt-4 border-t border-[var(--color-border)] flex items-center justify-between">
-                <a href="{% url 'pages:home' %}"
-                    class="text-sm font-medium text-[var(--color-text-sub)] hover:text-[var(--color-text-main)] transition-colors">
-                    ← Quay lại trang chủ
-                </a>
+        <div class="flex items-center gap-3">
+          <a href="{% url 'users:logout' %}" class="px-4 py-2 text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 rounded-lg transition-colors">
+            Đăng xuất
+          </a>
 
-                <div class="flex items-center gap-3">
-                    <a href="{% url 'users:logout' %}"
-                        class="px-4 py-2 text-xs font-bold text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-                        Đăng xuất
-                    </a>
+          <button type="submit" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
 
-                    <button type="submit"
-                        class="px-5 py-2 text-sm font-bold text-white bg-[var(--color-primary)] hover:opacity-90 rounded-lg shadow-sm transition-opacity">
-                        Lưu thay đổi
-                    </button>
-                </div>
-            </div>
-        </form>
-
+  <!-- KHỐI ĐỔI MẬT KHẨU -->
+  <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700/60 rounded-xl shadow-sm p-6 md:p-8 transition-colors">
+    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Bảo mật tài khoản</h3>
+    <p class="text-sm text-gray-500 dark:text-slate-400 mb-4">Nên thay đổi mật khẩu định kỳ để đảm bảo an toàn cho tài khoản.</p>
+    
+    <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-700">
+      <div>
+        <p class="font-medium text-sm text-gray-800 dark:text-gray-200">Mật khẩu</p>
+        <p class="text-xs text-gray-500 dark:text-slate-400">Đã bảo mật bằng mật khẩu mã hóa</p>
+      </div>
+      <a href="{% url 'users:password_change' %}" class="px-4 py-2 text-xs font-bold text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg transition-colors">
+        Đổi mật khẩu
+      </a>
     </div>
+  </div>
+
 </div>
 
-<!-- JS XỬ LÝ PREVIEW ẢNH KHI CHỌN AVATAR MỚI -->
 <script>
-    function previewImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const preview = document.getElementById('avatar-preview');
-                const placeholder = document.getElementById('avatar-placeholder');
-
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-
-                if (placeholder) {
-                    placeholder.classList.add('hidden');
-                }
-            }
-            reader.readAsDataURL(file);
-        }
-    }
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      const output = document.getElementById('avatar-preview');
+      const placeholder = document.getElementById('avatar-placeholder');
+      output.src = reader.result;
+      output.classList.remove('hidden');
+      if (placeholder) placeholder.classList.add('hidden');
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
 </script>
 {% endblock %}

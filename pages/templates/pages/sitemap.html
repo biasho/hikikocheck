@@ -1,0 +1,180 @@
+<!-- SƠ ĐỒ TRANG (SITEMAP) -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sơ đồ trang - Reconnect 360°{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs text-[var(--color-text-sub)] mb-6">
+        <a href="{% url 'pages:home' %}" class="hover:text-[var(--color-primary)] transition-colors">
+            <span class="material-symbols-outlined text-[16px] align-middle">home</span>
+        </a>
+        <span>/</span>
+        <span class="text-[var(--color-text-main)] font-semibold">Sơ đồ trang</span>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="mb-10 text-center max-w-2xl mx-auto">
+        <h1 class="text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight mb-3">Sơ đồ trang (Sitemap)</h1>
+        <p class="text-sm text-[var(--color-text-sub)]">
+            Tổng hợp danh mục liên kết và cấu trúc điều hướng toàn bộ hệ thống Reconnect 360°.
+        </p>
+    </div>
+
+    <!-- Sitemap Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- 1. TRANG CHÍNH & GIỚI THIỆU -->
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 shadow-sm">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border)]">
+                <span class="material-symbols-outlined text-[24px] text-[var(--color-primary)]">home</span>
+                <h2 class="text-lg font-bold text-[var(--color-text-main)]">Trang chính & Giới thiệu</h2>
+            </div>
+            <ul class="space-y-2.5 text-sm">
+                <li>
+                    <a href="{% url 'pages:home' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Trang chủ
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'pages:about' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Giới thiệu
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'pages:methodology' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Cơ sở khoa học
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'pages:about_us' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Về chúng tôi
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 2. KHẢO SÁT & BÁO CÁO -->
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 shadow-sm">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border)]">
+                <span class="material-symbols-outlined text-[24px] text-[var(--color-primary)]">quiz</span>
+                <h2 class="text-lg font-bold text-[var(--color-text-main)]">Khảo sát & Báo cáo</h2>
+            </div>
+            <ul class="space-y-2.5 text-sm">
+                <li>
+                    <a href="{% url 'surveys:reconnect360_detail' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors font-medium text-[var(--color-primary)]">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Tham gia khảo sát
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'pages:guide' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Hướng dẫn làm khảo sát
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'surveys:reconnect_report' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Thống kê
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 3. TÀI KHOẢN CÁ NHÂN -->
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 shadow-sm">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border)]">
+                <span class="material-symbols-outlined text-[24px] text-[var(--color-primary)]">account_circle</span>
+                <h2 class="text-lg font-bold text-[var(--color-text-main)]">Tài khoản & Cá nhân</h2>
+            </div>
+            <ul class="space-y-2.5 text-sm">
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'users:profile' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Trang cá nhân
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'users:logout' %}" class="flex items-center gap-2 text-red-500 hover:underline transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">logout</span>
+                        Đăng xuất
+                    </a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{% url 'users:login' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Đăng nhập
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'users:register' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Đăng ký tài khoản
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- 4. THÔNG TIN PHÁP LÝ & BẢO MẬT -->
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 shadow-sm">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border)]">
+                <span class="material-symbols-outlined text-[24px] text-[var(--color-primary)]">gavel</span>
+                <h2 class="text-lg font-bold text-[var(--color-text-main)]">Pháp lý & Điều khoản</h2>
+            </div>
+            <ul class="space-y-2.5 text-sm">
+                <li>
+                    <a href="{% url 'pages:privacy' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Chính sách bảo mật
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'pages:terms' %}" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chevron_right</span>
+                        Điều khoản sử dụng
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'pages:sitemap' %}" class="flex items-center gap-2 text-[var(--color-primary)] font-semibold">
+                        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                        Sơ đồ trang
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 5. HỖ TRỢ & LIÊN HỆ -->
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 shadow-sm">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border)]">
+                <span class="material-symbols-outlined text-[24px] text-[var(--color-primary)]">support_agent</span>
+                <h2 class="text-lg font-bold text-[var(--color-text-main)]">Hỗ trợ & Liên hệ</h2>
+            </div>
+            <ul class="space-y-2.5 text-sm">
+                <li>
+                    <a href="tel:1900360" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">call</span>
+                        Hotline 24/7: <strong class="text-[var(--color-primary)]">1900-360°</strong>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center gap-2 text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-[var(--color-text-sub)]">chat</span>
+                        Trò chuyện với tư vấn viên
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

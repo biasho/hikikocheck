@@ -1,0 +1,107 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Tổng quan hệ thống | Reconnect 360°{% endblock %}
+
+{% block header_title %}
+  <div class="flex items-center justify-between gap-4 w-full">
+    <h1 class="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100">Tổng quan</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+<!-- Grid Thống kê -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+  <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700/60 p-5 rounded-xl shadow-sm transition-colors">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-500 dark:text-slate-400">Tổng khảo sát</p>
+        <p class="text-2xl font-bold text-gray-800 dark:text-white mt-1">{{ total_surveys|default:"0" }}</p>
+      </div>
+      <div class="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-lg">
+        <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700/60 p-5 rounded-xl shadow-sm transition-colors">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-500 dark:text-slate-400">Đã hoàn thành</p>
+        <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{{ completed_surveys|default:"0" }}</p>
+      </div>
+      <div class="p-3 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-lg">
+        <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700/60 p-5 rounded-xl shadow-sm transition-colors">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-500 dark:text-slate-400">Đang chờ xử lý</p>
+        <p class="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">{{ pending_surveys|default:"0" }}</p>
+      </div>
+      <div class="p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-lg">
+        <i data-lucide="clock" class="w-6 h-6"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Khối Hoạt động & Danh sách khảo sát -->
+<div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700/60 rounded-xl shadow-sm p-6 transition-colors mt-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+    <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Hoạt động gần đây</h2>
+    
+    <!-- Bộ chọn số lượng hiển thị trên trang -->
+    {% if page_obj %}
+      <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400">
+        <label for="per_page">Hiển thị:</label>
+        <select id="per_page" onchange="loadSubmissions(1)" 
+                class="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-800 dark:text-slate-100 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+          <option value="10" {% if per_page == 10 %}selected{% endif %}>10 mục</option>
+          <option value="25" {% if per_page == 25 %}selected{% endif %}>25 mục</option>
+          <option value="50" {% if per_page == 50 %}selected{% endif %}>50 mục</option>
+          <option value="100" {% if per_page == 100 %}selected{% endif %}>100 mục</option>
+        </select>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Vùng chứa dữ liệu được load bằng AJAX -->
+  <div id="submissions-container">
+    {% include 'users/partials/_dashboard_submissions.html' %}
+  </div>
+</div>
+
+<!-- Include Modal partial -->
+{% include 'users/partials/_submission_detail_modal.html' %}
+
+<!-- Script xử lý AJAX Fetch Dashboard -->
+<script>
+  function loadSubmissions(page = 1) {
+    const perPageSelect = document.getElementById('per_page');
+    const perPage = perPageSelect ? perPageSelect.value : 10;
+    const container = document.getElementById('submissions-container');
+
+    container.style.opacity = '0.5';
+    const url = `?page=${page}&per_page=${perPage}`;
+
+    fetch(url, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      container.innerHTML = data.html;
+      container.style.opacity = '1';
+      window.history.pushState({}, '', url);
+    })
+    .catch(error => {
+      console.error('Lỗi khi tải dữ liệu AJAX:', error);
+      container.style.opacity = '1';
+    });
+  }
+</script>
+{% endblock %}

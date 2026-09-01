@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+
+{% block title %}Chính Sách Bảo Mật - Reconnect 360°{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-3xl font-black tracking-tight text-[var(--color-text-main)] sm:text-4xl">🔒 Chính Sách Bảo Mật</h1>
+    <p class="mt-2 text-base text-[var(--color-text-muted, #64748b)]">Cam kết và quy định bảo vệ thông tin cá nhân của bạn trên hệ thống Reconnect 360°.</p>
+</div>
+
+<!-- Layout chia 2 cột: Sidebar & Content Panel -->
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+    
+    <!-- SIDEBAR MENU: Sticky cố định khi cuộn trang -->
+    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-16 lg:top-20 z-30 about-aside-box shadow-md lg:shadow-sm transition-all">
+        <h3 class="hidden lg:block text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted, #94a3b8)] px-3 mb-3">Mục chính sách</h3>
+        
+        <!-- Scroll Container cho Mobile -->
+        <div class="about-scroll-container relative overflow-hidden">
+            <nav id="about-nav-scroll" onscroll="handleAboutMenuScroll()" class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-none w-full snap-x snap-mandatory lg:snap-none">
+                <button onclick="switchAboutTab('intro')" onmouseenter="handleTabHover('intro')" onmouseleave="cancelTabHover()" id="atab-intro" data-tab="intro" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-active whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">info</span>
+                    <span>1. Giới thiệu chung</span>
+                </button>
+                <button onclick="switchAboutTab('collect')" onmouseenter="handleTabHover('collect')" onmouseleave="cancelTabHover()" id="atab-collect" data-tab="collect" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">database</span>
+                    <span>2. Thu thập dữ liệu</span>
+                </button>
+                <button onclick="switchAboutTab('purpose')" onmouseenter="handleTabHover('purpose')" onmouseleave="cancelTabHover()" id="atab-purpose" data-tab="purpose" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">center_focus_strong</span>
+                    <span>3. Mục đích sử dụng</span>
+                </button>
+                <button onclick="switchAboutTab('security')" onmouseenter="handleTabHover('security')" onmouseleave="cancelTabHover()" id="atab-security" data-tab="security" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">security</span>
+                    <span>4. Bảo mật dữ liệu</span>
+                </button>
+                <button onclick="switchAboutTab('rights')" onmouseenter="handleTabHover('rights')" onmouseleave="cancelTabHover()" id="atab-rights" data-tab="rights" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">manage_accounts</span>
+                    <span>5. Quyền người dùng</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Indicator Mobile -->
+        <div class="flex lg:hidden items-center justify-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 mt-1">
+            <span class="scroll-dot w-5 h-1 rounded-full bg-[var(--color-primary)] transition-all duration-300" data-index="0"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="1"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="2"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="3"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="4"></span>
+        </div>
+    </aside>
+
+    <!-- NỘI DUNG CHI TIẾT (CONTENT PANEL) -->
+    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 about-content-box shadow-sm z-10">
+        
+        <!-- Tab 1: Giới thiệu -->
+        <div id="acontent-intro" class="about-content active space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">1. Giới thiệu chung</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Chào mừng bạn đến với <strong>Reconnect 360°</strong>. Chúng tôi tôn trọng quyền riêng tư của bạn và cam kết bảo vệ toàn bộ thông tin cá nhân mà bạn chia sẻ trong quá trình đăng ký và trải nghiệm hệ thống.
+            </p>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng, lưu trữ và bảo vệ dữ liệu cá nhân của bạn khi bạn sử dụng các tính năng và bài khảo sát trực tuyến.
+            </p>
+            <div class="p-4 bg-[var(--color-background, #f8fafc)] border-l-4 border-[var(--color-primary, #1152d4)] rounded-r-lg mt-4">
+                <p class="text-sm italic text-[var(--color-text-main)]">"Sự riêng tư và an toàn dữ liệu của bạn luôn là ưu tiên hàng đầu trong dự án Reconnect 360°."</p>
+            </div>
+        </div>
+
+        <!-- Tab 2: Thu thập dữ liệu -->
+        <div id="acontent-collect" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">2. Thông tin chúng tôi thu thập</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Để cung cấp trải nghiệm đánh giá chính xác và hỗ trợ tài khoản, chúng tôi thu thập các nhóm dữ liệu sau:
+            </p>
+            <div class="grid grid-cols-1 gap-3 pt-2">
+                <div class="p-4 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-2xl text-[var(--color-primary)] shrink-0">badge</span>
+                    <div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-1">Thông tin tài khoản</h3>
+                        <p class="text-sm text-[var(--color-text-muted, #475569)]">Họ tên, địa chỉ email, ảnh đại diện được cung cấp khi bạn đăng ký thủ công hoặc ủy quyền qua Google Login.</p>
+                    </div>
+                </div>
+                <div class="p-4 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-2xl text-[var(--color-primary)] shrink-0">quiz</span>
+                    <div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-1">Dữ liệu bài đánh giá</h3>
+                        <p class="text-sm text-[var(--color-text-muted, #475569)]">Các câu trả lời khảo sát, điểm số thành phần và biểu đồ chỉ số kết nối xã hội do bạn chủ động thực hiện.</p>
+                    </div>
+                </div>
+                <div class="p-4 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-2xl text-[var(--color-primary)] shrink-0">devices</span>
+                    <div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-1">Dữ liệu kỹ thuật nhật ký</h3>
+                        <p class="text-sm text-[var(--color-text-muted, #475569)]">Địa chỉ IP, loại trình duyệt, hệ điều hành và thời gian tương tác nhằm phục vụ mục đích bảo mật và tối ưu giao diện.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Mục đích sử dụng -->
+        <div id="acontent-purpose" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">3. Mục đích sử dụng thông tin</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">Dữ liệu của bạn chỉ được sử dụng cho các mục đích cụ thể sau:</p>
+            <ul class="space-y-3 pt-1">
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Xác thực danh tính và duy trì trạng thái đăng nhập tài khoản cá nhân.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Tổng hợp và phân tích biểu đồ thống kê kết nối xã hội cho từng cá nhân.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                    <span>Phục vụ thống kê nghiên cứu học đường dưới dạng dữ liệu tổng hợp đã được ẩn danh 100%.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab 4: Bảo mật dữ liệu -->
+        <div id="acontent-security" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">4. Bảo mật và Lưu trữ dữ liệu</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Chúng tôi áp dụng các tiêu chuẩn bảo mật kĩ thuật nghiêm ngặt nhằm bảo vệ dữ liệu khỏi truy cập trái phép:
+            </p>
+            <div class="p-5 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] space-y-3">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-3xl text-[var(--color-primary)]">lock</span>
+                    <h3 class="font-bold text-lg text-[var(--color-text-main)]">Mã hóa & Kiểm soát</h3>
+                </div>
+                <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                    Toàn bộ kết nối giữa trình duyệt và máy chủ được mã hóa qua chứng chỉ SSL/TLS (HTTPS). Mật khẩu và mã Token đăng nhập được lưu trữ dạng băm bảo mật (Hashing). Chúng tôi cam kết không chia sẻ hoặc bán dữ liệu cá nhân cho bất kỳ bên thứ ba nào vì mục đích thương mại.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab 5: Quyền người dùng -->
+        <div id="acontent-rights" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">5. Quyền hạn của người dùng</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">Bạn có đầy đủ các quyền kiểm soát dữ liệu cá nhân của mình:</p>
+            <ul class="space-y-3 pt-1">
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-xl shrink-0 mt-0.5">verified_user</span>
+                    <span>Quyền truy cập và kiểm tra toàn bộ thông tin cá nhân và lịch sử khảo sát.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-200/60 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-xl shrink-0 mt-0.5">delete_forever</span>
+                    <span>Quyền yêu cầu đóng tài khoản và xóa vĩnh viễn dữ liệu trên hệ thống.</span>
+                </li>
+            </ul>
+            <p class="text-sm text-[var(--color-text-muted, #475569)] pt-2">
+                Mọi thắc mắc liên quan đến chính sách bảo mật, vui lòng liên hệ trực tiếp qua email: <a href="mailto:support@reconnect360.vn" class="text-[var(--color-primary)] font-semibold underline">support@reconnect360.vn</a>.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-aside-box {
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        background-color: var(--color-surface, #ffffff) !important;
+        z-index: 30 !important;
+    }
+
+    .about-content-box {
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+    }
+
+    @media (max-width: 1023px) {
+        .about-scroll-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--color-surface, #ffffff));
+            pointer-events: none;
+        }
+
+        .about-content-box {
+            scroll-margin-top: 120px;
+        }
+
+        .about-aside-box {
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08) !important;
+        }
+    }
+
+    .about-content {
+        display: none;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .about-content.active {
+        display: block;
+    }
+
+    .about-content.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .about-tab-active {
+        background-color: var(--color-primary, #1152d4) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--color-primary, #1152d4) !important;
+        box-shadow: 0 2px 8px rgba(17, 82, 212, 0.25);
+    }
+
+    .about-tab-inactive {
+        background-color: transparent;
+        color: var(--color-text-main, #0f172a);
+        border: 1px solid transparent;
+    }
+
+    .about-tab-inactive:hover {
+        background-color: var(--color-background, #f8fafc) !important;
+        color: var(--color-primary, #1152d4) !important;
+        border-color: rgba(17, 82, 212, 0.2) !important;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isUserClicking = false;
+    let scrollTimeout;
+    let hoverTimeout;
+    let currentTab = 'intro';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialContent = document.getElementById('acontent-intro');
+        if (initialContent) {
+            initialContent.classList.add('show');
+        }
+    });
+
+    function handleAboutMenuScroll() {
+        if (window.innerWidth >= 1024) return;
+
+        const container = document.getElementById('about-nav-scroll');
+        if (!container) return;
+
+        const scrollLeft = container.scrollLeft;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        if (maxScrollLeft > 0) {
+            const ratio = scrollLeft / maxScrollLeft;
+            const dots = document.querySelectorAll('.scroll-dot');
+            const activeIndex = Math.min(Math.floor(ratio * dots.length), dots.length - 1);
+
+            dots.forEach((dot, index) => {
+                if (index === activeIndex) {
+                    dot.classList.remove('w-2', 'bg-slate-300');
+                    dot.classList.add('w-5', 'bg-[var(--color-primary)]');
+                } else {
+                    dot.classList.remove('w-5', 'bg-[var(--color-primary)]');
+                    dot.classList.add('w-2', 'bg-slate-300');
+                }
+            });
+        }
+
+        if (isUserClicking) return;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const buttons = container.querySelectorAll('.about-tab-btn');
+            const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
+
+            let closestBtn = null;
+            let minDistance = Infinity;
+
+            buttons.forEach(btn => {
+                const rect = btn.getBoundingClientRect();
+                const btnCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(containerCenter - btnCenter);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestBtn = btn;
+                }
+            });
+
+            if (closestBtn) {
+                const tabId = closestBtn.getAttribute('data-tab');
+                switchAboutTab(tabId, false);
+            }
+        }, 150);
+    }
+
+    function switchAboutTab(tabId, shouldScrollMenu = true) {
+        if (currentTab === tabId) return;
+        currentTab = tabId;
+
+        document.querySelectorAll('.about-tab-btn').forEach(btn => {
+            btn.classList.remove('about-tab-active');
+            btn.classList.add('about-tab-inactive');
+        });
+
+        const activeBtn = document.getElementById('atab-' + tabId);
+        if (activeBtn) {
+            activeBtn.classList.add('about-tab-active');
+            activeBtn.classList.remove('about-tab-inactive');
+            
+            if (shouldScrollMenu) {
+                isUserClicking = true;
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                setTimeout(() => { isUserClicking = false; }, 500);
+            }
+        }
+
+        document.querySelectorAll('.about-content').forEach(content => {
+            content.classList.remove('show');
+            content.classList.remove('active');
+        });
+
+        const target = document.getElementById('acontent-' + tabId);
+        if (target) {
+            target.classList.add('active');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    target.classList.add('show');
+                });
+            });
+        }
+    }
+
+    function handleTabHover(tabId) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(() => {
+            switchAboutTab(tabId);
+        }, 120);
+    }
+
+    function cancelTabHover() {
+        clearTimeout(hoverTimeout);
+    }
+</script>
+{% endblock %}

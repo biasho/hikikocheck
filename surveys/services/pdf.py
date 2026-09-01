@@ -1,4 +1,5 @@
 import io
+import os
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.core.mail import EmailMessage
@@ -12,16 +13,39 @@ from core.models import Lead, Source
 # 1. Đăng ký font tiếng Việt với ReportLab
 try:
     font_path = settings.BASE_DIR / 'static/fonts/DejaVuSans.ttf'
-    pdfmetrics.registerFont(TTFont('DejaVuSans', str(font_path)))
+    if os.path.exists(font_path):
+        pdfmetrics.registerFont(TTFont('DejaVuSans', str(font_path)))
 except Exception as e:
     print(f"Không thể đăng ký font tiếng Việt: {str(e)}")
 
 
 def link_callback(uri, rel):
-    """Hàm giúp xhtml2pdf tìm kiếm đúng đường dẫn file tĩnh (font, css, ảnh)"""
+    """
+    Hàm giúp xhtml2pdf tìm kiếm đúng đường dẫn file tĩnh (font, css, ảnh)
+    Xử lý an toàn cho chuỗi Base64 và URL tuyệt đối để tránh lỗi 'NotImplementedType' object is not iterable.
+    """
+    # 1. Nếu là chuỗi ảnh Base64 hoặc URL tuyệt đối thì giữ nguyên
+    if uri.startswith('data:') or uri.startswith('http://') or uri.startswith('https://'):
+        return uri
+
+    # 2. Tìm kiếm trong staticfinders của Django
     s_path = finders.find(uri)
     if s_path:
+        if isinstance(s_path, (list, tuple)):
+            return s_path[0]
         return s_path
+
+    # 3. Fallback tìm trực tiếp trong STATIC_ROOT hoặc MEDIA_ROOT
+    if getattr(settings, 'STATIC_ROOT', None):
+        path = os.path.join(settings.STATIC_ROOT, uri)
+        if os.path.exists(path):
+            return path
+
+    if getattr(settings, 'MEDIA_ROOT', None):
+        path = os.path.join(settings.MEDIA_ROOT, uri)
+        if os.path.exists(path):
+            return path
+
     return uri
 
 
@@ -101,17 +125,17 @@ def send_pdf_email(
         survey_title = survey_obj.title
         survey_slug = survey_obj.slug
 
-    # Tính toán chính xác điểm số các nhóm để tránh bị rỗng trên PDF
-    score_abc = getattr(
-        submission,
-        'score_difficulties',
-        (
-            getattr(submission, 'score_a', 0)
-            + getattr(submission, 'score_b', 0)
-            + getattr(submission, 'score_c', 0)
-        ),
-    )
-    score_d = getattr(submission, 'score_d', 0)
+    # Tính toán chính xác điểm số các nhóm (ép kiểu int để tránh None / NotImplemented)
+    score_a = int(getattr(submission, 'score_a', 0) or 0)
+    score_b = int(getattr(submission, 'score_b', 0) or 0)
+    score_c = int(getattr(submission, 'score_c', 0) or 0)
+    score_d = int(getattr(submission, 'score_d', 0) or 0)
+
+    score_abc = int(getattr(submission, 'score_difficulties', None) or (score_a + score_b + score_c))
+
+    # Gán ngược lại thuộc tính tạm vào object submission
+    submission.score_abc = score_abc
+    submission.score_d = score_d
 
     # Đóng gói dữ liệu sang context cho HTML template
     context = {
@@ -134,7 +158,7 @@ def send_pdf_email(
         src=html_content,
         dest=pdf_buffer,
         encoding='utf-8',
-        link_callback=link_callback,  # 👈 Bắt buộc để load font & hình ảnh base64
+        link_callback=link_callback,
     )
 
     if pisa_status.err:

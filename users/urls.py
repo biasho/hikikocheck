@@ -1,5 +1,5 @@
 # users/urls.py
-from django.urls import path
+from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -12,7 +12,17 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     # Trang Hồ sơ cá nhân (Profile)
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile_view, name='profile'),
+    path('settings/', views.settings_view, name='settings'),
+
+    # Đổi mật khẩu (dành cho user đã đăng nhập)
+    path('password-change/', 
+         auth_views.PasswordChangeView.as_view(
+             template_name='users/password_change.html',
+             success_url=reverse_lazy('users:profile')
+         ), 
+         name='password_change'),
 
     # Chuỗi xử lý Quên mật khẩu
     path('password-reset/', 
@@ -42,4 +52,5 @@ urlpatterns = [
              template_name='users/password_reset_complete.html'
          ), 
          name='password_reset_complete'),
+    path('submissions/<int:pk>/', views.submission_detail, name='submission_detail'),
 ]

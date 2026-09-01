@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cảm ơn bạn - Reconnect 360°{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-12">
+    <!-- Ép bo góc card ngoài cùng bằng style="border-radius: 24px !important;" -->
+    <div style="border-radius: 24px !important;"
+         class="max-w-md w-full bg-[var(--color-card-bg)] p-8 shadow-xl border border-[var(--color-border)] text-center transition-all overflow-hidden">
+        
+        <!-- Icon Thành Công Animation -->
+        <div class="size-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-green-500/5">
+            <span class="material-symbols-outlined text-4xl">check_circle</span>
+        </div>
+
+        <!-- Tiêu Đề -->
+        <h1 class="text-2xl font-bold text-[var(--color-text-main)] mb-2">
+           Hoàn thành khảo sát!
+        </h1>
+        <p class="text-xs text-[var(--color-text-sub)] leading-relaxed mb-6">
+            Cảm ơn bạn đã dành thời gian hoàn thành bài khảo sát <br>
+            <strong class="text-[var(--color-primary)] font-semibold">{{ survey.title }}</strong>.
+        </p>
+
+        <!-- Thông Tin Bổ Sung / Điểm Số -->
+        {% if submission %}
+        <div style="border-radius: 16px !important;" class="bg-[var(--color-background)] p-4 mb-6 border border-[var(--color-border)] text-left space-y-2">
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-[var(--color-text-sub)]">Mã lượt nộp:</span>
+                <span class="font-mono font-semibold text-[var(--color-text-main)]">#{{ submission.id }}</span>
+            </div>
+            {% if submission.total_score %}
+            <div class="flex justify-between items-center text-xs pt-1 border-t border-[var(--color-border)]">
+                <span class="text-[var(--color-text-sub)]">Tổng điểm ghi nhận:</span>
+                <span class="font-bold text-[var(--color-primary)] text-sm">{{ submission.total_score }} điểm</span>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Nút Điều Hướng -->
+        <div class="space-y-3">
+            <a href="{% url 'pages:home' %}" 
+               style="border-radius: 12px !important;"
+               class="w-full flex items-center justify-center h-11 px-6 bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-xs shadow-md shadow-[var(--color-primary)]/20 active:scale-[0.98] transition-all">
+                <span class="material-symbols-outlined mr-2 text-base">home</span>
+                Quay về trang chủ
+            </a>
+
+            <a href="{% url 'surveys:reconnect360_detail' %}"
+               style="border-radius: 12px !important;"
+               class="w-full flex items-center justify-center h-11 px-6 border border-[var(--color-border)] text-[var(--color-text-main)] hover:bg-[var(--color-background)] font-semibold text-xs active:scale-[0.98] transition-all">
+                Thực hiện khảo sát khác
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

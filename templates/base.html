@@ -21,16 +21,18 @@
         })();
     </script>
 
-    <!-- Google Fonts & Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
+    <!-- 1. Kết nối sớm tới máy chủ Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- 2. Nhúng Fonts với thuộc tính &display=block -->
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
 
     <!-- Static CSS -->
     <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-
+    
     <style>
         /* CSS hỗ trợ Anti-Flicker cho màu nền HTML gốc */
         html {
@@ -78,6 +80,26 @@
             background-color: var(--color-background, #f3f4f6) !important;
             font-weight: 700;
         }
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  
+  /* Cố định khung chứa icon, ẩn đoạn chữ tên icon trong lúc chờ tải font */
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: middle;
+}
     </style>
     {% block extra_css %}{% endblock %}
 
@@ -88,18 +110,63 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"></script>
 </head>
 
-<body
-    class="bg-[var(--color-background)] text-[var(--color-text-main)] font-display min-h-screen flex flex-col overflow-x-clip">
-
-    <!-- 1. HEADER & NAVBAR -->
+ <body class="bg-[var(--color-background)] text-[var(--color-text-main)] font-display min-h-screen flex flex-col overflow-x-hidden">
     {% include 'includes/header.html' %}
 
+    <!-- GLOBAL TOAST NOTIFICATION SYSTEM -->
+{% if messages %}
+<div id="toast-container" class="fixed top-20 right-4 sm:right-6 z-40 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+    {% for message in messages %}
+    <div class="toast-item pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-2xl shadow-lg backdrop-blur-md transition-all duration-300 transform translate-y-0 opacity-100
+        {% if message.tags == 'error' %}
+            bg-red-50/95 text-red-700 shadow-red-500/10
+        {% elif message.tags == 'warning' %}
+            bg-amber-50/95 text-amber-700 shadow-amber-500/10
+        {% else %}
+            bg-emerald-50/95 text-emerald-500 shadow-emerald-500/10
+        {% endif %}">
+        
+        <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-[20px] shrink-0">
+                {% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}check_circle{% endif %}
+            </span>
+            <span class="text-xs font-medium leading-snug break-words">{{ message }}</span>
+        </div>
+
+        <button onclick="dismissToast(this.parentElement)" class="cursor-pointer opacity-60 hover:opacity-100 transition-opacity p-1 shrink-0">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    function dismissToast(toastElement) {
+        if (!toastElement) return;
+        toastElement.classList.add('-translate-y-3', 'opacity-0');
+        setTimeout(() => {
+            toastElement.remove();
+        }, 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const toasts = document.querySelectorAll('.toast-item');
+        toasts.forEach(toast => {
+            setTimeout(() => {
+                dismissToast(toast);
+            }, 3000);
+        });
+    });
+</script>
+{% endif %}
     <!-- 2. MAIN CONTENT -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% block content %}
+
         {% endblock %}
     </main>
-
+   <!-- FLOATING SURVEY BUTTON (Xuất hiện toàn trang) -->
+    {% include 'surveys/reconnect360/survey_button_floating.html' %}
     <!-- 3. FOOTER -->
     {% include 'includes/footer.html' %}
 
@@ -122,6 +189,18 @@
                 activeBtn.classList.remove('border-transparent');
             }
         }
+
+        /* TỰ ĐỘNG XÓA THÔNG BÁO SAU 3 GIÂY */
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                const alerts = document.querySelectorAll('.django-alert');
+                alerts.forEach(alert => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-10px)';
+                    setTimeout(() => alert.remove(), 500);
+                });
+            }, 3000);
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>

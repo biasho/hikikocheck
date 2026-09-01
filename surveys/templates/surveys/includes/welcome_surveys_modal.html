@@ -1,0 +1,97 @@
+{% load static %}
+
+<!-- ================= POPUP BẮT ĐẦU KHẢO SÁT ================= -->
+<!-- Đã đổi id từ emailModal -> welcomeModal -->
+<div id="welcomeModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none">
+
+    <!-- Đã đổi id từ modalContent -> welcomeModalContent -->
+    <div id="welcomeModalContent"
+        class="bg-[var(--color-card-bg)] w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl ring-1 ring-[var(--color-border)] text-center transform scale-95 transition-all duration-300 relative">
+
+        <!-- Nút đóng (X) -->
+        <button type="button" onclick="closeWelcomeModal()" aria-label="Đóng"
+            class="absolute top-4 right-4 text-[var(--color-text-sub)] hover:text-[var(--color-text-main)] transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+
+        <!-- Icon nổi bật -->
+        <div class="size-14 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span class="material-symbols-outlined text-3xl text-[var(--color-primary)]">explore</span>
+        </div>
+
+        <!-- Tiêu đề -->
+        <h3 class="text-xl font-bold text-[var(--color-text-main)] mb-3">
+            Bạn đã sẵn sàng cho hành trình khám phá bản thân mình chưa?
+        </h3>
+
+        <!-- Thông điệp hướng dẫn -->
+        <p class="text-sm text-[var(--color-text-sub)] mb-6 leading-relaxed">
+            Để bắt đầu, hãy hít một hơi thật dài.
+        </p>
+
+        <!-- Nút Sẵn sàng để ẩn modal -->
+        <button type="button" onclick="closeWelcomeModal()"
+            class="w-full h-12 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span class="material-symbols-outlined text-lg">rocket_launch</span>
+            <span>Sẵn sàng</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    /**
+     * Mở Welcome Modal
+     */
+    function openWelcomeModal() {
+        const modal = document.getElementById('welcomeModal');
+        const content = document.getElementById('welcomeModalContent');
+        if (!modal || !content) return;
+
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100');
+        content.classList.remove('scale-95');
+        content.classList.add('scale-100');
+    }
+
+    /**
+     * Đóng Welcome Modal
+     */
+    function closeWelcomeModal() {
+        const modal = document.getElementById('welcomeModal');
+        const content = document.getElementById('welcomeModalContent');
+        if (!modal || !content) return;
+
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        content.classList.remove('scale-100');
+        content.classList.add('scale-95');
+    }
+
+    /**
+     * Khởi tạo các sự kiện cho Modal khi DOM đã sẵn sàng
+     */
+    function initAutoShowModal() {
+        // Tự động bật Modal sau 800ms khi vào trang
+        setTimeout(openWelcomeModal, 800);
+
+        const welcomeModal = document.getElementById('welcomeModal');
+        if (welcomeModal) {
+            // Đóng modal khi click vào khoảng đen ngoài khung modal
+            welcomeModal.addEventListener('click', function (e) {
+                if (e.target === this) closeWelcomeModal();
+            });
+        }
+
+        // Lắng nghe phím ESC để đóng Modal
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeWelcomeModal();
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAutoShowModal);
+    } else {
+        initAutoShowModal();
+    }
+</script>

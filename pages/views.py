@@ -12,3 +12,12 @@ def about_us(request):
 
 def guide(request):
     return render(request, 'pages/guide.html')  # Tên file template hướng dẫn vừa tạo
+def privacy(request):
+    return render(request, 'pages/privacy.html')  # Tên file template hướng dẫn vừa tạo
+def terms(request):
+    return render(request, 'pages/terms.html')  # Tên file template hướng dẫn vừa tạo
+def sitemap(request):
+    return render(request, 'pages/sitemap.html')  # Tên file template hướng dẫn vừa tạo
+
+def methodology(request):
+    return render(request, 'pages/methodology.html')  # Tên file template hướng dẫn vừa tạo

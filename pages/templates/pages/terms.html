@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+
+{% block title %}Điều Khoản Sử Dụng - Reconnect 360°{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-3xl font-black tracking-tight text-[var(--color-text-main)] sm:text-4xl">📜 Điều Khoản Sử Dụng</h1>
+    <p class="mt-2 text-base text-[var(--color-text-muted, #64748b)]">Các quy định, quyền hạn và trách nhiệm khi bạn sử dụng dịch vụ trên Reconnect 360°.</p>
+</div>
+
+<!-- Layout chia 2 cột: Sidebar & Content Panel -->
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+    
+    <!-- SIDEBAR MENU: Sticky cố định khi cuộn trang -->
+    <aside class="w-full lg:w-72 shrink-0 bg-[var(--color-surface, #ffffff)] rounded-xl p-3 sm:p-4 sticky top-16 lg:top-20 z-30 about-aside-box shadow-md lg:shadow-sm transition-all">
+        <h3 class="hidden lg:block text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted, #94a3b8)] px-3 mb-3">Mục điều khoản</h3>
+        
+        <!-- Scroll Container cho Mobile -->
+        <div class="about-scroll-container relative overflow-hidden">
+            <nav id="about-nav-scroll" onscroll="handleAboutMenuScroll()" class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-none w-full snap-x snap-mandatory lg:snap-none">
+                <button onclick="switchAboutTab('accept')" onmouseenter="handleTabHover('accept')" onmouseleave="cancelTabHover()" id="atab-accept" data-tab="accept" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-active whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">gavel</span>
+                    <span>1. Chấp nhận điều khoản</span>
+                </button>
+                <button onclick="switchAboutTab('account')" onmouseenter="handleTabHover('account')" onmouseleave="cancelTabHover()" id="atab-account" data-tab="account" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">account_circle</span>
+                    <span>2. Tài khoản người dùng</span>
+                </button>
+                <button onclick="switchAboutTab('usage')" onmouseenter="handleTabHover('usage')" onmouseleave="cancelTabHover()" id="atab-usage" data-tab="usage" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">rule</span>
+                    <span>3. Quy định sử dụng</span>
+                </button>
+                <button onclick="switchAboutTab('intellectual')" onmouseenter="handleTabHover('intellectual')" onmouseleave="cancelTabHover()" id="atab-intellectual" data-tab="intellectual" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">copyright</span>
+                    <span>4. Sở hữu trí tuệ</span>
+                </button>
+                <button onclick="switchAboutTab('disclaimer')" onmouseenter="handleTabHover('disclaimer')" onmouseleave="cancelTabHover()" id="atab-disclaimer" data-tab="disclaimer" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">shield</span>
+                    <span>5. Giới hạn trách nhiệm</span>
+                </button>
+                <button onclick="switchAboutTab('updates')" onmouseenter="handleTabHover('updates')" onmouseleave="cancelTabHover()" id="atab-updates" data-tab="updates" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">edit_note</span>
+                    <span>6. Thay đổi điều khoản</span>
+                </button>
+                <button onclick="switchAboutTab('contact')" onmouseenter="handleTabHover('contact')" onmouseleave="cancelTabHover()" id="atab-contact" data-tab="contact" class="about-tab-btn shrink-0 lg:shrink flex items-center gap-2.5 px-3.5 py-2.5 lg:px-4 lg:py-3 text-left rounded-lg text-sm font-semibold transition-all about-tab-inactive whitespace-nowrap lg:whitespace-normal snap-center">
+                    <span class="material-symbols-outlined text-lg">mail</span>
+                    <span>7. Liên hệ</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Indicator Mobile -->
+        <div class="flex lg:hidden items-center justify-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 mt-1">
+            <span class="scroll-dot w-5 h-1 rounded-full bg-[var(--color-primary)] transition-all duration-300" data-index="0"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="1"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="2"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="3"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="4"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="5"></span>
+            <span class="scroll-dot w-2 h-1 rounded-full bg-slate-300 transition-all duration-300" data-index="6"></span>
+        </div>
+    </aside>
+
+    <!-- NỘI DUNG CHI TIẾT (CONTENT PANEL) -->
+    <div class="flex-1 w-full bg-[var(--color-surface, #ffffff)] rounded-xl p-5 sm:p-8 about-content-box shadow-sm z-10">
+        
+        <!-- Tab 1: Chấp nhận điều khoản -->
+        <div id="acontent-accept" class="about-content active space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">1. Chấp nhận điều khoản</h2>
+                <span class="text-xs text-[var(--color-text-muted, #94a3b8)]">Cập nhật: Tháng 8, 2026</span>
+            </div>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Khi truy cập và sử dụng dịch vụ tại <strong>Reconnect 360°</strong>, bạn đồng ý tuân thủ toàn bộ các quy định và điều khoản được đề cập tại đây.
+            </p>
+            <div class="p-4 bg-[var(--color-background, #f8fafc)] border-l-4 border-[var(--color-primary, #1152d4)] rounded-r-lg mt-4">
+                <p class="text-sm text-[var(--color-text-main)]">
+                    Nếu bạn không đồng ý với bất kỳ điều khoản nào trong thỏa thuận này, vui lòng ngừng truy cập và sử dụng các dịch vụ trên hệ thống.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab 2: Tài khoản người dùng -->
+        <div id="acontent-account" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">2. Tài khoản người dùng</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Để đảm bảo tính chính xác của các bài đánh giá và an toàn hệ thống, người dùng có trách nhiệm tuân thủ các nghĩa vụ sau:
+            </p>
+            <ul class="space-y-3 pt-1">
+                <li class="flex items-start gap-3 p-3.5 rounded-lg border border-slate-200/80 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-xl shrink-0 mt-0.5">lock_reset</span>
+                    <span>Bạn có trách nhiệm bảo mật thông tin đăng nhập và chịu trách nhiệm cho mọi hoạt động diễn ra dưới tài khoản của mình.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3.5 rounded-lg border border-slate-200/80 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-xl shrink-0 mt-0.5">fact_check</span>
+                    <span>Thông tin cung cấp khi đăng ký thủ công hoặc xác thực ủy quyền qua Google Login phải đảm bảo tính chính xác và đầy đủ.</span>
+                </li>
+                <li class="flex items-start gap-3 p-3.5 rounded-lg border border-slate-200/80 bg-[var(--color-background, #f8fafc)] text-sm sm:text-base text-[var(--color-text-muted, #475569)]">
+                    <span class="material-symbols-outlined text-[var(--color-primary)] text-xl shrink-0 mt-0.5">block</span>
+                    <span>Tuyệt đối không chia sẻ tài khoản cho người khác sử dụng với mục đích vi phạm quy định pháp luật hoặc gian lận kết quả khảo sát.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab 3: Quy định sử dụng -->
+        <div id="acontent-usage" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">3. Quy định sử dụng dịch vụ</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Khi sử dụng nền tảng Reconnect 360°, bạn cam kết nghiêm túc không thực hiện các hành vi cấm sau đây:
+            </p>
+            <div class="grid grid-cols-1 gap-3 pt-2">
+                <div class="p-4 border border-rose-100 rounded-lg bg-rose-50/30 dark:bg-rose-950/10 flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-2xl text-rose-600 shrink-0">smart_toy</span>
+                    <div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-1">Can thiệp tự động</h3>
+                        <p class="text-sm text-[var(--color-text-muted, #475569)]">Sử dụng công cụ tự động (bot, script, crawler) để can thiệp vào kết quả đánh giá, làm sai lệch dữ liệu khảo sát.</p>
+                    </div>
+                </div>
+                <div class="p-4 border border-rose-100 rounded-lg bg-rose-50/30 dark:bg-rose-950/10 flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-2xl text-rose-600 shrink-0">warning</span>
+                    <div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-1">Gây gián đoạn hệ thống</h3>
+                        <p class="text-sm text-[var(--color-text-muted, #475569)]">Cố ý tấn công, phá hoại, gây gián đoạn hoặc làm quá tải cơ sở hạ tầng máy chủ Reconnect 360°.</p>
+                    </div>
+                </div>
+                <div class="p-4 border border-rose-100 rounded-lg bg-rose-50/30 dark:bg-rose-950/10 flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-2xl text-rose-600 shrink-0">campaign</span>
+                    <div>
+                        <h3 class="font-bold text-base text-[var(--color-text-main)] mb-1">Phát tán nội dung độc hại</h3>
+                        <p class="text-sm text-[var(--color-text-muted, #475569)]">Phát tán thông tin sai lệch, xâm phạm bản quyền hoặc lưu trữ các nội dung vi phạm thuần phong mỹ tục và pháp luật.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Sở hữu trí tuệ -->
+        <div id="acontent-intellectual" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">4. Quyền sở hữu trí tuệ</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Toàn bộ tài nguyên trên hệ thống Reconnect 360° được bảo hộ theo luật sở hữu trí tuệ:
+            </p>
+            <div class="p-5 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] space-y-3">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-3xl text-[var(--color-primary)]">verified</span>
+                    <h3 class="font-bold text-lg text-[var(--color-text-main)]">Bản quyền thuộc Reconnect 360°</h3>
+                </div>
+                <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                    Toàn bộ nội dung, giao diện thiết kế, bộ câu hỏi đánh giá, thuật toán tính toán và logo thuộc quyền sở hữu trí tuệ hợp pháp của chúng tôi. Bạn không được phép sao chép, trích xuất, sửa đổi hoặc thương mại hóa dưới mọi hình thức khi chưa có sự đồng ý bằng văn bản.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab 5: Giới hạn trách nhiệm -->
+        <div id="acontent-disclaimer" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">5. Giới hạn trách nhiệm</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Các kết quả đánh giá và biểu đồ phân tích trên Reconnect 360° được thiết kế nhằm mục đích hỗ trợ kết nối, tham khảo cá nhân và phục vụ nghiên cứu giáo dục.
+            </p>
+            <div class="p-4 bg-[var(--color-background, #f8fafc)] border-l-4 border-amber-500 rounded-r-lg">
+                <p class="text-sm text-[var(--color-text-main)]">
+                    Chúng tôi không chịu trách nhiệm pháp lý đối với bất kỳ quyết định cá nhân, tổ chức hoặc thiệt hại gián tiếp nào phát sinh dựa trên việc diễn giải thông tin từ các báo cáo khảo sát của hệ thống.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab 6: Thay đổi điều khoản -->
+        <div id="acontent-updates" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">6. Cập nhật & Thay đổi điều khoản</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Chúng tôi có quyền sửa đổi, bổ sung hoặc cập nhật các điều khoản này bất kỳ lúc nào để phù hợp với sự phát triển của nền tảng và quy định pháp luật.
+            </p>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Các thay đổi sẽ có hiệu lực ngay khi được đăng tải công khai trên website. Việc bạn tiếp tục sử dụng dịch vụ sau khi điều khoản thay đổi đồng nghĩa với việc bạn chấp nhận toàn bộ quy định mới.
+            </p>
+        </div>
+
+        <!-- Tab 7: Liên hệ -->
+        <div id="acontent-contact" class="about-content space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-text-main)]">7. Thông tin liên hệ</h2>
+            <p class="text-sm sm:text-base leading-relaxed text-[var(--color-text-muted, #475569)]">
+                Nếu bạn có bất kỳ câu hỏi, đóng góp ý kiến hoặc khiếu nại liên quan đến Điều khoản sử dụng này, vui lòng gửi phản hồi về cho chúng tôi qua:
+            </p>
+            <div class="p-4 border border-slate-200/80 rounded-lg bg-[var(--color-background, #f8fafc)] flex items-center gap-3">
+                <span class="material-symbols-outlined text-2xl text-[var(--color-primary)]">alternate_email</span>
+                <div>
+                    <span class="text-xs text-[var(--color-text-muted, #94a3b8)] block">Email hỗ trợ</span>
+                    <a href="mailto:support@reconnect360.vn" class="text-base font-bold text-[var(--color-primary)] hover:underline">support@reconnect360.vn</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-aside-box {
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        background-color: var(--color-surface, #ffffff) !important;
+        z-index: 30 !important;
+    }
+
+    .about-content-box {
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+    }
+
+    @media (max-width: 1023px) {
+        .about-scroll-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--color-surface, #ffffff));
+            pointer-events: none;
+        }
+
+        .about-content-box {
+            scroll-margin-top: 120px;
+        }
+
+        .about-aside-box {
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08) !important;
+        }
+    }
+
+    .about-content {
+        display: none;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .about-content.active {
+        display: block;
+    }
+
+    .about-content.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .about-tab-active {
+        background-color: var(--color-primary, #1152d4) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--color-primary, #1152d4) !important;
+        box-shadow: 0 2px 8px rgba(17, 82, 212, 0.25);
+    }
+
+    .about-tab-inactive {
+        background-color: transparent;
+        color: var(--color-text-main, #0f172a);
+        border: 1px solid transparent;
+    }
+
+    .about-tab-inactive:hover {
+        background-color: var(--color-background, #f8fafc) !important;
+        color: var(--color-primary, #1152d4) !important;
+        border-color: rgba(17, 82, 212, 0.2) !important;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isUserClicking = false;
+    let scrollTimeout;
+    let hoverTimeout;
+    let currentTab = 'accept';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialContent = document.getElementById('acontent-accept');
+        if (initialContent) {
+            initialContent.classList.add('show');
+        }
+    });
+
+    function handleAboutMenuScroll() {
+        if (window.innerWidth >= 1024) return;
+
+        const container = document.getElementById('about-nav-scroll');
+        if (!container) return;
+
+        const scrollLeft = container.scrollLeft;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        if (maxScrollLeft > 0) {
+            const ratio = scrollLeft / maxScrollLeft;
+            const dots = document.querySelectorAll('.scroll-dot');
+            const activeIndex = Math.min(Math.floor(ratio * dots.length), dots.length - 1);
+
+            dots.forEach((dot, index) => {
+                if (index === activeIndex) {
+                    dot.classList.remove('w-2', 'bg-slate-300');
+                    dot.classList.add('w-5', 'bg-[var(--color-primary)]');
+                } else {
+                    dot.classList.remove('w-5', 'bg-[var(--color-primary)]');
+                    dot.classList.add('w-2', 'bg-slate-300');
+                }
+            });
+        }
+
+        if (isUserClicking) return;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const buttons = container.querySelectorAll('.about-tab-btn');
+            const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
+
+            let closestBtn = null;
+            let minDistance = Infinity;
+
+            buttons.forEach(btn => {
+                const rect = btn.getBoundingClientRect();
+                const btnCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(containerCenter - btnCenter);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestBtn = btn;
+                }
+            });
+
+            if (closestBtn) {
+                const tabId = closestBtn.getAttribute('data-tab');
+                switchAboutTab(tabId, false);
+            }
+        }, 150);
+    }
+
+    function switchAboutTab(tabId, shouldScrollMenu = true) {
+        if (currentTab === tabId) return;
+        currentTab = tabId;
+
+        document.querySelectorAll('.about-tab-btn').forEach(btn => {
+            btn.classList.remove('about-tab-active');
+            btn.classList.add('about-tab-inactive');
+        });
+
+        const activeBtn = document.getElementById('atab-' + tabId);
+        if (activeBtn) {
+            activeBtn.classList.add('about-tab-active');
+            activeBtn.classList.remove('about-tab-inactive');
+            
+            if (shouldScrollMenu) {
+                isUserClicking = true;
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                setTimeout(() => { isUserClicking = false; }, 500);
+            }
+        }
+
+        document.querySelectorAll('.about-content').forEach(content => {
+            content.classList.remove('show');
+            content.classList.remove('active');
+        });
+
+        const target = document.getElementById('acontent-' + tabId);
+        if (target) {
+            target.classList.add('active');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    target.classList.add('show');
+                });
+            });
+        }
+    }
+
+    function handleTabHover(tabId) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(() => {
+            switchAboutTab(tabId);
+        }, 120);
+    }
+
+    function cancelTabHover() {
+        clearTimeout(hoverTimeout);
+    }
+</script>
+{% endblock %}

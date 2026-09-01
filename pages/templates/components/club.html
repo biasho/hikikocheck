@@ -1,0 +1,46 @@
+{% load static %}
+<!-- include/club.html -->
+<div class="bg-[var(--color-card-bg,#0f172a)] rounded-xl shadow-xl overflow-hidden text-[var(--color-text,#ffffff)] my-6 transition-colors duration-300">
+    
+    <!-- TIÊU ĐỀ DÙNG NỀN VÀ MÀU CHỮ NHƯ LÚC ĐẦU -->
+    <div class="p-4 bg-[var(--color-primary)] text-white text-left">
+        <h3 class="text-lg font-bold tracking-tight ">Video Giới thiệu các CLB & Dự án</h3>
+        <p class="text-white/80 text-xs mt-0.5">
+            Thước phim tổng quan giới thiệu về 27 câu lạc bộ và dự án đầy sắc màu trực thuộc Đoàn trường THPT chuyên Trần Đại Nghĩa
+        </p>
+    </div>
+
+    <div class="p-4 sm:p-6 space-y-6">
+        <!-- PHẦN 1: VIDEO GIỚI THIỆU (Không viền) -->
+        <section id="media-video">
+            <div class="relative w-full aspect-video mx-auto rounded-lg overflow-hidden bg-black shadow-inner">
+                <iframe 
+                    src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F%3Fv%3D1169852493873677&show_text=false&width=560" 
+                    class="absolute inset-0 w-full h-full border-0 rounded-lg"
+                    scrolling="no" 
+                    frameborder="0" 
+                    allowfullscreen="true" 
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- PHẦN 2: BANNER HÌNH ẢNH CÂU LẠC BỘ (Không viền) -->
+        <div class="w-full rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:scale-[1.01]">
+            <img src="{% static 'images/tdn_clubs_banner.jpg' %}" 
+                 alt="Danh sách Câu Lạc Bộ và Dự Án" 
+                 class="w-full h-auto block object-cover rounded-lg" />
+        </div>
+
+        <!-- PHẦN 3: NÚT LIÊN KẾT HÀNH ĐỘNG (CTA) -->
+<section id="action-link" class="pt-1 flex justify-center">
+    <a href="https://doantruongthptctdn.webflow.io/?utm_source=chatgpt.com#clbda" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="flex items-center justify-center rounded-lg h-12 px-5 bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-sm whitespace-nowrap shadow-lg transition-transform hover:scale-105">
+        <span class="material-symbols-outlined mr-1.5 text-[20px]">explore</span>
+        <span>Khám phá ngay Website Đoàn Trường</span>
+    </a>
+</section>
+    </div>
+</div>
